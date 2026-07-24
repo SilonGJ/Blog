@@ -26,9 +26,9 @@ const stats = readingTime(entry.body);
       {data.title}
     </a>
 
-    <div class="flex flex-wrap items-center gap-1.5 mb-4 text-sm">
+    <div class="text-sm text-[var(--muted)] flex gap-4 transition mb-2">
       {data.pubDate && (
-        <span class="flex items-center button button--ghost px-2 py-0.5 text-xs text-white">
+        <span class="flex items-center">
           <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1">
             <rect width="18" height="18" x="3" y="4" rx="2" ry="2"/>
             <line x1="16" x2="16" y1="2" y2="6"/>
@@ -38,30 +38,32 @@ const stats = readingTime(entry.body);
           {data.pubDate.toLocaleDateString('zh-CN')}
         </span>
       )}
+      {data.pubDate && <span>|</span>}
       {data.category && (
-        <a href={`/categories/${data.category}/`} class="button button--ghost px-2 py-0.5 text-xs font-medium">
+        <a href={`/categories/${data.category}/`} class="text-sm text-[var(--muted)] hover:text-[var(--primary)]">
           {data.category}
         </a>
       )}
+      {data.category && <span>|</span>}
+      <span>{Math.round(stats.words)} 字</span>
+      <span>|</span>
+      <span>{Math.max(1, Math.round(stats.minutes))} 分钟</span>
+    </div>
+
+    <div class="text-75 mb-1 line-clamp-2">
+      {data.description}
+    </div>
+
+    <div class="flex flex-wrap items-center gap-2 text-sm">
       {data.tags.length > 0 && (
-        <span class="flex flex-wrap items-center gap-1">
+        <span class="flex flex-wrap items-center gap-2">
           {data.tags.slice(0, 3).map((tag) => (
-            <a href={`/tags/${tag}/`} class="button button--ghost px-2 py-0.5 text-xs">
+            <a href={`/tags/${tag}/`} class="py-0 text-xs leading-none text-[var(--muted)] hover:text-[var(--primary)]">
               #{tag}
             </a>
           ))}
         </span>
       )}
-    </div>
-
-    <div class="text-75 mb-4 line-clamp-2">
-      {data.description}
-    </div>
-
-    <div class="text-sm text-[var(--muted)] flex gap-4 transition">
-      <span>{Math.round(stats.words)} 字</span>
-      <span>|</span>
-      <span>{stats.text}</span>
     </div>
   </div>
 </div>
