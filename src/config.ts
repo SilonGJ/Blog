@@ -1,9 +1,9 @@
 export const siteConfig = {
-  title: 'My Blog',
-  subtitle: 'A personal blog built with Astro and HeroUI',
-  description: 'A modern static blog built with Astro, HeroUI, and Tailwind CSS',
+  title: '孤久の博客',
+  subtitle: '主站',
+  description: '这里分享一些...呃，乱七八糟的东西',
   lang: 'zh-CN',
-  author: 'Your Name',
+  author: '孤久きりのなか',
   postsPerPage: 8,
 };
 
@@ -19,15 +19,16 @@ export const navBarConfig = {
 };
 
 export const profileConfig = {
-  name: 'Your Name',
+  name: '孤久きりのなか',
   avatar: '/avatar.jpg',
-  bio: '全栈开发者 | 技术爱好者 | 终身学习者',
+  bio: '一个 (?',
   location: 'China',
-  email: 'your@email.com',
+  email: 'zcx02172024@gmail.com',
   links: [
-    { name: 'GitHub', icon: 'github', url: 'https://github.com' },
-    { name: 'Twitter', icon: 'twitter', url: 'https://twitter.com' },
-    { name: 'Email', icon: 'email', url: 'mailto:your@email.com' },
+    { name: 'QQ', icon: 'qq', url: 'https://qm.qq.com/cgi-bin/qm/qr?k=1910115941' },
+    { name: 'GitHub', icon: 'github', url: 'https://github.com/SilonGJ' },
+    { name: 'BiliBili', icon: 'bilibili', url: 'https://space.bilibili.com/1038766354' },
+    { name: 'Email', icon: 'email', url: 'mailto:zcx02172024@gmail.com' },
   ],
   skills: ['TypeScript', 'React', 'Astro', 'Node.js', 'Python', 'Go'],
 };

@@ -11,12 +11,11 @@ draft: false
 comment: true
 ---
 
-此博客使用 [Fuwari](https://github.com/saicaca/fuwari "Fuwari 的 Github 官方仓库") 强力驱动
+此博客使用 [Astro](https://astro.js.cn/ "Astro 官方网站") 强力驱动
 
 ## 前端框架
 
 - **Astro** — 静态站点生成器
-- **Fuwari** — Astro 主题
 
 ## 部署
 
