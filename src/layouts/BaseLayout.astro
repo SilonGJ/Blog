@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import '../styles/photoswipe.css';
+import 'photoswipe/style.css';
 import { siteConfig } from '../config';
 
 interface Props {
@@ -37,12 +38,18 @@ const pageDescription = description || siteConfig.description;
     <slot />
   <script>
     import PhotoSwipeLightbox from "photoswipe/lightbox";
-    import "photoswipe/style.css";
 
     let lightbox;
     let pswp = import("photoswipe");
 
     function createPhotoSwipe() {
+      if (lightbox) {
+        lightbox.destroy();
+        lightbox = null;
+      }
+
+      document.querySelectorAll(".pswp").forEach((el) => el.remove());
+
       lightbox = new PhotoSwipeLightbox({
         gallery: ".prose img",
         pswpModule: () => pswp,
@@ -67,10 +74,17 @@ const pageDescription = description || siteConfig.description;
       lightbox.init();
     }
 
-    const setup = () => {
-      if (!lightbox) {
-        createPhotoSwipe();
+    function destroyPhotoSwipe() {
+      if (lightbox) {
+        lightbox.destroy();
+        lightbox = null;
       }
+      document.querySelectorAll(".pswp").forEach((el) => el.remove());
+    }
+
+    const setup = () => {
+      createPhotoSwipe();
+
       if (window.swup) {
         window.swup.hooks.on("page:view", () => {
           createPhotoSwipe();
@@ -78,7 +92,7 @@ const pageDescription = description || siteConfig.description;
         window.swup.hooks.on(
           "content:replace",
           () => {
-            lightbox?.destroy?.();
+            destroyPhotoSwipe();
           },
           { before: true },
         );
