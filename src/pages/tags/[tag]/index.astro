@@ -24,7 +24,7 @@ const posts = (await getCollection('posts', ({ data }) => !data.draft && data.ta
 ---
 
 <MainLayout title={`标签: ${tag}`} description={`标签 ${tag} 下的所有文章`}>
-  <div class="card-base mb-6 onload-animation" style="animation-delay: 200ms">
+  <div class="card-base mb-6 onload-animation">
     <div class="pl-10 md:pl-12 pr-6 pt-6 md:pt-7 pb-6 relative w-full">
       <h1 class="text-2xl md:text-3xl font-bold mb-2 relative before:w-1 before:h-6 before:bg-[var(--primary)] before:absolute before:top-1/2 before:-translate-y-1/2 before:-left-4 md:before:-left-6">
         标签: <span class="text-[var(--primary)]">#{tag}</span>

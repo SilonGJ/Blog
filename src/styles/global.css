@@ -447,10 +447,6 @@
   animation-fill-mode: forwards;
 }
 
-#navbar { animation-delay: 0ms; }
-#sidebar { animation-delay: 100ms; }
-#content-wrapper { animation-delay: 0ms; }
-
 html.is-changing .transition-swup-fade {
   transition: all 200ms ease;
 }

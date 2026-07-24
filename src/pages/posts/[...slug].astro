@@ -25,7 +25,7 @@ const nextPost = currentIndex < allPosts.length - 1 ? allPosts[currentIndex + 1]
 ---
 
 <MainLayout title={post.data.title} description={post.data.description} headings={headings}>
-  <article class="card-base onload-animation max-w-4xl mx-auto" style="animation-delay: 200ms">
+  <article class="card-base onload-animation max-w-4xl mx-auto">
     <div class="px-6 md:px-8 pt-6 md:pt-7 pb-6 relative w-full">
       <header class="mb-8 pb-6 border-b border-[var(--divider)]">
         <h1 class="text-3xl md:text-4xl font-bold mb-4 text-[var(--foreground)] relative before:w-1 before:h-7 before:bg-[var(--primary)] before:absolute before:top-1/2 before:-translate-y-1/2 before:-left-4 md:before:-left-6">
@@ -89,7 +89,7 @@ const nextPost = currentIndex < allPosts.length - 1 ? allPosts[currentIndex + 1]
     </div>
   </article>
 
-  <nav class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4 onload-animation max-w-4xl mx-auto" style="animation-delay: 350ms">
+  <nav class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4 onload-animation max-w-4xl mx-auto">
     {prevPost ? (
       <a href={`/posts/${prevPost.id}/`} class="card-base p-4 transition hover:bg-[var(--btn-card-bg-hover)] group">
         <div class="text-sm text-[var(--muted)] mb-1 flex items-center gap-1">
