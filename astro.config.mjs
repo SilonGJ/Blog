@@ -4,6 +4,7 @@ import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 import swup from '@swup/astro';
 import icon from 'astro-icon';
+import remarkGfm from 'remark-gfm';
 
 export default defineConfig({
   site: 'https://example.com',
@@ -40,5 +41,6 @@ export default defineConfig({
       theme: 'github-dark',
       wrap: true,
     },
+    remarkPlugins: [remarkGfm],
   },
 });
