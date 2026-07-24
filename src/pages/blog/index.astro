@@ -1,0 +1,21 @@
+---
+import MainLayout from '../../layouts/MainLayout.astro';
+import PostCard from '../../components/PostCard.astro';
+import { getCollection } from 'astro:content';
+import { siteConfig } from '../../config';
+
+const posts = (await getCollection('posts', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+---
+
+<MainLayout title="博客" description="最新文章列表">
+  <div class="space-y-4">
+    {posts.length === 0 ? (
+      <div class="card-base p-12 text-center">
+        <p class="text-[var(--muted)]">暂无文章</p>
+      </div>
+    ) : (
+      posts.map((post, i) => <PostCard entry={post} index={i} />)
+    )}
+  </div>
+</MainLayout>

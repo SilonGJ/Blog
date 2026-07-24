@@ -1,0 +1,39 @@
+---
+import MainLayout from '../../../layouts/MainLayout.astro';
+import PostCard from '../../../components/PostCard.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('posts', ({ data }) => !data.draft);
+  const categories = new Set<string>();
+  for (const post of posts) {
+    if (post.data.category) {
+      categories.add(post.data.category);
+    }
+  }
+  return Array.from(categories).map((category) => ({
+    params: { category },
+    props: { category },
+  }));
+}
+
+const { category } = Astro.params;
+
+const posts = (await getCollection('posts', ({ data }) => !data.draft && data.category === category))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+---
+
+<MainLayout title={`分类: ${category}`} description={`${category} 分类下的所有文章`}>
+  <div class="card-base mb-6 onload-animation" style="animation-delay: 200ms">
+    <div class="pl-10 md:pl-12 pr-6 pt-6 md:pt-7 pb-6 relative w-full">
+      <h1 class="text-2xl md:text-3xl font-bold mb-2 relative before:w-1 before:h-6 before:bg-[var(--primary)] before:absolute before:top-1/2 before:-translate-y-1/2 before:-left-4 md:before:-left-6">
+        分类: <span class="text-[var(--primary)]">{category}</span>
+      </h1>
+      <p class="text-[var(--muted)]">共 {posts.length} 篇文章</p>
+    </div>
+  </div>
+
+  <div class="space-y-4">
+    {posts.map((post, i) => <PostCard entry={post} index={i} />)}
+  </div>
+</MainLayout>

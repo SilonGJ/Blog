@@ -1,0 +1,32 @@
+.pswp__button {
+    transition: background-color 0.15s ease;
+    background-color: rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 0;
+    width: 3rem;
+    height: 3rem;
+}
+.pswp__button:hover {
+    background-color: rgba(0, 0, 0, 0.5);
+}
+.pswp__button:active {
+    background-color: rgba(0, 0, 0, 0.6);
+}
+.pswp__button--zoom,
+.pswp__button--close {
+    margin-top: 1rem;
+    border-radius: 0.75rem;
+    transition: transform 0.15s ease;
+}
+.pswp__button--zoom:active,
+.pswp__button--close:active {
+    transform: scale(0.9);
+}
+.pswp__button--zoom {
+    margin-right: 0.625rem;
+}
+.pswp__button--close {
+    margin-right: 1rem;
+}

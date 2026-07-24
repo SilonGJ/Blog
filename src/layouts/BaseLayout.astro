@@ -1,0 +1,95 @@
+---
+import '../styles/global.css';
+import '../styles/photoswipe.css';
+import { siteConfig } from '../config';
+
+interface Props {
+  title?: string;
+  description?: string;
+  showNavbar?: boolean;
+  showFooter?: boolean;
+}
+
+const { title, description, showNavbar = true, showFooter = true } = Astro.props;
+
+const pageTitle = title ? `${title} - ${siteConfig.title}` : `${siteConfig.title} - ${siteConfig.subtitle}`;
+const pageDescription = description || siteConfig.description;
+---
+
+<!DOCTYPE html>
+<html lang={siteConfig.lang} class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={pageDescription} />
+    <meta name="author" content={siteConfig.author} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={pageDescription} />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={pageDescription} />
+    <title>{pageTitle}</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="alternate" type="application/rss+xml" title={siteConfig.title} href="/rss.xml" />
+  </head>
+  <body class="min-h-screen bg-background text-foreground">
+    <slot />
+  <script>
+    import PhotoSwipeLightbox from "photoswipe/lightbox";
+    import "photoswipe/style.css";
+
+    let lightbox;
+    let pswp = import("photoswipe");
+
+    function createPhotoSwipe() {
+      lightbox = new PhotoSwipeLightbox({
+        gallery: ".prose img",
+        pswpModule: () => pswp,
+        closeSVG: '<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#ffffff"><path d="M480-424 284-228q-11 11-28 11t-28-11q-11-11-11-28t11-28l196-196-196-196q-11-11-11-28t11-28q11-11 28-11t28 11l196 196 196-196q11-11 28-11t28 11q11 11 11 28t-11 28L536-480l196 196q11 11 11 28t-11 28q-11 11-28 11t-28-11L480-424Z"/></svg>',
+        padding: { top: 20, bottom: 20, left: 20, right: 20 },
+        wheelToZoom: true,
+        imageClickAction: "close",
+        tapAction: "close",
+        doubleTapAction: "zoom",
+      });
+
+      lightbox.addFilter("domItemData", (itemData, element) => {
+        if (element instanceof HTMLImageElement) {
+          itemData.src = element.src;
+          itemData.w = Number(element.naturalWidth || window.innerWidth);
+          itemData.h = Number(element.naturalHeight || window.innerHeight);
+          itemData.msrc = element.src;
+        }
+        return itemData;
+      });
+
+      lightbox.init();
+    }
+
+    const setup = () => {
+      if (!lightbox) {
+        createPhotoSwipe();
+      }
+      if (window.swup) {
+        window.swup.hooks.on("page:view", () => {
+          createPhotoSwipe();
+        });
+        window.swup.hooks.on(
+          "content:replace",
+          () => {
+            lightbox?.destroy?.();
+          },
+          { before: true },
+        );
+      }
+    };
+
+    if (window.swup) {
+      setup();
+    } else {
+      document.addEventListener("swup:enable", setup);
+    }
+  </script>
+  </body>
+</html>

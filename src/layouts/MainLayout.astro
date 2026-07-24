@@ -1,0 +1,45 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import Navbar from '../components/Navbar.astro';
+import Sidebar from '../components/Sidebar.astro';
+import Footer from '../components/Footer.astro';
+import BackToTop from '../components/BackToTop.astro';
+import { siteConfig } from '../config';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title, description } = Astro.props;
+---
+
+<BaseLayout title={title} description={description}>
+  <div class="relative min-h-screen">
+    <div id="search-backdrop" class="fixed inset-0 bg-black/50 opacity-0 pointer-events-none transition-opacity duration-300 z-40"></div>
+    <Navbar />
+
+    <div class="relative z-30 pt-20">
+      <div class="max-w-6xl mx-auto px-4">
+        <div id="main-grid" class="grid grid-cols-1 lg:grid-cols-[auto_17.5rem] gap-6 w-full">
+          <main id="swup-container" class="order-1 lg:order-1 min-h-[60vh] transition-swup-fade overflow-hidden">
+            <div id="content-wrapper" class="onload-animation">
+              <slot />
+              <div class="footer mt-12 hidden lg:block">
+                <Footer />
+              </div>
+            </div>
+          </main>
+
+          <Sidebar class="order-2 lg:order-2 onload-animation" />
+
+          <div class="footer col-span-2 block lg:hidden mt-12">
+            <Footer />
+          </div>
+        </div>
+
+        <BackToTop />
+      </div>
+    </div>
+  </div>
+</BaseLayout>

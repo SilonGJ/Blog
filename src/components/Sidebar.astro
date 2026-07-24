@@ -1,0 +1,156 @@
+---
+import { profileConfig } from '../config';
+import { getCollection } from 'astro:content';
+
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+
+const posts = await getCollection('posts', ({ data }) => !data.draft);
+
+const categoriesMap = new Map<string, number>();
+const tagsMap = new Map<string, number>();
+
+for (const post of posts) {
+  if (post.data.category) {
+    categoriesMap.set(post.data.category, (categoriesMap.get(post.data.category) || 0) + 1);
+  }
+  for (const tag of post.data.tags) {
+    tagsMap.set(tag, (tagsMap.get(tag) || 0) + 1);
+  }
+}
+
+const categories = Array.from(categoriesMap.entries()).sort((a, b) => b[1] - a[1]);
+const tags = Array.from(tagsMap.entries()).sort((a, b) => b[1] - a[1]);
+
+function getSocialIcon(name: string) {
+  const icons: Record<string, string> = {
+    github: '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>',
+    twitter: '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>',
+    email: '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>',
+  };
+  return icons[name] || '';
+}
+---
+
+<div id="sidebar" class:list={[className, "w-full h-full"]}>
+  <div class="flex flex-col w-full h-full gap-4">
+    <div class="card card--default p-6 text-center sidebar-profile">
+      <div class="w-24 h-24 mx-auto mb-4 overflow-hidden border border-border">
+        <img src={profileConfig.avatar} alt={profileConfig.name} class="w-full h-full object-cover" />
+      </div>
+      <h3 class="text-xl font-bold mb-2">{profileConfig.name}</h3>
+      <p class="text-sm text-muted mb-4">{profileConfig.bio}</p>
+      <div class="flex justify-center gap-3">
+        {profileConfig.links.map((link) => (
+          <a
+            href={link.url}
+            target={link.url.startsWith('http') ? '_blank' : '_self'}
+            rel="noopener noreferrer"
+            class="button button--ghost button--icon-only w-10 h-10"
+            aria-label={link.name}
+            set:html={getSocialIcon(link.icon)}
+          />
+        ))}
+      </div>
+    </div>
+
+    <div id="sidebar-sticky" class="sticky top-20 flex flex-col gap-4">
+      <div id="sidebar-toc" class="card card--default p-5 hidden">
+        <h4 class="font-bold text-sm mb-3 text-muted uppercase tracking-wider">目录</h4>
+        <nav id="sidebar-toc-nav" class="space-y-1">
+        </nav>
+      </div>
+
+      {categories.length > 0 && (
+        <div class="card card--default p-5 onload-animation" style="animation-delay: 150ms">
+          <h4 class="font-bold text-sm mb-3 text-muted uppercase tracking-wider flex items-center gap-1.5">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z"/>
+            </svg>
+            分类
+          </h4>
+          <div class="flex flex-wrap gap-2">
+            {categories.map(([category, count]) => (
+              <a
+                href={`/categories/${category}/`}
+                class="chip chip--default"
+              >
+                {category}
+                <span class="ml-1.5 text-muted">({count})</span>
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {tags.length > 0 && (
+        <div class="card card--default p-5 onload-animation" style="animation-delay: 200ms">
+          <h4 class="font-bold text-sm mb-3 text-muted uppercase tracking-wider flex items-center gap-1.5">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m15 5 6.3 6.3a2.4 2.4 0 0 1 0 3.4L17 19"/>
+              <path d="M9.586 5.586A2 2 0 0 0 8.172 5H3a1 1 0 0 0-1 1v5.172a2 2 0 0 0 .586 1.414L12 22"/>
+              <path d="M15 5a2 2 0 0 1 2 2"/>
+              <circle cx="5" cy="9" r="1"/>
+            </svg>
+            标签
+          </h4>
+          <div class="flex flex-wrap gap-2">
+            {tags.map(([tag, count]) => (
+              <a
+                href={`/tags/${tag}/`}
+                class="chip chip--default chip--soft text-xs"
+              >
+                #{tag}
+                <span class="ml-1 text-muted opacity-70">{count}</span>
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  </div>
+</div>
+
+<script>
+  function buildSidebarToc() {
+    const tocCard = document.getElementById('sidebar-toc');
+    const tocNav = document.getElementById('sidebar-toc-nav');
+    const content = document.getElementById('post-content');
+
+    if (!tocCard || !tocNav) return;
+
+    if (!content) {
+      tocCard.classList.add('hidden');
+      return;
+    }
+
+    const headings = content.querySelectorAll('h2, h3');
+    if (headings.length === 0) {
+      tocCard.classList.add('hidden');
+      return;
+    }
+
+    tocNav.innerHTML = '';
+
+    headings.forEach((heading) => {
+      const depth = parseInt(heading.tagName.charAt(1));
+      const text = heading.textContent || '';
+      const slug = heading.id || '';
+
+      const link = document.createElement('a');
+      link.href = `#${slug}`;
+      link.className = 'block py-1.5 px-3 text-sm text-muted hover:text-accent hover:bg-surface-secondary transition-all truncate border-l-2 border-transparent hover:border-accent';
+      link.style.paddingLeft = `${(depth - 2) * 12 + 12}px`;
+      link.textContent = text;
+      tocNav.appendChild(link);
+    });
+
+    tocCard.classList.remove('hidden');
+  }
+
+  buildSidebarToc();
+  document.addEventListener('astro:page-load', buildSidebarToc);
+</script>

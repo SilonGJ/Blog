@@ -1,0 +1,42 @@
+---
+import MainLayout from '../../layouts/MainLayout.astro';
+import { getCollection } from 'astro:content';
+
+const posts = await getCollection('posts', ({ data }) => !data.draft);
+
+const categoriesMap = new Map<string, number>();
+for (const post of posts) {
+  if (post.data.category) {
+    categoriesMap.set(post.data.category, (categoriesMap.get(post.data.category) || 0) + 1);
+  }
+}
+
+const categories = Array.from(categoriesMap.entries()).sort((a, b) => b[1] - a[1]);
+---
+
+<MainLayout title="分类" description="所有文章分类">
+  <div class="card-base onload-animation" style="animation-delay: 200ms">
+    <div class="pl-10 md:pl-12 pr-6 pt-6 md:pt-7 pb-6 relative w-full">
+      <h1 class="text-2xl md:text-3xl font-bold mb-8 relative before:w-1 before:h-6 before:bg-[var(--primary)] before:absolute before:top-1/2 before:-translate-y-1/2 before:-left-4 md:before:-left-6">
+        分类
+      </h1>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {categories.map(([category, count], i) => (
+          <a
+            href={`/categories/${category}/`}
+            class="card-base p-5 transition-all group onload-animation"
+            style={`animation-delay: ${300 + i * 100}ms`}
+          >
+            <h3 class="text-lg font-bold group-hover:text-[var(--primary)] transition-colors mb-2">
+              {category}
+            </h3>
+            <p class="text-sm text-[var(--muted)]">
+              {count} 篇文章
+            </p>
+          </a>
+        ))}
+      </div>
+    </div>
+  </div>
+</MainLayout>

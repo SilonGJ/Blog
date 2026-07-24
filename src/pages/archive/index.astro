@@ -1,0 +1,63 @@
+---
+import MainLayout from '../../layouts/MainLayout.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('posts', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const postsByYear = new Map<number, typeof posts>();
+for (const post of posts) {
+  const year = post.data.pubDate.getFullYear();
+  if (!postsByYear.has(year)) {
+    postsByYear.set(year, []);
+  }
+  postsByYear.get(year)!.push(post);
+}
+
+const years = Array.from(postsByYear.keys()).sort((a, b) => b - a);
+---
+
+<MainLayout title="归档" description="所有文章按时间归档">
+  <div class="card-base onload-animation" style="animation-delay: 200ms">
+    <div class="pl-10 md:pl-12 pr-6 pt-6 md:pt-7 pb-6 relative w-full">
+      <h1 class="text-2xl md:text-3xl font-bold mb-8 relative before:w-1 before:h-6 before:bg-[var(--primary)] before:absolute before:top-1/2 before:-translate-y-1/2 before:-left-4 md:before:-left-6">
+        归档
+      </h1>
+
+      <div class="space-y-8">
+        {years.map((year, yi) => (
+          <div key={year} class="onload-animation" style={`animation-delay: ${300 + yi * 150}ms`}>
+            <h2 class="text-xl font-bold mb-4 text-[var(--primary)]">
+              {year}
+              <span class="ml-2 text-sm font-normal text-[var(--muted)]">
+                ({postsByYear.get(year)!.length} 篇)
+              </span>
+            </h2>
+            <div class="dash-line pl-6 space-y-1">
+              {postsByYear.get(year)!.map((post, pi) => (
+                <a
+                  href={`/posts/${post.id}/`}
+                  class="flex items-center gap-4 py-2 group transition-colors hover:bg-[var(--btn-plain-bg-hover)] -mx-2 px-2 onload-animation"
+                  style={`animation-delay: ${400 + yi * 150 + pi * 50}ms`}
+                >
+                  <span class="w-2 h-2 bg-[var(--primary)] flex-shrink-0 group-hover:scale-150 transition-transform"></span>
+                  <span class="text-sm text-[var(--muted)] w-20 flex-shrink-0">
+                    {post.data.pubDate.toLocaleDateString('zh-CN', { month: '2-digit', day: '2-digit' })}
+                  </span>
+                  <span class="text-[var(--foreground)] group-hover:text-[var(--primary)] transition-colors truncate">
+                    {post.data.title}
+                  </span>
+                  {post.data.category && (
+                    <span class="text-xs px-2 py-0.5 bg-[var(--btn-regular-bg)] text-[var(--muted)] flex-shrink-0">
+                      {post.data.category}
+                    </span>
+                  )}
+                </a>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</MainLayout>

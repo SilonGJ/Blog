@@ -1,0 +1,68 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import readingTime from 'reading-time';
+
+interface Props {
+  entry: CollectionEntry<'posts'>;
+  class?: string;
+  index?: number;
+}
+
+const { entry, class: className, index = 0 } = Astro.props;
+const { data } = entry;
+const url = `/posts/${entry.id}/`;
+
+const stats = readingTime(entry.body);
+---
+
+<div class:list={["card-base flex flex-col w-full relative onload-animation", className]} style={`animation-delay: ${200 + index * 100}ms`}>
+  <div class="pl-10 md:pl-12 pr-6 pt-6 md:pt-7 pb-6 relative w-full">
+    <a
+      href={url}
+      class="transition group w-full block relative font-bold mb-3 text-2xl md:text-3xl text-90 hover:text-[var(--primary)] active:text-[var(--title-active)]
+             before:w-1 before:h-6 before:bg-[var(--primary)]
+             before:absolute before:top-1/2 before:-translate-y-1/2 before:-left-4 md:before:-left-6 before:hidden md:before:block"
+    >
+      {data.title}
+    </a>
+
+    <div class="flex flex-wrap items-center gap-x-4 gap-y-2 mb-4 text-sm text-[var(--muted)]">
+      {data.pubDate && (
+        <span class="flex items-center gap-1.5">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect width="18" height="18" x="3" y="4" rx="2" ry="2"/>
+            <line x1="16" x2="16" y1="2" y2="6"/>
+            <line x1="8" x2="8" y1="2" y2="6"/>
+            <line x1="3" x2="21" y1="10" y2="10"/>
+          </svg>
+          {data.pubDate.toLocaleDateString('zh-CN')}
+        </span>
+      )}
+      {data.category && (
+        <a href={`/categories/${data.category}/`} class="btn-regular px-2.5 py-0.5 text-xs font-medium">
+          {data.category}
+        </a>
+      )}
+      {data.tags.length > 0 && (
+        <span class="flex flex-wrap items-center gap-1.5">
+          {data.tags.slice(0, 3).map((tag) => (
+            <a href={`/tags/${tag}/`} class="btn-plain px-2 py-0.5 text-xs border border-[var(--border)]">
+              #{tag}
+            </a>
+          ))}
+        </span>
+      )}
+    </div>
+
+    <div class="text-75 mb-4 line-clamp-2">
+      {data.description}
+    </div>
+
+    <div class="text-sm text-[var(--muted)] flex gap-4 transition">
+      <span>{Math.round(stats.words)} 字</span>
+      <span>|</span>
+      <span>{stats.text}</span>
+    </div>
+  </div>
+</div>
+<div class="transition border-t border-dashed mx-6 border-[var(--divider)] last:border-t-0 md:hidden"></div>

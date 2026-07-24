@@ -1,0 +1,213 @@
+---
+import { navBarConfig, siteConfig } from '../config';
+---
+
+<div id="navbar" class="onload-animation fixed top-0 left-0 right-0 z-40">
+  <nav class="w-full flex items-center px-4 h-14 bg-surface border-b border-border transition-all duration-300">
+    <a href="/blog/" class="button button--ghost h-10 px-4 font-bold gap-2">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+        <polyline points="9 22 9 12 15 12 15 22"/>
+      </svg>
+      <span>{siteConfig.title}</span>
+    </a>
+
+    <div class="flex items-center gap-2 ml-auto">
+      <div class="hidden md:flex items-center gap-2">
+        {navBarConfig.links.map((link) => (
+          <a
+            href={link.url}
+            class="button button--ghost h-10 px-4 font-medium text-sm"
+          >
+            {link.name}
+          </a>
+        ))}
+      </div>
+
+      <button
+        id="search-toggle"
+        class="button button--ghost button--icon-only w-10 h-10"
+        aria-label="搜索"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"/>
+          <path d="m21 21-4.3-4.3"/>
+        </svg>
+      </button>
+
+      <button
+        id="nav-menu-toggle"
+        class="button button--ghost button--icon-only w-10 h-10 md:hidden"
+        aria-label="菜单"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="4" x2="20" y1="12" y2="12"/>
+          <line x1="4" x2="20" y1="6" y2="6"/>
+          <line x1="4" x2="20" y1="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+  </nav>
+
+  <div id="search-panel" class="float-panel float-panel-closed fixed left-1/2 -translate-x-1/2 top-20 w-[90%] max-w-xl z-50 p-4">
+    <div class="input-wrapper">
+      <input
+        id="search-input"
+        type="text"
+        class="input w-full h-11 px-4"
+        placeholder="搜索文章..."
+      />
+    </div>
+    <div id="search-results" class="mt-3 max-h-96 overflow-y-auto hide-scrollbar"></div>
+  </div>
+
+  <div id="nav-menu-panel" class="float-panel float-panel-closed fixed right-4 top-20 w-48 z-50 md:hidden">
+    <div class="flex flex-col">
+      {navBarConfig.links.map((link, i) => (
+        <a
+          href={link.url}
+          class="button button--ghost h-12 px-5 font-medium text-left justify-start"
+          style={`border-top: ${i === 0 ? 'none' : '1px solid var(--separator)'}`}
+        >
+          {link.name}
+        </a>
+      ))}
+    </div>
+  </div>
+</div>
+
+<script>
+  function togglePanel(panelId: string) {
+    const panel = document.getElementById(panelId);
+    if (panel) {
+      panel.classList.toggle('float-panel-closed');
+      const isOpen = !panel.classList.contains('float-panel-closed');
+      if (panelId === 'search-panel') {
+        toggleSearchBackdrop(isOpen);
+      }
+    }
+  }
+
+  function closePanel(panelId: string) {
+    const panel = document.getElementById(panelId);
+    if (panel) {
+      panel.classList.add('float-panel-closed');
+      if (panelId === 'search-panel') {
+        toggleSearchBackdrop(false);
+      }
+    }
+  }
+
+  function toggleSearchBackdrop(show: boolean) {
+    const backdrop = document.getElementById('search-backdrop');
+    if (backdrop) {
+      if (show) {
+        backdrop.classList.remove('opacity-0', 'pointer-events-none');
+      } else {
+        backdrop.classList.add('opacity-0', 'pointer-events-none');
+      }
+    }
+  }
+
+  const searchToggle = document.getElementById('search-toggle');
+  const navMenuToggle = document.getElementById('nav-menu-toggle');
+
+  searchToggle?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    togglePanel('search-panel');
+    closePanel('nav-menu-panel');
+    setTimeout(() => {
+      document.getElementById('search-input')?.focus();
+    }, 50);
+  });
+
+  navMenuToggle?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    togglePanel('nav-menu-panel');
+    closePanel('search-panel');
+  });
+
+  const searchBackdrop = document.getElementById('search-backdrop');
+  searchBackdrop?.addEventListener('click', () => {
+    closePanel('search-panel');
+  });
+
+  document.addEventListener('click', (e) => {
+    const searchPanel = document.getElementById('search-panel');
+    const navMenuPanel = document.getElementById('nav-menu-panel');
+    const target = e.target as HTMLElement;
+
+    if (searchPanel && !searchPanel.contains(target) && !searchToggle?.contains(target)) {
+      closePanel('search-panel');
+    }
+    if (navMenuPanel && !navMenuPanel.contains(target) && !navMenuToggle?.contains(target)) {
+      closePanel('nav-menu-panel');
+    }
+  });
+
+  const searchInput = document.getElementById('search-input');
+  const searchResults = document.getElementById('search-results');
+  let pagefind: any = null;
+  let pagefindLoading = false;
+
+  async function loadPagefind() {
+    if (pagefind || pagefindLoading) return;
+    pagefindLoading = true;
+    try {
+      const script = document.createElement('script');
+      script.src = '/pagefind/pagefind.js';
+      document.head.appendChild(script);
+      await new Promise<void>((resolve, reject) => {
+        script.onload = () => resolve();
+        script.onerror = () => reject(new Error('Failed to load Pagefind'));
+      });
+      pagefind = (window as any).pagefind;
+      if (pagefind) {
+        await pagefind.options({ excerptLength: 20 });
+      }
+    } catch (e) {
+      console.warn('Pagefind not available (expected in dev mode)');
+    }
+  }
+
+  searchInput?.addEventListener('focus', () => {
+    loadPagefind();
+  });
+
+  searchInput?.addEventListener('input', async (e) => {
+    const query = (e.target as HTMLInputElement).value;
+    if (!query.trim()) {
+      if (searchResults) searchResults.innerHTML = '';
+      return;
+    }
+    await loadPagefind();
+    if (!pagefind) {
+      if (searchResults) {
+        searchResults.innerHTML = '<div class="text-muted text-center py-4">搜索功能在开发模式下不可用</div>';
+      }
+      return;
+    }
+
+    const search = await pagefind.search(query);
+    const results = await Promise.all(search.results.map((r: any) => r.data()));
+
+    if (searchResults) {
+      if (results.length === 0) {
+        searchResults.innerHTML = '<div class="text-muted text-center py-4">未找到相关结果</div>';
+      } else {
+        searchResults.innerHTML = results.map((result: any) => `
+          <a href="${result.url}" class="block p-3 hover:bg-surface-secondary transition-colors border-b border-b border-separator last:border-b-0">
+            <div class="font-bold text-foreground mb-1">${result.meta.title}</div>
+            <div class="text-sm text-muted line-clamp-2">${result.excerpt}</div>
+          </a>
+        `).join('');
+      }
+    }
+  });
+</script>
+
+<style>
+  #navbar {
+    animation-delay: 0ms;
+  }
+</style>
