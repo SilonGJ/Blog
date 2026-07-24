@@ -121,11 +121,7 @@
   .card--default {
     background-color: var(--surface) !important;
     border: 1px solid var(--border) !important;
-    transition: border-color 0.25s ease, background-color 0.25s ease !important;
-  }
-  .card:hover,
-  .card--default:hover {
-    border-color: var(--accent) !important;
+    transition: background-color 0.25s ease !important;
   }
 
   .button {
@@ -239,11 +235,7 @@
     background-color: var(--surface);
     border: 1px solid var(--border);
     overflow: hidden;
-    transition: border-color 0.25s ease;
     position: relative;
-  }
-  .card-base:hover {
-    border-color: var(--accent);
   }
 
   .btn-plain {
