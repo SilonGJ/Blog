@@ -24,35 +24,42 @@ const years = Array.from(postsByYear.keys()).sort((a, b) => b - a);
         归档
       </h1>
 
-      <div class="space-y-8">
-        {years.map((year, yi) => (
+      <div class="space-y-10">
+        {years.map((year) => (
           <div key={year} class="onload-animation">
-            <h2 class="text-xl font-bold mb-4 text-[var(--primary)]">
-              {year}
-              <span class="ml-2 text-sm font-normal text-[var(--muted)]">
-                ({postsByYear.get(year)!.length} 篇)
+            <div class="flex items-baseline gap-3 mb-5">
+              <h2 class="text-2xl font-bold text-[var(--foreground)]">
+                {year}
+              </h2>
+              <span class="text-sm text-[var(--muted)]">
+                {postsByYear.get(year)!.length} 篇文章
               </span>
-            </h2>
-            <div class="dash-line pl-6 space-y-1">
-              {postsByYear.get(year)!.map((post, pi) => (
-                <a
-                  href={`/posts/${post.id}/`}
-                  class="flex items-center gap-4 py-2 group transition-colors hover:bg-[var(--btn-plain-bg-hover)] -mx-2 px-2 onload-animation"
-                >
-                  <span class="w-2 h-2 bg-[var(--primary)] flex-shrink-0 group-hover:scale-150 transition-transform"></span>
-                  <span class="text-sm text-[var(--muted)] w-20 flex-shrink-0">
-                    {post.data.pubDate.toLocaleDateString('zh-CN', { month: '2-digit', day: '2-digit' })}
-                  </span>
-                  <span class="text-[var(--foreground)] group-hover:text-[var(--primary)] transition-colors truncate">
-                    {post.data.title}
-                  </span>
-                  {post.data.category && (
-                    <span class="text-xs px-2 py-0.5 bg-[var(--btn-regular-bg)] text-[var(--muted)] flex-shrink-0">
-                      {post.data.category}
+            </div>
+            <div class="relative pl-8">
+              <div class="absolute left-[7px] top-2 bottom-0 w-px bg-[var(--border)]"></div>
+              <div class="space-y-1">
+                {postsByYear.get(year)!.map((post) => (
+                  <a
+                    href={`/posts/${post.id}/`}
+                    class="group flex items-center gap-4 py-2.5 px-3 -mx-3 transition-all duration-200 hover:bg-[var(--btn-plain-bg-hover)] onload-animation"
+                  >
+                    <span class="relative z-10 w-[14px] h-[14px] flex-shrink-0 rounded-full border-2 border-[var(--border)] bg-[var(--surface)] group-hover:border-[var(--primary)] group-hover:scale-110 transition-all duration-200">
+                      <span class="absolute inset-[2px] rounded-full bg-[var(--primary)] scale-0 group-hover:scale-100 transition-transform duration-200"></span>
                     </span>
-                  )}
-                </a>
-              ))}
+                    <span class="text-sm text-[var(--muted)] w-16 flex-shrink-0 font-mono">
+                      {post.data.pubDate.toLocaleDateString('zh-CN', { month: '2-digit', day: '2-digit' })}
+                    </span>
+                    <span class="text-[var(--foreground)] group-hover:text-[var(--primary)] transition-colors truncate flex-1">
+                      {post.data.title}
+                    </span>
+                    {post.data.category && (
+                      <span class="text-xs px-2 py-0.5 bg-[var(--btn-regular-bg)] text-[var(--muted)] flex-shrink-0">
+                        {post.data.category}
+                      </span>
+                    )}
+                  </a>
+                ))}
+              </div>
             </div>
           </div>
         ))}

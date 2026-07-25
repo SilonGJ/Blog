@@ -13,77 +13,55 @@ const iconMap: Record<string, string> = {
 ---
 
 <BaseLayout title={siteConfig.title} description={siteConfig.description}>
-  <div id="hero-section" class="min-h-screen flex items-center justify-center px-6">
-    <div class="max-w-2xl w-full text-center onload-animation">
-      <div class="w-32 h-32 mx-auto mb-8 overflow-hidden border-2 border-[var(--border)]">
-        <img src={profileConfig.avatar} alt={profileConfig.name} class="w-full h-full object-cover" />
-      </div>
-
-      <h1 class="text-4xl md:text-5xl font-bold mb-4 text-[var(--foreground)]">
-        {profileConfig.name}
-      </h1>
-
-      <p class="text-lg md:text-xl text-[var(--muted)] mb-2">
-        全栈开发者 / 技术爱好者
-      </p>
-
-      <p class="text-base text-[var(--muted)] mb-8 max-w-lg mx-auto leading-relaxed">
-        {profileConfig.bio}
-      </p>
-
-      <div class="flex flex-wrap justify-center gap-2 mb-10">
-        {profileConfig.skills.map((skill) => (
-          <span class="chip chip--default">
-            {skill}
-          </span>
-        ))}
-      </div>
-
-      <div class="flex justify-center gap-4 mb-12">
-        {profileConfig.links.map((link) => (
-          <a
-            href={link.url}
-            target={link.url.startsWith('http') ? '_blank' : '_self'}
-            rel="noopener noreferrer"
-            class="button button--ghost button--icon-only h-12 w-12"
-            aria-label={link.name}
-          >
-            <Icon name={iconMap[link.icon] || link.icon} class="w-6 h-6" />
-          </a>
-        ))}
-      </div>
-
-      <a
-        href="/blog/"
-        id="browse-blog-btn"
-        class="button button--primary h-12 px-8 text-base group"
-      >
-        进入博客
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="20"
-          height="20"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          class="transition-transform group-hover:translate-y-0.5"
-        >
-          <path d="M12 5v14"/>
-          <path d="m19 12-7 7-7-7"/>
-        </svg>
-      </a>
-
-      <div class="mt-16 flex justify-center">
-        <div class="flex flex-col items-center text-[var(--muted)] animate-bounce">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 5v14"/>
-            <path d="m19 12-7 7-7-7"/>
-          </svg>
+  <main id="swup-container" class="transition-swup-fade">
+    <div id="hero-section" class="min-h-screen flex items-center justify-center px-6">
+      <div class="max-w-2xl w-full text-center onload-animation">
+        <div class="w-32 h-32 mx-auto mb-8 overflow-hidden border-2 border-[var(--border)]">
+          <img src={profileConfig.avatar} alt={profileConfig.name} class="w-full h-full object-cover" />
         </div>
+
+        <h1 class="text-4xl md:text-5xl font-bold mb-4 text-[var(--foreground)]">
+          {profileConfig.name}
+        </h1>
+
+        <p class="text-lg md:text-xl text-[var(--muted)] mb-2">
+          全栈开发者 / 技术爱好者
+        </p>
+
+        <p class="text-base text-[var(--muted)] mb-8 max-w-lg mx-auto leading-relaxed">
+          {profileConfig.bio}
+        </p>
+
+        <div class="flex flex-wrap justify-center gap-2 mb-10">
+          {profileConfig.skills.map((skill) => (
+            <span class="chip chip--default">
+              {skill}
+            </span>
+          ))}
+        </div>
+
+        <div class="flex justify-center gap-4 mb-12">
+          {profileConfig.links.map((link) => (
+            <a
+              href={link.url}
+              target={link.url.startsWith('http') ? '_blank' : '_self'}
+              rel="noopener noreferrer"
+              class="button button--ghost button--icon-only h-12 w-12"
+              aria-label={link.name}
+            >
+              <Icon name={iconMap[link.icon] || link.icon} class="w-6 h-6" />
+            </a>
+          ))}
+        </div>
+
+        <a
+          href="/blog/"
+          id="browse-blog-btn"
+          class="button button--primary h-12 px-8 text-base"
+        >
+          进入博客
+        </a>
       </div>
     </div>
-  </div>
+  </main>
 </BaseLayout>
