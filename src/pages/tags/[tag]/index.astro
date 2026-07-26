@@ -24,16 +24,16 @@ const posts = (await getCollection('posts', ({ data }) => !data.draft && data.ta
 ---
 
 <MainLayout title={`标签: ${tag}`} description={`标签 ${tag} 下的所有文章`}>
-  <div class="card-base mb-6 onload-animation">
-    <div class="pl-10 md:pl-12 pr-6 pt-6 md:pt-7 pb-6 relative w-full">
-      <h1 class="text-2xl md:text-3xl font-bold mb-2 relative before:w-1 before:h-6 before:bg-[var(--primary)] before:absolute before:top-1/2 before:-translate-y-1/2 before:-left-4 md:before:-left-6">
+  <div class="card-base mb-6 onload-animation max-md:mb-4">
+    <div class="pl-10 md:pl-12 pr-6 pt-6 md:pt-7 pb-6 relative w-full max-md:pl-6 max-md:pr-4 max-md:pt-5 max-md:pb-5">
+      <h1 class="text-2xl md:text-3xl font-bold mb-2 relative before:w-1 before:h-6 before:bg-[var(--primary)] before:absolute before:top-1/2 before:-translate-y-1/2 before:-left-4 md:before:-left-6 before:hidden md:before:block max-md:text-xl">
         标签: <span class="text-[var(--primary)]">#{tag}</span>
       </h1>
       <p class="text-[var(--muted)]">共 {posts.length} 篇文章</p>
     </div>
   </div>
 
-  <div class="space-y-4">
+  <div class="space-y-4 max-md:space-y-3">
     {posts.map((post, i) => <PostCard entry={post} index={i} />)}
   </div>
 </MainLayout>

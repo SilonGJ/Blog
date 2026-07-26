@@ -16,17 +16,18 @@ const stats = readingTime(entry.body);
 ---
 
 <div class:list={["card-base flex flex-col w-full relative onload-animation", className]}>
-  <div class="pl-10 md:pl-12 pr-6 pt-6 md:pt-7 pb-6 relative w-full">
+  <div class="pl-10 md:pl-12 pr-6 pt-6 md:pt-7 pb-6 relative w-full max-md:pl-6 max-md:pr-4 max-md:pt-5 max-md:pb-5">
     <a
       href={url}
       class="transition group w-full block relative font-bold mb-3 text-2xl md:text-3xl text-90 hover:text-[var(--primary)] active:text-[var(--title-active)]
              before:w-1 before:h-6 before:bg-[var(--primary)]
-             before:absolute before:top-1/2 before:-translate-y-1/2 before:-left-4 md:before:-left-6 before:hidden md:before:block"
+             before:absolute before:top-1/2 before:-translate-y-1/2 before:-left-4 md:before:-left-6 before:hidden md:before:block
+             max-md:mb-2 max-md:text-xl"
     >
       {data.title}
     </a>
 
-    <div class="text-sm text-[var(--muted)] flex gap-4 transition mb-2">
+    <div class="text-sm text-[var(--muted)] flex gap-4 transition mb-2 max-md:flex-wrap max-md:gap-2 max-md:text-xs">
       {data.pubDate && (
         <span class="flex items-center">
           <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1">
@@ -38,19 +39,19 @@ const stats = readingTime(entry.body);
           {data.pubDate.toLocaleDateString('zh-CN')}
         </span>
       )}
-      {data.pubDate && <span>|</span>}
+      {data.pubDate && <span class="max-sm:hidden">|</span>}
       {data.category && (
-        <a href={`/categories/${data.category}/`} class="text-sm text-[var(--muted)] hover:text-[var(--primary)]">
+        <a href={`/categories/${data.category}/`} class="text-sm text-[var(--muted)] hover:text-[var(--primary)] max-md:text-xs">
           {data.category}
         </a>
       )}
-      {data.category && <span>|</span>}
-      <span>{Math.round(stats.words)} 字</span>
-      <span>|</span>
-      <span>{Math.max(1, Math.round(stats.minutes))} 分钟</span>
+      {data.category && <span class="max-sm:hidden">|</span>}
+      <span class="max-sm:hidden">{Math.round(stats.words)} 字</span>
+      <span class="max-sm:hidden">|</span>
+      <span class="max-sm:hidden">{Math.max(1, Math.round(stats.minutes))} 分钟</span>
     </div>
 
-    <div class="text-75 mb-1 line-clamp-2">
+    <div class="text-75 mb-1 line-clamp-2 max-md:text-sm max-md:mb-2">
       {data.description}
     </div>
 
@@ -67,4 +68,4 @@ const stats = readingTime(entry.body);
     </div>
   </div>
 </div>
-<div class="transition border-t border-dashed mx-6 border-[var(--divider)] last:border-t-0 md:hidden"></div>
+<div class="transition border-t border-dashed mx-6 border-[var(--divider)] last:border-t-0 md:hidden max-md:mx-4"></div>

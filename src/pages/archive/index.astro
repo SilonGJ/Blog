@@ -19,41 +19,41 @@ const years = Array.from(postsByYear.keys()).sort((a, b) => b - a);
 
 <MainLayout title="归档" description="所有文章按时间归档">
   <div class="card-base onload-animation">
-    <div class="pl-10 md:pl-12 pr-6 pt-6 md:pt-7 pb-6 relative w-full">
-      <h1 class="text-2xl md:text-3xl font-bold mb-8 relative before:w-1 before:h-6 before:bg-[var(--primary)] before:absolute before:top-1/2 before:-translate-y-1/2 before:-left-4 md:before:-left-6">
+    <div class="pl-10 md:pl-12 pr-6 pt-6 md:pt-7 pb-6 relative w-full max-md:pl-6 max-md:pr-4 max-md:pt-5 max-md:pb-5">
+      <h1 class="text-2xl md:text-3xl font-bold mb-8 relative before:w-1 before:h-6 before:bg-[var(--primary)] before:absolute before:top-1/2 before:-translate-y-1/2 before:-left-4 md:before:-left-6 before:hidden md:before:block max-md:text-xl max-md:mb-6">
         归档
       </h1>
 
-      <div class="space-y-10">
+      <div class="space-y-10 max-md:space-y-8">
         {years.map((year) => (
           <div key={year} class="onload-animation">
-            <div class="flex items-baseline gap-3 mb-5">
-              <h2 class="text-2xl font-bold text-[var(--foreground)]">
+            <div class="flex items-baseline gap-3 mb-5 max-md:mb-4">
+              <h2 class="text-2xl font-bold text-[var(--foreground)] max-md:text-xl">
                 {year}
               </h2>
               <span class="text-sm text-[var(--muted)]">
                 {postsByYear.get(year)!.length} 篇文章
               </span>
             </div>
-            <div class="relative pl-8">
+            <div class="relative pl-8 max-md:pl-6">
               <div class="absolute left-[7px] top-2 bottom-0 w-px bg-[var(--border)]"></div>
               <div class="space-y-1">
                 {postsByYear.get(year)!.map((post) => (
                   <a
                     href={`/posts/${post.id}/`}
-                    class="group flex items-center gap-4 py-2.5 px-3 -mx-3 transition-all duration-200 hover:bg-[var(--btn-plain-bg-hover)] onload-animation"
+                    class="group flex items-center gap-4 py-2.5 px-3 -mx-3 transition-all duration-200 hover:bg-[var(--btn-plain-bg-hover)] onload-animation max-md:gap-2"
                   >
                     <span class="relative z-10 w-[14px] h-[14px] flex-shrink-0 rounded-full border-2 border-[var(--border)] bg-[var(--surface)] group-hover:border-[var(--primary)] group-hover:scale-110 transition-all duration-200">
                       <span class="absolute inset-[2px] rounded-full bg-[var(--primary)] scale-0 group-hover:scale-100 transition-transform duration-200"></span>
                     </span>
-                    <span class="text-sm text-[var(--muted)] w-16 flex-shrink-0 font-mono">
+                    <span class="text-sm text-[var(--muted)] w-16 flex-shrink-0 font-mono max-md:text-xs max-md:w-14">
                       {post.data.pubDate.toLocaleDateString('zh-CN', { month: '2-digit', day: '2-digit' })}
                     </span>
-                    <span class="text-[var(--foreground)] group-hover:text-[var(--primary)] transition-colors truncate flex-1">
+                    <span class="text-[var(--foreground)] group-hover:text-[var(--primary)] transition-colors truncate flex-1 max-md:text-sm">
                       {post.data.title}
                     </span>
                     {post.data.category && (
-                      <span class="text-xs px-2 py-0.5 bg-[var(--btn-regular-bg)] text-[var(--muted)] flex-shrink-0">
+                      <span class="text-xs px-2 py-0.5 bg-[var(--btn-regular-bg)] text-[var(--muted)] flex-shrink-0 max-sm:hidden">
                         {post.data.category}
                       </span>
                     )}

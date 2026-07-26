@@ -19,9 +19,9 @@ const { title, description } = Astro.props;
     <div id="search-backdrop" class="fixed inset-0 bg-black/50 opacity-0 pointer-events-none transition-opacity duration-300 z-40"></div>
     <Navbar />
 
-    <div class="relative z-30 pt-20">
+    <div class="relative z-30 pt-20 max-lg:pb-8">
       <div class="max-w-6xl mx-auto px-4">
-        <div id="main-grid" class="grid grid-cols-1 lg:grid-cols-[auto_17.5rem] gap-6 w-full">
+        <div id="main-grid" class="grid grid-cols-1 lg:grid-cols-[auto_17.5rem] gap-6 w-full max-lg:gap-4">
           <main id="swup-container" class="order-1 lg:order-1 min-h-[60vh] transition-swup-fade overflow-hidden">
             <div id="content-wrapper" class="onload-animation">
               <slot />
@@ -33,7 +33,7 @@ const { title, description } = Astro.props;
 
           <Sidebar class="order-2 lg:order-2 onload-animation" />
 
-          <div class="footer col-span-2 block lg:hidden mt-12">
+          <div class="footer block lg:hidden mt-12 max-lg:mt-8 order-last">
             <Footer />
           </div>
         </div>

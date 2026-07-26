@@ -37,15 +37,16 @@ const iconMap: Record<string, string> = {
 
 <div id="sidebar" class:list={[className, "w-full h-full"]}>
   <div class="flex flex-col w-full h-full gap-4">
-    <div class="card card--default p-6 text-center sidebar-profile">
-      <div class="w-24 h-24 mx-auto mb-4 overflow-hidden border border-border">
+    <div class="card card--default p-6 text-center sidebar-profile max-lg:p-5">
+      <div class="w-24 h-24 mx-auto mb-4 overflow-hidden border border-border max-lg:w-20 max-lg:h-20">
         <img src={profileConfig.avatar} alt={profileConfig.name} class="w-full h-full object-cover" />
       </div>
-      <h3 class="text-xl font-bold mb-2">{profileConfig.name}</h3>
+      <h3 class="text-xl font-bold mb-2 max-lg:text-lg">{profileConfig.name}</h3>
       <p id="sidebar-hitokoto" class="text-sm text-muted mb-4">{profileConfig.bio}</p>
       <div class="flex justify-center gap-3">
         {profileConfig.links.map((link) => (
           <a
+            key={link.name}
             href={link.url}
             target={link.url.startsWith('http') ? '_blank' : '_self'}
             rel="noopener noreferrer"
@@ -281,10 +282,16 @@ const iconMap: Record<string, string> = {
           });
           link.classList.add('toc-link--active');
 
-          const navRect = tocNav.getBoundingClientRect();
-          const linkRect = link.getBoundingClientRect();
-          if (linkRect.top < navRect.top || linkRect.bottom > navRect.bottom) {
-            link.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+          const linkTop = link.offsetTop;
+          const linkBottom = linkTop + link.offsetHeight;
+          const navScrollTop = tocNav.scrollTop;
+          const navClientHeight = tocNav.clientHeight;
+          const navBottom = navScrollTop + navClientHeight;
+
+          if (linkTop < navScrollTop) {
+            tocNav.scrollTo({ top: linkTop - 8, behavior: 'smooth' });
+          } else if (linkBottom > navBottom) {
+            tocNav.scrollTo({ top: linkBottom - navClientHeight + 8, behavior: 'smooth' });
           }
         }
       });

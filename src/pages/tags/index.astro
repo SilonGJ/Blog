@@ -16,24 +16,25 @@ const tags = Array.from(tagsMap.entries()).sort((a, b) => b[1] - a[1]);
 
 <MainLayout title="标签" description="所有文章标签">
   <div class="card-base onload-animation">
-    <div class="pl-10 md:pl-12 pr-6 pt-6 md:pt-7 pb-6 relative w-full">
-      <h1 class="text-2xl md:text-3xl font-bold mb-8 relative before:w-1 before:h-6 before:bg-[var(--primary)] before:absolute before:top-1/2 before:-translate-y-1/2 before:-left-4 md:before:-left-6">
+    <div class="pl-10 md:pl-12 pr-6 pt-6 md:pt-7 pb-6 relative w-full max-md:pl-6 max-md:pr-4 max-md:pt-5 max-md:pb-5">
+      <h1 class="text-2xl md:text-3xl font-bold mb-8 relative before:w-1 before:h-6 before:bg-[var(--primary)] before:absolute before:top-1/2 before:-translate-y-1/2 before:-left-4 md:before:-left-6 before:hidden md:before:block max-md:text-xl max-md:mb-6">
         标签
       </h1>
 
-      <div class="flex flex-wrap gap-3">
+      <div class="flex flex-wrap gap-3 max-md:gap-2">
         {tags.map(([tag, count], i) => {
           const size = count > 3 ? 'text-lg' : count > 1 ? 'text-base' : 'text-sm';
           return (
             <a
               href={`/tags/${tag}/`}
               class:list={[
-                'btn-regular px-4 py-2 font-medium active:scale-95 transition-transform onload-animation',
+                'btn-regular px-4 py-2 font-medium active:scale-95 transition-transform onload-animation max-md:px-3 max-md:py-1.5',
                 size,
+                'max-md:text-sm',
               ]}
             >
               #{tag}
-              <span class="ml-1.5 text-[var(--muted)] text-sm">({count})</span>
+              <span class="ml-1.5 text-[var(--muted)] text-sm max-md:ml-1 max-md:text-xs">({count})</span>
             </a>
           );
         })}

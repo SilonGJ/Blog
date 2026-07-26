@@ -16,18 +16,18 @@ const categories = Array.from(categoriesMap.entries()).sort((a, b) => b[1] - a[1
 
 <MainLayout title="分类" description="所有文章分类">
   <div class="card-base onload-animation">
-    <div class="pl-10 md:pl-12 pr-6 pt-6 md:pt-7 pb-6 relative w-full">
-      <h1 class="text-2xl md:text-3xl font-bold mb-8 relative before:w-1 before:h-6 before:bg-[var(--primary)] before:absolute before:top-1/2 before:-translate-y-1/2 before:-left-4 md:before:-left-6">
+    <div class="pl-10 md:pl-12 pr-6 pt-6 md:pt-7 pb-6 relative w-full max-md:pl-6 max-md:pr-4 max-md:pt-5 max-md:pb-5">
+      <h1 class="text-2xl md:text-3xl font-bold mb-8 relative before:w-1 before:h-6 before:bg-[var(--primary)] before:absolute before:top-1/2 before:-translate-y-1/2 before:-left-4 md:before:-left-6 before:hidden md:before:block max-md:text-xl max-md:mb-6">
         分类
       </h1>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 max-md:gap-3">
         {categories.map(([category, count], i) => (
           <a
             href={`/categories/${category}/`}
-            class="card-base p-5 transition-all group onload-animation"
+            class="card-base p-5 transition-all group onload-animation max-md:p-4"
           >
-            <h3 class="text-lg font-bold group-hover:text-[var(--primary)] transition-colors mb-2">
+            <h3 class="text-lg font-bold group-hover:text-[var(--primary)] transition-colors mb-2 max-md:text-base">
               {category}
             </h3>
             <p class="text-sm text-[var(--muted)]">
