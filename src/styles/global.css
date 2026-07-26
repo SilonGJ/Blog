@@ -507,6 +507,21 @@
   animation-fill-mode: forwards;
 }
 
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.fade-in-animation {
+  opacity: 0;
+  animation: 400ms fade-in;
+  animation-fill-mode: forwards;
+}
+
 html.is-changing .transition-swup-fade {
   transition: all 200ms ease;
 }

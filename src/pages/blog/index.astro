@@ -9,7 +9,7 @@ const posts = (await getCollection('posts', ({ data }) => !data.draft))
 ---
 
 <MainLayout title="博客" description="最新文章列表">
-  <div class="space-y-4">
+  <div class="space-y-4 fade-in-animation">
     {posts.length === 0 ? (
       <div class="card-base p-12 text-center">
         <p class="text-[var(--muted)]">暂无文章</p>

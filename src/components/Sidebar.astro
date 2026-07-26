@@ -42,7 +42,7 @@ const iconMap: Record<string, string> = {
         <img src={profileConfig.avatar} alt={profileConfig.name} class="w-full h-full object-cover" />
       </div>
       <h3 class="text-xl font-bold mb-2">{profileConfig.name}</h3>
-      <p class="text-sm text-muted mb-4">{profileConfig.bio}</p>
+      <p id="sidebar-hitokoto" class="text-sm text-muted mb-4">{profileConfig.bio}</p>
       <div class="flex justify-center gap-3">
         {profileConfig.links.map((link) => (
           <a
@@ -119,6 +119,19 @@ const iconMap: Record<string, string> = {
   let tocObserver = null;
   let anchorNavTarget = null;
 
+  async function loadSidebarHitokoto() {
+    const el = document.getElementById('sidebar-hitokoto');
+    if (!el) return;
+    try {
+      const res = await fetch('https://v1.hitokoto.cn/?c=a&c=b&c=c&c=d&c=i&c=k');
+      const data = await res.json();
+      if (data.hitokoto) {
+        el.textContent = data.hitokoto;
+      }
+    } catch (e) {}
+  }
+  loadSidebarHitokoto();
+
   function updateTocHeight() {
     const tocNav = document.getElementById('sidebar-toc-nav');
     const tocCard = document.getElementById('sidebar-toc');
@@ -140,7 +153,8 @@ const iconMap: Record<string, string> = {
     const tocHeaderHeight = tocHeader ? tocHeader.offsetHeight + 12 : 40;
     const maxTocNavHeight = availableHeight - tocHeaderHeight - 40;
 
-    tocNav.style.maxHeight = Math.max(120, maxTocNavHeight) + 'px';
+    const maxHeightVh = window.innerHeight * 0.45;
+    tocNav.style.maxHeight = Math.max(120, Math.min(maxTocNavHeight, maxHeightVh)) + 'px';
   }
 
   function handleTocClick(event) {
@@ -289,6 +303,12 @@ const iconMap: Record<string, string> = {
     resizeTimeout = setTimeout(updateTocHeight, 100);
   });
 
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', updateTocHeight);
+  } else {
+    updateTocHeight();
+  }
+
   buildSidebarToc();
   document.addEventListener('astro:page-load', buildSidebarToc);
 
@@ -336,6 +356,7 @@ const iconMap: Record<string, string> = {
 
   .toc-scroll {
     min-height: 0;
+    max-height: 45vh !important;
   }
 
   .toc-link--active {

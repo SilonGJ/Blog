@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { profileConfig, siteConfig } from '../config';
+import { getCollection } from 'astro:content';
 import { Icon } from 'astro-icon/components';
 
 const iconMap: Record<string, string> = {
@@ -10,58 +11,94 @@ const iconMap: Record<string, string> = {
   qq: 'simple-icons:qq',
   bilibili: 'simple-icons:bilibili',
 };
+
+const posts = (await getCollection('posts', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime())
+  .slice(0, 5);
 ---
 
 <BaseLayout title={siteConfig.title} description={siteConfig.description}>
-  <main id="swup-container" class="transition-swup-fade">
-    <div id="hero-section" class="min-h-screen flex items-center justify-center px-6">
-      <div class="max-w-2xl w-full text-center onload-animation">
-        <div class="w-32 h-32 mx-auto mb-8 overflow-hidden border-2 border-[var(--border)]">
-          <img src={profileConfig.avatar} alt={profileConfig.name} class="w-full h-full object-cover" />
-        </div>
+  <div id="hero-section" class="min-h-screen flex items-center justify-center px-6 py-16">
+    <div class="w-full max-w-5xl onload-animation">
+      <div class="grid grid-cols-1 md:grid-cols-[240px_1fr] gap-0 border border-[var(--border)] overflow-hidden bg-[var(--surface)]">
+        <aside class="flex flex-col">
+          <div class="w-full aspect-square overflow-hidden border-b border-[var(--border)]">
+            <img src={profileConfig.avatar} alt={profileConfig.name} class="w-full h-full object-cover" />
+          </div>
 
-        <h1 class="text-4xl md:text-5xl font-bold mb-4 text-[var(--foreground)]">
-          {profileConfig.name}
-        </h1>
+          <div class="p-5 flex-1 flex flex-col">
+            <h1 class="text-lg font-bold mb-1 text-[var(--foreground)]">
+              {profileConfig.name}
+            </h1>
 
-        <p class="text-lg md:text-xl text-[var(--muted)] mb-2">
-          全栈开发者 / 技术爱好者
-        </p>
+            <div class="mb-4">
+              <p id="hitokoto" class="text-xs text-[var(--muted)] leading-relaxed min-h-[2.5rem] italic">
+                {profileConfig.bio}
+              </p>
+            </div>
 
-        <p class="text-base text-[var(--muted)] mb-8 max-w-lg mx-auto leading-relaxed">
-          {profileConfig.bio}
-        </p>
+            <div class="flex gap-2 mb-4">
+              {profileConfig.links.map((link) => (
+                <a
+                  key={link.name}
+                  href={link.url}
+                  target={link.url.startsWith('http') ? '_blank' : '_self'}
+                  rel="noopener noreferrer"
+                  class="button button--ghost button--icon-only h-8 w-8"
+                  aria-label={link.name}
+                >
+                  <Icon name={iconMap[link.icon] || link.icon} class="w-4 h-4" />
+                </a>
+              ))}
+            </div>
 
-        <div class="flex flex-wrap justify-center gap-2 mb-10">
-          {profileConfig.skills.map((skill) => (
-            <span class="chip chip--default">
-              {skill}
-            </span>
-          ))}
-        </div>
-
-        <div class="flex justify-center gap-4 mb-12">
-          {profileConfig.links.map((link) => (
             <a
-              href={link.url}
-              target={link.url.startsWith('http') ? '_blank' : '_self'}
-              rel="noopener noreferrer"
-              class="button button--ghost button--icon-only h-12 w-12"
-              aria-label={link.name}
+              href="/blog/"
+              id="browse-blog-btn"
+              data-no-swup
+              class="button button--ghost h-9 px-4 text-sm w-full inline-flex items-center justify-center mt-auto"
             >
-              <Icon name={iconMap[link.icon] || link.icon} class="w-6 h-6" />
+              进入博客
             </a>
-          ))}
-        </div>
+          </div>
+        </aside>
 
-        <a
-          href="/blog/"
-          id="browse-blog-btn"
-          class="button button--primary h-12 px-8 text-base"
-        >
-          进入博客
-        </a>
+        <main class="p-6 border-l border-[var(--border)] flex flex-col gap-6">
+          <section>
+            <h2 class="text-sm font-bold mb-3 text-muted uppercase tracking-wider">近期文章</h2>
+            <div class="space-y-0">
+              {posts.map((post) => (
+                <div
+                  key={post.id}
+                  class="flex items-center justify-between py-3 border-b border-[var(--border)] last:border-b-0"
+                >
+                  <span class="text-sm text-[var(--foreground)] truncate flex-1">
+                    {post.data.title}
+                  </span>
+                  <span class="text-xs text-[var(--muted)] flex-shrink-0 ml-4">
+                    {post.data.pubDate.toLocaleDateString('zh-CN')}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </section>
+        </main>
       </div>
     </div>
-  </main>
+  </div>
+
+  <script>
+    async function loadHitokoto() {
+      const el = document.getElementById('hitokoto');
+      if (!el) return;
+      try {
+        const res = await fetch('https://v1.hitokoto.cn/?c=a&c=b&c=c&c=d&c=i&c=k');
+        const data = await res.json();
+        if (data.hitokoto) {
+          el.textContent = data.hitokoto;
+        }
+      } catch (e) {}
+    }
+    loadHitokoto();
+  </script>
 </BaseLayout>

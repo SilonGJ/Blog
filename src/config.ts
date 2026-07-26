@@ -21,7 +21,7 @@ export const navBarConfig = {
 export const profileConfig = {
   name: '孤久きりのなか',
   avatar: '/avatar.jpg',
-  bio: '一个 (?',
+  bio: '',
   location: 'China',
   email: 'zcx02172024@gmail.com',
   links: [
