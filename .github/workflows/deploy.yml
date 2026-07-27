@@ -30,10 +30,7 @@ jobs:
       - name: Build
         run: pnpm build
 
-      - name: Install Wrangler
-        run: npm install wrangler@latest
-
       - name: Deploy to Cloudflare Workers
-        run: npx wrangler deploy
+        run: pnpm exec wrangler deploy
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}

@@ -38,6 +38,7 @@
   "devDependencies": {
     "@astrojs/markdown-remark": "^7.2.1",
     "@tailwindcss/vite": "^4.3.3",
-    "remark-gfm": "^4.0.1"
+    "remark-gfm": "^4.0.1",
+    "wrangler": "^4.114.0"
   }
 }
