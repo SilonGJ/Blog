@@ -5,13 +5,15 @@ const posts = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/posts' }),
   schema: z.object({
     title: z.string(),
-    description: z.string(),
     pubDate: z.coerce.date(),
     updatedDate: z.coerce.date().optional(),
-    heroImage: z.string().optional(),
-    category: z.string().optional(),
+    description: z.string(),
     tags: z.array(z.string()).default([]),
+    category: z.string(),
     draft: z.boolean().default(false),
+    comment: z.boolean().default(true),
+    hideNav: z.boolean().default(false),
+    hideHome: z.boolean().default(false),
   }),
 });
 

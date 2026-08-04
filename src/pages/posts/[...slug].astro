@@ -89,34 +89,36 @@ const nextPost = currentIndex < allPosts.length - 1 ? allPosts[currentIndex + 1]
     </div>
   </article>
 
-  <nav class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4 onload-animation max-w-4xl mx-auto max-md:gap-3">
-    {prevPost ? (
-      <a href={`/posts/${prevPost.id}/`} class="card-base p-4 transition hover:bg-[var(--btn-card-bg-hover)] group max-md:p-3 max-md:order-2 md:order-1">
-        <div class="text-sm text-[var(--muted)] mb-1 flex items-center gap-1">
-          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="m15 18-6-6 6-6"/>
-          </svg>
-          上一篇
-        </div>
-        <div class="font-medium group-hover:text-[var(--primary)] transition-colors line-clamp-1 max-md:text-sm">
-          {prevPost.data.title}
-        </div>
-      </a>
-    ) : <div class="hidden md:block order-1"></div>}
-    {nextPost ? (
-      <a href={`/posts/${nextPost.id}/`} class="card-base p-4 transition hover:bg-[var(--btn-card-bg-hover)] group text-right max-md:p-3 max-md:order-1 md:order-2">
-        <div class="text-sm text-[var(--muted)] mb-1 flex items-center gap-1 justify-end">
-          下一篇
-          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="m9 18 6-6-6-6"/>
-          </svg>
-        </div>
-        <div class="font-medium group-hover:text-[var(--primary)] transition-colors line-clamp-1 max-md:text-sm">
-          {nextPost.data.title}
-        </div>
-      </a>
-    ) : <div class="hidden md:block order-2"></div>}
-  </nav>
+  {!post.data.hideNav && (
+    <nav class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4 onload-animation max-w-4xl mx-auto max-md:gap-3">
+      {prevPost ? (
+        <a href={`/posts/${prevPost.id}/`} class="card-base p-4 transition hover:bg-[var(--btn-card-bg-hover)] group max-md:p-3 max-md:order-2 md:order-1">
+          <div class="text-sm text-[var(--muted)] mb-1 flex items-center gap-1">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m15 18-6-6 6-6"/>
+            </svg>
+            上一篇
+          </div>
+          <div class="font-medium group-hover:text-[var(--primary)] transition-colors line-clamp-1 max-md:text-sm">
+            {prevPost.data.title}
+          </div>
+        </a>
+      ) : <div class="hidden md:block order-1"></div>}
+      {nextPost ? (
+        <a href={`/posts/${nextPost.id}/`} class="card-base p-4 transition hover:bg-[var(--btn-card-bg-hover)] group text-right max-md:p-3 max-md:order-1 md:order-2">
+          <div class="text-sm text-[var(--muted)] mb-1 flex items-center gap-1 justify-end">
+            下一篇
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m9 18 6-6-6-6"/>
+            </svg>
+          </div>
+          <div class="font-medium group-hover:text-[var(--primary)] transition-colors line-clamp-1 max-md:text-sm">
+            {nextPost.data.title}
+          </div>
+        </a>
+      ) : <div class="hidden md:block order-2"></div>}
+    </nav>
+  )}
 </MainLayout>
 
 <style is:global>

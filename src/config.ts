@@ -14,7 +14,7 @@ export const navBarConfig = {
     { name: '归档', url: '/archive/' },
     { name: '分类', url: '/categories/' },
     { name: '标签', url: '/tags/' },
-    { name: '关于', url: '/about/' },
+    { name: '关于', url: '/posts/about/' },
   ],
 };
 
