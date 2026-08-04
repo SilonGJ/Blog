@@ -1,5 +1,5 @@
 export const siteConfig = {
-  title: '孤久の博客',
+  title: '孤久の小站',
   subtitle: '主站',
   description: '这里分享一些...呃，乱七八糟的东西',
   lang: 'zh-CN',

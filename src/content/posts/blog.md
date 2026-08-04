@@ -11,11 +11,12 @@ draft: false
 comment: true
 ---
 
-此博客使用 [Astro](https://astro.js.cn/ "Astro 官方网站") 强力驱动
+此博客由 [Astro](https://astro.js.cn/ "Astro 官方网站") 强力驱动
 
 ## 前端框架
 
 - **Astro** — 静态站点生成器
+- **HeroUI** - UI 库
 
 ## 部署
 

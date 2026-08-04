@@ -68,17 +68,18 @@ const posts = (await getCollection('posts', ({ data }) => !data.draft && !data.h
             <h2 class="text-sm font-bold mb-3 text-muted uppercase tracking-wider">近期文章</h2>
             <div class="space-y-0">
               {posts.map((post) => (
-                <div
-                  key={post.id}
-                  class="flex items-center justify-between py-3 border-b border-[var(--border)] last:border-b-0 max-md:py-2.5 max-md:gap-2"
+                <a
+                  href={`/posts/${post.id}/`}
+                  data-no-swup
+                  class="flex items-center justify-between py-3 border-b border-[var(--border)] last:border-b-0 max-md:py-2.5 max-md:gap-2 transition-colors hover:bg-[var(--surface-secondary)] hover:text-[var(--primary)] rounded px-2 -mx-2"
                 >
-                  <span class="text-sm text-[var(--foreground)] truncate flex-1">
+                  <span class="text-sm truncate flex-1">
                     {post.data.title}
                   </span>
                   <span class="text-xs text-[var(--muted)] flex-shrink-0 ml-4 max-md:ml-0">
                     {post.data.pubDate.toLocaleDateString('zh-CN')}
                   </span>
-                </div>
+                </a>
               ))}
             </div>
           </section>

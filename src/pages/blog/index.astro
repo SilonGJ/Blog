@@ -4,7 +4,7 @@ import PostCard from '../../components/PostCard.astro';
 import { getCollection } from 'astro:content';
 import { siteConfig } from '../../config';
 
-const posts = (await getCollection('posts', ({ data }) => !data.draft))
+const posts = (await getCollection('posts', ({ data }) => !data.draft && !data.hideHome))
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 ---
 

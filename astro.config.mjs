@@ -14,7 +14,11 @@ export default defineConfig({
     icon({
       include: {
         'simple-icons': ['github', 'twitter', 'qq', 'bilibili'],
-        'lucide': ['mail'],
+        'lucide': [
+          'mail', 'pin', 'calendar', 'folder', 'file-text', 'clock',
+          'house', 'search', 'menu', 'tag', 'chevron-up', 'rss',
+          'rotate-cw', 'chevron-left', 'chevron-right',
+        ],
       },
     }),
     swup({

@@ -1,6 +1,7 @@
 ---
 import type { CollectionEntry } from 'astro:content';
 import readingTime from 'reading-time';
+import { Icon } from 'astro-icon/components';
 
 interface Props {
   entry: CollectionEntry<'posts'>;
@@ -28,27 +29,36 @@ const stats = readingTime(entry.body);
     </a>
 
     <div class="text-sm text-[var(--muted)] flex gap-4 transition mb-2 max-md:flex-wrap max-md:gap-2 max-md:text-xs">
+      {data.pinned && (
+        <span class="flex items-center text-yellow-500">
+          <Icon name="lucide:pin" class="w-3.5 h-3.5 mr-1" />
+          置顶
+        </span>
+      )}
+      {data.pinned && <span class="max-sm:hidden text-yellow-500">|</span>}
       {data.pubDate && (
         <span class="flex items-center">
-          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1">
-            <rect width="18" height="18" x="3" y="4" rx="2" ry="2"/>
-            <line x1="16" x2="16" y1="2" y2="6"/>
-            <line x1="8" x2="8" y1="2" y2="6"/>
-            <line x1="3" x2="21" y1="10" y2="10"/>
-          </svg>
+          <Icon name="lucide:calendar" class="w-3.5 h-3.5 mr-1" />
           {data.pubDate.toLocaleDateString('zh-CN')}
         </span>
       )}
       {data.pubDate && <span class="max-sm:hidden">|</span>}
       {data.category && (
-        <a href={`/categories/${data.category}/`} class="text-sm text-[var(--muted)] hover:text-[var(--primary)] max-md:text-xs">
+        <a href={`/categories/${data.category}/`} class="flex items-center text-sm text-[var(--muted)] hover:text-[var(--primary)] max-md:text-xs">
+          <Icon name="lucide:folder" class="w-3.5 h-3.5 mr-1" />
           {data.category}
         </a>
       )}
       {data.category && <span class="max-sm:hidden">|</span>}
-      <span class="max-sm:hidden">{Math.round(stats.words)} 字</span>
+      <span class="flex items-center max-sm:hidden">
+        <Icon name="lucide:file-text" class="w-3.5 h-3.5 mr-1" />
+        {Math.round(stats.words)} 字
+      </span>
       <span class="max-sm:hidden">|</span>
-      <span class="max-sm:hidden">{Math.max(1, Math.round(stats.minutes))} 分钟</span>
+      <span class="flex items-center max-sm:hidden">
+        <Icon name="lucide:clock" class="w-3.5 h-3.5 mr-1" />
+        {Math.max(1, Math.round(stats.minutes))} 分钟
+      </span>
     </div>
 
     <div class="text-75 mb-1 line-clamp-2 max-md:text-sm max-md:mb-2">
