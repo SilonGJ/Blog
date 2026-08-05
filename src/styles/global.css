@@ -486,7 +486,7 @@
   }
 
   .sidebar-profile {
-    background: linear-gradient(135deg, var(--surface) 0%, var(--surface-secondary) 100%);
+    background: var(--surface) !important;
   }
 }
 
