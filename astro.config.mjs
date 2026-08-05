@@ -9,7 +9,10 @@ import remarkGfm from 'remark-gfm';
 
 export default defineConfig({
   output: 'static',
-  adapter: cloudflare(),
+  adapter: cloudflare({
+    prerenderEnvironment: 'node',
+  }),
+
   site: 'https://example.com',
   integrations: [
     react(),
