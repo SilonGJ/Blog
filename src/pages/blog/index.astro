@@ -21,22 +21,44 @@ const posts = (await getCollection('posts', ({ data }) => !data.draft && !data.h
 
   <script>
     (async function () {
+      const CACHE_TTL = 30 * 60 * 1000;
       const slugs = [...document.querySelectorAll('[data-slug]')].map((el) => el.getAttribute('data-slug'));
       if (slugs.length === 0) return;
-      try {
-        const res = await fetch('/api/views/batch', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ slugs }),
-        });
-        const { data } = await res.json();
-        document.querySelectorAll('.view-count').forEach((el) => {
-          const slug = el.getAttribute('data-slug');
-          if (slug && data[slug] !== undefined) {
-            el.textContent = String(data[slug]);
+
+      const result = {};
+      const uncached = [];
+      for (const slug of slugs) {
+        const ts = localStorage.getItem('vw_ts_' + slug);
+        if (ts && Date.now() - Number(ts) < CACHE_TTL) {
+          result[slug] = Number(localStorage.getItem('vw_' + slug) ?? '0');
+        } else {
+          uncached.push(slug);
+        }
+      }
+
+      if (uncached.length > 0) {
+        try {
+          const res = await fetch('/api/views/batch', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ slugs: uncached }),
+          });
+          const { data } = await res.json();
+          const now = String(Date.now());
+          for (const [slug, count] of Object.entries(data)) {
+            localStorage.setItem('vw_' + slug, String(count));
+            localStorage.setItem('vw_ts_' + slug, now);
           }
-        });
-      } catch (e) {}
+          Object.assign(result, data);
+        } catch (e) {}
+      }
+
+      document.querySelectorAll('.view-count').forEach((el) => {
+        const slug = el.getAttribute('data-slug');
+        if (slug && result[slug] !== undefined) {
+          el.textContent = String(result[slug]);
+        }
+      });
     })();
   </script>
 </MainLayout>

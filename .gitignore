@@ -22,3 +22,9 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# trae 忘给取消了()
+.trae/
+
+# wrangler 你也是()
+.wrangler/
