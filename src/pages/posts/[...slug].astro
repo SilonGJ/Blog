@@ -108,65 +108,6 @@ const nextPost = currentIndex < allPosts.length - 1 ? allPosts[currentIndex + 1]
   )}
 </MainLayout>
 
-<script>
-  const CACHE_TTL = 30 * 60 * 1000;
-
-  function getCachedView(slug) {
-    const ts = localStorage.getItem('vw_ts_' + slug);
-    if (!ts) return null;
-    if (Date.now() - Number(ts) >= CACHE_TTL) return null;
-    return Number(localStorage.getItem('vw_' + slug) ?? '0');
-  }
-
-  async function getViewsBatch(slugs) {
-    const res = await fetch('/api/views/batch', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ slugs }),
-    });
-    const { data } = await res.json();
-    return data;
-  }
-
-  async function incrementView(slug) {
-    const res = await fetch('/api/views/' + slug + '/inc', { method: 'POST' });
-    const { count } = await res.json();
-    localStorage.setItem('vw_' + slug, String(count));
-    localStorage.setItem('vw_ts_' + slug, String(Date.now()));
-    return count;
-  }
-
-  function renderViews(count) {
-    const el = document.getElementById('view-count');
-    if (el) el.textContent = String(count);
-  }
-
-  (async function () {
-    const article = document.querySelector('article[data-slug]');
-    if (!article) return;
-    const slug = article.getAttribute('data-slug');
-    if (!slug) return;
-
-    const cached = getCachedView(slug);
-    if (cached !== null) {
-      renderViews(cached);
-      return;
-    }
-
-    const ts = localStorage.getItem('vw_ts_' + slug);
-    if (ts) {
-      const data = await getViewsBatch([slug]);
-      const count = data[slug] || 0;
-      localStorage.setItem('vw_' + slug, String(count));
-      localStorage.setItem('vw_ts_' + slug, String(Date.now()));
-      renderViews(count);
-    } else {
-      const count = await incrementView(slug);
-      renderViews(count);
-    }
-  })();
-</script>
-
 <style is:global>
   .prose h1,
   .prose h2,

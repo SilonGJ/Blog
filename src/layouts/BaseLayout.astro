@@ -38,6 +38,7 @@ const pageDescription = description || siteConfig.description;
     <slot />
   <script>
     import PhotoSwipeLightbox from "photoswipe/lightbox";
+    import { getViewsBatchCached, incrementView } from "../utils/views";
 
     let lightbox;
     let pswp = import("photoswipe");
@@ -135,14 +136,52 @@ const pageDescription = description || siteConfig.description;
       });
     }
 
+    const CACHE_TTL = 30 * 60 * 1000;
+
+    function renderDetailViews(count) {
+      const el = document.getElementById("view-count");
+      if (el) el.textContent = String(count);
+    }
+
+    function setupViews() {
+      const slugs = [...document.querySelectorAll("[data-slug]")]
+        .map((el) => el.getAttribute("data-slug"));
+      if (slugs.length === 0) return;
+
+      const isDetailPage = !!document.querySelector("article[data-slug]");
+
+      if (isDetailPage) {
+        const slug = document.querySelector("article[data-slug]").getAttribute("data-slug");
+        const ts = localStorage.getItem("vw_ts_" + slug);
+        if (ts && Date.now() - Number(ts) < CACHE_TTL) {
+          renderDetailViews(Number(localStorage.getItem("vw_" + slug) ?? "0"));
+        } else if (ts) {
+          getViewsBatchCached([slug]).then((data) => renderDetailViews(data[slug] || 0));
+        } else {
+          incrementView(slug).then((count) => renderDetailViews(count));
+        }
+      } else {
+        getViewsBatchCached(slugs).then((data) => {
+          document.querySelectorAll(".view-count").forEach((el) => {
+            const slug = el.getAttribute("data-slug");
+            if (slug && data[slug] !== undefined) {
+              el.textContent = String(data[slug]);
+            }
+          });
+        });
+      }
+    }
+
     const setup = () => {
       createPhotoSwipe();
       setupCodeBlocks();
+      setupViews();
 
       if (window.swup) {
         window.swup.hooks.on("page:view", () => {
           createPhotoSwipe();
           setupCodeBlocks();
+          setupViews();
         });
         window.swup.hooks.on(
           "content:replace",
