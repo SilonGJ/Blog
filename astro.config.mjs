@@ -11,6 +11,11 @@ export default defineConfig({
   output: 'static',
   adapter: cloudflare({
     prerenderEnvironment: 'node',
+    routes: {
+      extend: {
+        exclude: [{ pattern: '/pagefind/*' }],
+      },
+    },
   }),
 
   site: 'https://example.com',
