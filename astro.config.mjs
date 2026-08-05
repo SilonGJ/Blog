@@ -1,5 +1,6 @@
 import { defineConfig } from 'astro/config';
 import react from '@astrojs/react';
+import cloudflare from '@astrojs/cloudflare';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 import swup from '@swup/astro';
@@ -7,6 +8,8 @@ import icon from 'astro-icon';
 import remarkGfm from 'remark-gfm';
 
 export default defineConfig({
+  output: 'static',
+  adapter: cloudflare(),
   site: 'https://example.com',
   integrations: [
     react(),
@@ -17,7 +20,7 @@ export default defineConfig({
         'lucide': [
           'mail', 'pin', 'calendar', 'folder', 'file-text', 'clock',
           'house', 'search', 'menu', 'tag', 'chevron-up', 'rss',
-          'rotate-cw', 'chevron-left', 'chevron-right',
+          'rotate-cw', 'chevron-left', 'chevron-right', 'eye',
         ],
       },
     }),

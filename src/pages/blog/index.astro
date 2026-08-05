@@ -18,4 +18,25 @@ const posts = (await getCollection('posts', ({ data }) => !data.draft && !data.h
       posts.map((post, i) => <PostCard entry={post} index={i} />)
     )}
   </div>
+
+  <script>
+    (async function () {
+      const slugs = [...document.querySelectorAll('[data-slug]')].map((el) => el.getAttribute('data-slug'));
+      if (slugs.length === 0) return;
+      try {
+        const res = await fetch('/api/views/batch', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ slugs }),
+        });
+        const { data } = await res.json();
+        document.querySelectorAll('.view-count').forEach((el) => {
+          const slug = el.getAttribute('data-slug');
+          if (slug && data[slug] !== undefined) {
+            el.textContent = String(data[slug]);
+          }
+        });
+      } catch (e) {}
+    })();
+  </script>
 </MainLayout>

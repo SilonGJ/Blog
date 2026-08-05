@@ -16,7 +16,7 @@ const url = `/posts/${entry.id}/`;
 const stats = readingTime(entry.body);
 ---
 
-<div class:list={["card-base flex flex-col w-full relative onload-animation", className]}>
+<div class:list={["card-base flex flex-col w-full relative onload-animation", className]} data-slug={entry.id}>
   <div class="pl-10 md:pl-12 pr-6 pt-6 md:pt-7 pb-6 relative w-full max-md:pl-6 max-md:pr-4 max-md:pt-5 max-md:pb-5">
     <a
       href={url}
@@ -58,6 +58,11 @@ const stats = readingTime(entry.body);
       <span class="flex items-center max-sm:hidden">
         <Icon name="lucide:clock" class="w-3.5 h-3.5 mr-1" />
         {Math.max(1, Math.round(stats.minutes))} 分钟
+      </span>
+      <span class="max-sm:hidden">|</span>
+      <span class="flex items-center max-sm:hidden">
+        <Icon name="lucide:eye" class="w-3.5 h-3.5 mr-1" />
+        <span class="view-count" data-slug={entry.id}>--</span>
       </span>
     </div>
 
