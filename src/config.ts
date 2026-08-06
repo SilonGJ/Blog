@@ -27,15 +27,15 @@ export const linksConfig = {
       name: '好朋友们',
       links: [
         {
-          name: '黔中极客的博客',
+          name: "黔中Geek's blog",
           url: 'https://qzgeek.com',
-          icon: 'https://qzgeek.com/favicon.ico',
+          icon: '/images/friend/friend[www.qzgeek.cn].ico',
           description: '黔中极客的博客',
         },
         {
-          name: '二叉树树',
+          name: "二叉树树",
           url: 'https://2x.nz/',
-          icon: '/images/friend/2x.jpg',
+          icon: '/images/friend/friend[2x.nz].jpg',
           description: '《二叉树树》官方网站',
         },
       ],
