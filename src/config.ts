@@ -28,7 +28,7 @@ export const linksConfig = {
       links: [
         {
           name: "黔中Geek's blog",
-          url: 'https://qzgeek.com',
+          url: 'https://qzgeek.cn',
           icon: '/images/friend/friend[www.qzgeek.cn].ico',
           description: '黔中极客的博客',
         },
