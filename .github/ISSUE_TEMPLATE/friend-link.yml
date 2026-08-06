@@ -1,0 +1,36 @@
+name: 申请友链
+description: 在这里申请友链哦~
+labels: ["friend-link"]
+body:
+  - type: input
+    id: site-name
+    attributes:
+      label: 站点名称
+      description: 贵站的名称
+      placeholder: "例：我的小站"
+    validations:
+      required: true
+  - type: input
+    id: site-description
+    attributes:
+      label: 站点描述
+      description: 您的站点描述
+      placeholder: "例：一个记录生活和技术的博客"
+    validations:
+      required: true
+  - type: input
+    id: site-url
+    attributes:
+      label: 站点 URL
+      description: 您的站点地址
+      placeholder: "例：https://example.com"
+    validations:
+      required: true
+  - type: input
+    id: site-icon
+    attributes:
+      label: 站点图标 URL
+      description: 例：https://example.com/favicon.ico
+      placeholder: "例：https://example.com/favicon.ico"
+    validations:
+      required: false
