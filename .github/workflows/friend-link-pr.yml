@@ -94,13 +94,23 @@ jobs:
           git push origin "${BRANCH_NAME}"
 
       - name: 创建 PR
+        id: create-pr
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           SITE_NAME="${{ steps.parse.outputs.site_name }}"
           ISSUE_NUMBER="${{ github.event.issue.number }}"
 
-          gh pr create \
+          PR_URL=$(gh pr create \
             --title "[友链] ${SITE_NAME}" \
             --label "friend-link" \
-            --body "Closes #${ISSUE_NUMBER}"
+            --body "Closes #${ISSUE_NUMBER}")
+
+          PR_NUMBER=$(echo "$PR_URL" | grep -oP '\d+$')
+          echo "pr_number=${PR_NUMBER}" >> "$GITHUB_OUTPUT"
+
+      - name: 启用自动合并
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr merge ${{ steps.create-pr.outputs.pr_number }} --auto --merge
