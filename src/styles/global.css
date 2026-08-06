@@ -151,43 +151,26 @@
   .button {
     position: relative !important;
     border: 1px solid var(--border) !important;
-    background-color: transparent !important;
+    background-color: color-mix(in oklab, var(--surface) 50%, var(--surface-secondary)) !important;
     color: var(--foreground) !important;
-    transition: color 0.3s ease !important;
-    overflow: hidden !important;
+    transition: background-color 0.25s ease !important;
     z-index: 0;
   }
 
   .button::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: var(--accent);
-    transform: scale(0.85);
-    opacity: 0;
-    transition: transform 0.3s ease-out, opacity 0.3s ease-out;
-    border-radius: inherit;
-    z-index: -1;
+    display: none !important;
   }
 
   .button:hover {
-    color: var(--accent-foreground) !important;
+    background-color: var(--surface-tertiary) !important;
   }
 
-  .button:hover::before {
-    transform: scale(1);
-    opacity: 1;
-  }
-
-  .button:active::before {
-    opacity: 0.85;
+  .button:active {
+    background-color: color-mix(in oklab, var(--surface-tertiary) 80%, white) !important;
   }
 
   .button--ghost {
-    background-color: transparent !important;
+    background-color: color-mix(in oklab, var(--surface) 50%, var(--surface-secondary)) !important;
   }
 
   .button--primary {
@@ -196,51 +179,72 @@
     color: var(--accent-foreground) !important;
   }
 
-  .button--primary::before {
-    display: none;
+  .button--primary:hover {
+    background-color: color-mix(in oklab, var(--accent) 92%, black) !important;
+    opacity: 1 !important;
   }
 
-  .button--primary:hover {
-    opacity: 0.9;
+  .button--primary:active {
+    background-color: color-mix(in oklab, var(--accent) 85%, black) !important;
   }
 
   .chip {
     position: relative !important;
     border: 1px solid var(--border) !important;
-    background-color: transparent !important;
+    background-color: color-mix(in oklab, var(--surface) 50%, var(--surface-secondary)) !important;
     color: var(--foreground) !important;
-    transition: color 0.3s ease !important;
-    overflow: hidden !important;
+    transition: background-color 0.25s ease !important;
     z-index: 0;
   }
 
   .chip::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: var(--accent);
-    transform: scale(0.85);
-    opacity: 0;
-    transition: transform 0.3s ease-out, opacity 0.3s ease-out;
-    border-radius: inherit;
-    z-index: -1;
+    display: none !important;
   }
 
   .chip:hover {
-    color: var(--accent-foreground) !important;
+    background-color: var(--surface-tertiary) !important;
   }
 
-  .chip:hover::before {
-    transform: scale(1);
-    opacity: 1;
+  .chip:active {
+    background-color: color-mix(in oklab, var(--surface-tertiary) 80%, white) !important;
   }
 
   .chip--soft {
-    background-color: var(--surface-secondary) !important;
+    background-color: color-mix(in oklab, var(--surface) 50%, var(--surface-secondary)) !important;
     border-color: var(--border) !important;
+  }
+
+  .chip--soft:hover {
+    background-color: var(--surface-tertiary) !important;
+  }
+
+  .chip--soft:active {
+    background-color: color-mix(in oklab, var(--surface-tertiary) 80%, white) !important;
+  }
+
+  /* ============ Navbar 按钮特殊处理 ============ */
+  #navbar .button,
+  #navbar .button.button--ghost,
+  #navbar .button.button--icon-only {
+    border: none !important;
+    background-color: transparent !important;
+    transition: background-color 0.2s ease !important;
+  }
+
+  #navbar .button:hover,
+  #navbar .button.button--ghost:hover,
+  #navbar .button.button--icon-only:hover {
+    background-color: var(--surface-secondary) !important;
+  }
+
+  #navbar .button:active,
+  #navbar .button.button--ghost:active,
+  #navbar .button.button--icon-only:active {
+    background-color: var(--surface-tertiary) !important;
+  }
+
+  #navbar .button::before {
+    display: none !important;
   }
 
   .input-wrapper .input {

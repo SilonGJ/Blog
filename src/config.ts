@@ -14,7 +14,32 @@ export const navBarConfig = {
     { name: '归档', url: '/archive/' },
     { name: '分类', url: '/categories/' },
     { name: '标签', url: '/tags/' },
+    { name: '友链', url: '/links/' },
     { name: '关于', url: '/posts/about/' },
+  ],
+};
+
+export const linksConfig = {
+  title: '友情链接',
+  applyLink: 'https://example.com/apply',
+  groups: [
+    {
+      name: '好朋友们',
+      links: [
+        {
+          name: '黔中极客的博客',
+          url: 'https://qzgeek.com',
+          icon: 'https://qzgeek.com/favicon.ico',
+          description: '黔中极客的博客',
+        },
+        {
+          name: '二叉树树',
+          url: 'https://2x.nz/',
+          icon: 'https://q2.qlogo.cn/headimg_dl?dst_uin=2726730791&spec=140',
+          description: '《二叉树树》官方网站',
+        },
+      ],
+    },
   ],
 };
 
