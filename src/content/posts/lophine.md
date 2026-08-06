@@ -31,7 +31,7 @@ comment: true
 
 后来，CanvasMC 关闭了这个 Issue，CanvasMC 项目团队尚未发布完整的正式回应
 
-![Issue #286 截图](../../assets/images/Pasted%20image%2020260717164548.png)
+![Issue #286 截图](/images/archive/Pasted%20image%2020260717164548.png)
 
 ## 争议
 
@@ -50,10 +50,10 @@ GitHub 用户 realfraze 在评论中表示，自己无法理解所谓的许可�
 ## 删库
 
 Luminol 核心开发者 **EarthMe** 在开发者群聊中宣布不再继续维护相关项目。
-![EarthMe 宣布不再维护](../../assets/images/Pasted%20image%2020260717170010.png)
+![EarthMe 宣布不再维护](/images/archive/Pasted%20image%2020260717170010.png)
 
 下游 **Lophine** 也已经宣布删库
-![Lophine 删库公告](../../assets/images/Pasted%20image%2020260717170209.png)
+![Lophine 删库公告](/images/archive/Pasted%20image%2020260717170209.png)
 
 截至发稿，CanvasMC 方面尚未就 Issue [#286](https://github.com/CraftCanvasMC/Canvas/issues/286) 发布正式回应。
 

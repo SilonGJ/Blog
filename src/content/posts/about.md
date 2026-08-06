@@ -15,4 +15,4 @@ hideHome: true
 
 # 内容
 主要发布一些乱七八糟的东西吧 (其实是自己也没想好要发啥，嘿嘿)
-![](../../assets/images/sticker.gif)
+![](/images/archive/sticker.gif)

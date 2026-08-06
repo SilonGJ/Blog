@@ -59,4 +59,9 @@ export default defineConfig({
     },
     remarkPlugins: [remarkGfm],
   },
+  image: {
+    sharpConfig: {
+      gif: { animated: true },
+    },
+  },
 });

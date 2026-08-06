@@ -35,7 +35,7 @@ export const linksConfig = {
         {
           name: '二叉树树',
           url: 'https://2x.nz/',
-          icon: 'https://q2.qlogo.cn/headimg_dl?dst_uin=2726730791&spec=140',
+          icon: '/images/friend/2x.jpg',
           description: '《二叉树树》官方网站',
         },
       ],
@@ -45,7 +45,7 @@ export const linksConfig = {
 
 export const profileConfig = {
   name: '孤久きりのなか',
-  avatar: '/avatar.jpg',
+  avatar: '/images/avatar.jpg',
   bio: '',
   location: 'China',
   email: 'zcx02172024@gmail.com',
