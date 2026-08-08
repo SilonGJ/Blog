@@ -44,6 +44,13 @@ export const linksConfig = {
           icon: 'https://example.com',
           description: '测试',
         },
+        {
+          name: '测试',
+          url: 'https://example.com',
+          icon: 'https://example.com',
+          description: '测试',
+        },
+
 
       ],
     },
