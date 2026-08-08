@@ -1,0 +1,221 @@
+/*!
+ * Giscus Theme - 孤久の小站
+ * Custom theme matching the blog's dark, sharp-cornered design.
+ * All colors derived from the blog's OKLCH palette (hue 260, cool-neutral).
+ */
+
+main {
+  /* ===== Syntax Highlighting (Prettylights) ===== */
+  --color-prettylights-syntax-comment: #83868b;
+  --color-prettylights-syntax-constant: #c5a8e0;
+  --color-prettylights-syntax-entity: #b8c4db;
+  --color-prettylights-syntax-storage-modifier-import: #83868b;
+  --color-prettylights-syntax-entity-tag: #8ab091;
+  --color-prettylights-syntax-keyword: #c57670;
+  --color-prettylights-syntax-string: #96b8d6;
+  --color-prettylights-syntax-variable: #d6b17d;
+  --color-prettylights-syntax-brackethighlighter-unmatched: #c57670;
+  --color-prettylights-syntax-invalid-illegal-text: #f0f2f4;
+  --color-prettylights-syntax-invalid-illegal-bg: #5c2222;
+  --color-prettylights-syntax-carriage-return-text: #f0f2f4;
+  --color-prettylights-syntax-carriage-return-bg: #5c2222;
+  --color-prettylights-syntax-string-regexp: #8ab091;
+  --color-prettylights-syntax-markup-list: #d6b17d;
+  --color-prettylights-syntax-markup-heading: #7b9fd6;
+  --color-prettylights-syntax-markup-italic: #83868b;
+  --color-prettylights-syntax-markup-bold: #e2e5e9;
+  --color-prettylights-syntax-markup-deleted-text: #f0d0cc;
+  --color-prettylights-syntax-markup-deleted-bg: #3d1515;
+  --color-prettylights-syntax-markup-inserted-text: #c4e8ca;
+  --color-prettylights-syntax-markup-inserted-bg: #152d1a;
+  --color-prettylights-syntax-markup-changed-text: #f0dcc0;
+  --color-prettylights-syntax-markup-changed-bg: #3d2a10;
+  --color-prettylights-syntax-markup-ignored-text: #83868b;
+  --color-prettylights-syntax-markup-ignored-bg: #1a2a40;
+  --color-prettylights-syntax-meta-diff-range: #c5a8e0;
+  --color-prettylights-syntax-brackethighlighter-angle: #83868b;
+  --color-prettylights-syntax-sublimelinter-gutter-mark: #3f4348;
+  --color-prettylights-syntax-constant-other-reference-link: #96b8d6;
+
+  /* ===== Buttons ===== */
+  --color-btn-text: #83868b;
+  --color-btn-bg: #1f2226;
+  --color-btn-border: #2b2e33;
+  --color-btn-shadow: 0 0 transparent;
+  --color-btn-inset-shadow: 0 0 transparent;
+  --color-btn-hover-bg: #2b2e32;
+  --color-btn-hover-border: #3f4348;
+  --color-btn-active-bg: #2b2e32;
+  --color-btn-active-border: #3f4348;
+  --color-btn-selected-bg: #14161a;
+
+  /* ===== Primary Buttons ===== */
+  --color-btn-primary-text: #07090c;
+  --color-btn-primary-bg: #e2e5e9;
+  --color-btn-primary-border: #2b2e33;
+  --color-btn-primary-shadow: 0 0 transparent;
+  --color-btn-primary-inset-shadow: 0 0 transparent;
+  --color-btn-primary-hover-bg: #f0f2f4;
+  --color-btn-primary-hover-border: #2b2e33;
+  --color-btn-primary-selected-bg: #e2e5e9;
+  --color-btn-primary-selected-shadow: 0 0 transparent;
+  --color-btn-primary-disabled-text: #3f4348;
+  --color-btn-primary-disabled-bg: #1f2226;
+  --color-btn-primary-disabled-border: #2b2e33;
+
+  /* ===== Action List & Segmented Control ===== */
+  --color-action-list-item-default-hover-bg: #1f2226;
+  --color-segmented-control-bg: #14161a;
+  --color-segmented-control-button-bg: #07090c;
+  --color-segmented-control-button-selected-border: #3f4348;
+
+  /* ===== Foreground ===== */
+  --color-fg-default: #f0f2f4;
+  --color-fg-muted: #83868b;
+  --color-fg-subtle: #3f4348;
+
+  /* ===== Canvas (Backgrounds) ===== */
+  --color-canvas-default: #07090c;
+  --color-canvas-overlay: #14161a;
+  --color-canvas-inset: #07090c;
+  --color-canvas-subtle: #1f2226;
+
+  /* ===== Borders ===== */
+  --color-border-default: #2b2e33;
+  --color-border-muted: #1f2226;
+
+  /* ===== Neutral ===== */
+  --color-neutral-muted: #1f2226;
+
+  /* ===== Accent ===== */
+  --color-accent-fg: #e2e5e9;
+  --color-accent-emphasis: #2b2e32;
+  --color-accent-muted: #1f2226;
+  --color-accent-subtle: #14161a;
+
+  /* ===== Status Colors ===== */
+  --color-success-fg: #8ab091;
+  --color-attention-fg: #d6b17d;
+  --color-attention-muted: #3d2a10;
+  --color-attention-subtle: #1f1a10;
+  --color-danger-fg: #c57670;
+  --color-danger-muted: #3d1515;
+  --color-danger-subtle: #1f0e0e;
+
+  /* ===== Shadows ===== */
+  --color-primer-shadow-inset: 0 0 transparent;
+
+  /* ===== Scale ===== */
+  --color-scale-gray-7: #2b2e32;
+  --color-scale-blue-8: #14161a;
+
+  /* ===== Social Reactions ===== */
+  --color-social-reaction-bg-hover: #2b2e32;
+  --color-social-reaction-bg-reacted-hover: #1a2a40;
+
+  /* ===== Font Families ===== */
+  --font-family-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-family-monospace: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  --font-family-default: var(--font-family-sans);
+}
+
+/* ===== Sharp Corners: All border-radius to 0 ===== */
+main * {
+  border-radius: 0 !important;
+}
+
+/* ===== Layout Customizations ===== */
+
+/* Hide reaction counts for a cleaner look */
+.gsc-reactions-count {
+  display: none;
+}
+
+/* Show newest comments first */
+.gsc-timeline {
+  flex-direction: column-reverse;
+}
+
+/* Header spacing */
+.gsc-header {
+  padding-bottom: 1rem;
+}
+
+/* Comment ordering: header → box → timeline */
+.gsc-comments > .gsc-header {
+  order: 1;
+}
+
+.gsc-comments > .gsc-comment-box {
+  order: 2;
+  margin-bottom: 1rem;
+}
+
+.gsc-comments > .gsc-timeline {
+  order: 3;
+}
+
+/* Background for the giscus homepage */
+.gsc-homepage-bg {
+  background-color: #07090c;
+}
+
+/* Loading indicator */
+main .gsc-loading-image {
+  background-image: url("https://github.githubassets.com/images/mona-loading-dimmed.gif");
+}
+
+/* ===== Input & Textarea Styling ===== */
+main .gsc-comment-box .gsc-new-comment-input,
+main textarea {
+  background-color: #07090c !important;
+  border-color: #2b2e33 !important;
+  color: #f0f2f4 !important;
+  border-radius: 0 !important;
+}
+
+main .gsc-comment-box .gsc-new-comment-input:focus,
+main textarea:focus {
+  border-color: #e2e5e9 !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* ===== Comment Thread Borders ===== */
+.gsc-timeline .gsc-comment {
+  border-color: #2b2e33 !important;
+}
+
+/* ===== Reply Box ===== */
+.gsc-reply-box {
+  border-color: #2b2e33 !important;
+}
+
+/* ===== "Sign in to comment" link ===== */
+.gsc-login-link {
+  color: #e2e5e9 !important;
+}
+
+.gsc-login-link:hover {
+  color: #f0f2f4 !important;
+}
+
+/* ===== Dropdown / Select ===== */
+main select {
+  background-color: #1f2226 !important;
+  border-color: #2b2e33 !important;
+  color: #f0f2f4 !important;
+  border-radius: 0 !important;
+}
+
+/* ===== Pagination ===== */
+.main-pagination .pagination-loader-container {
+  background-image: url("https://github.githubassets.com/images/modules/pulls/progressive-disclosure-line-dark.svg");
+}
+
+/* ===== Tooltip / Popup ===== */
+.gsc-tooltip {
+  background-color: #14161a !important;
+  border-color: #2b2e33 !important;
+  color: #f0f2f4 !important;
+}
