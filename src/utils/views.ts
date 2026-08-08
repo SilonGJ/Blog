@@ -32,10 +32,8 @@ function isCacheValid(slug: string): boolean {
 }
 
 function cacheViews(data: Record<string, number>): void {
-  const now = String(Date.now());
   for (const [slug, count] of Object.entries(data)) {
     localStorage.setItem(`vw_${slug}`, String(count));
-    localStorage.setItem(`vw_ts_${slug}`, now);
   }
 }
 

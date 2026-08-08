@@ -155,8 +155,6 @@ const pageDescription = description || siteConfig.description;
         const ts = localStorage.getItem("vw_ts_" + slug);
         if (ts && Date.now() - Number(ts) < CACHE_TTL) {
           renderDetailViews(Number(localStorage.getItem("vw_" + slug) ?? "0"));
-        } else if (ts) {
-          getViewsBatchCached([slug]).then((data) => renderDetailViews(data[slug] || 0));
         } else {
           incrementView(slug).then((count) => renderDetailViews(count));
         }
