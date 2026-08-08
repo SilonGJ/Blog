@@ -144,8 +144,8 @@ const pageDescription = description || siteConfig.description;
     }
 
     function setupViews() {
-      const slugs = [...document.querySelectorAll("[data-slug]")]
-        .map((el) => el.getAttribute("data-slug"));
+      const slugs = [...new Set([...document.querySelectorAll("[data-slug]")]
+        .map((el) => el.getAttribute("data-slug")))];
       if (slugs.length === 0) return;
 
       const isDetailPage = !!document.querySelector("article[data-slug]");

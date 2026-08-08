@@ -26,14 +26,16 @@ export function getCachedView(slug: string): number | null {
 }
 
 function isCacheValid(slug: string): boolean {
-  const ts = localStorage.getItem(`vw_ts_${slug}`);
+  const ts = localStorage.getItem(`vw_batch_ts_${slug}`);
   if (!ts) return false;
   return Date.now() - Number(ts) < CACHE_TTL;
 }
 
 function cacheViews(data: Record<string, number>): void {
+  const now = String(Date.now());
   for (const [slug, count] of Object.entries(data)) {
     localStorage.setItem(`vw_${slug}`, String(count));
+    localStorage.setItem(`vw_batch_ts_${slug}`, now);
   }
 }
 
