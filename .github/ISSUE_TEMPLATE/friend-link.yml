@@ -1,6 +1,6 @@
 name: 申请友链
 description: 在这里申请友链哦~
-labels: ["friend-link"]
+labels: ["friend link"]
 body:
   - type: input
     id: site-name

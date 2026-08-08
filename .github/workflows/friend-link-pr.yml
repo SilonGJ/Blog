@@ -91,6 +91,7 @@ jobs:
 
           git add src/config.ts
           git commit -m "feat: 添加友链 - ${SITE_NAME}"
+          git push origin --delete "${BRANCH_NAME}" 2>/dev/null || true
           git push origin "${BRANCH_NAME}"
 
       - name: 创建 PR
@@ -103,7 +104,7 @@ jobs:
 
           PR_URL=$(gh pr create \
             --title "[友链] ${SITE_NAME}" \
-            --label "friend-link" \
+            --label "friend link" \
             --body "Closes #${ISSUE_NUMBER}")
 
           PR_NUMBER=$(echo "$PR_URL" | grep -oP '\d+$')
