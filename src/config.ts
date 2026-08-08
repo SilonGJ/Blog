@@ -38,27 +38,6 @@ export const linksConfig = {
           icon: '/images/friend/friend[2x.nz].jpg',
           description: '《二叉树树》官方网站',
         },
-        {
-          name: '测试',
-          url: 'https://example.com',
-          icon: 'https://example.com',
-          description: '测试',
-        },
-        {
-          name: '测试',
-          url: 'https://example.com',
-          icon: 'https://example.com',
-          description: '测试',
-        },
-        {
-          name: '测试',
-          url: 'https://example.com',
-          icon: 'https://example.com',
-          description: '测试',
-        },
-
-
-
       ],
     },
   ],
