@@ -21,7 +21,7 @@ export const navBarConfig = {
 
 export const linksConfig = {
   title: '友情链接',
-  applyLink: 'https://example.com/apply',
+  applyLink: 'https://github.com/SilonGJ/Blog/issues/new?template=friend-link.yml',
   groups: [
     {
       name: '好朋友们',
