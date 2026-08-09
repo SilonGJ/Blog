@@ -171,14 +171,8 @@ import { Icon } from 'astro-icon/components';
     if (pagefind || pagefindLoading) return;
     pagefindLoading = true;
     try {
-      const script = document.createElement('script');
-      script.src = '/pagefind/pagefind.js';
-      document.head.appendChild(script);
-      await new Promise<void>((resolve, reject) => {
-        script.onload = () => resolve();
-        script.onerror = () => reject(new Error('Failed to load Pagefind'));
-      });
-      pagefind = (window as any).pagefind;
+      const pagefindModule = await import('/pagefind/pagefind.js');
+      pagefind = pagefindModule;
       if (pagefind) {
         await pagefind.options({ excerptLength: 20 });
       }
