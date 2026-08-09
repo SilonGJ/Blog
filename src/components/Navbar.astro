@@ -52,7 +52,7 @@ import { Icon } from 'astro-icon/components';
   </nav>
 
   <div id="page-progress" class="h-px w-full bg-transparent relative overflow-hidden">
-    <div id="page-progress-bar" class="absolute top-0 left-0 h-full w-0 bg-white transition-all duration-150 ease-out"></div>
+    <div id="page-progress-bar" class="absolute top-0 left-0 h-full w-0 bg-[var(--accent)] transition-all duration-150 ease-out"></div>
   </div>
 
   <div id="search-panel" class="float-panel float-panel-closed fixed left-1/2 -translate-x-1/2 top-20 w-[90%] max-w-xl z-50 p-4">
@@ -171,7 +171,7 @@ import { Icon } from 'astro-icon/components';
     if (pagefind || pagefindLoading) return;
     pagefindLoading = true;
     try {
-      const pagefindModule = await import(/* @vite-ignore */ '/pagefind/pagefind.js');
+      const pagefindModule = await eval('import("/pagefind/pagefind.js")');
       pagefind = pagefindModule;
       if (pagefind) {
         await pagefind.options({ excerptLength: 20 });
