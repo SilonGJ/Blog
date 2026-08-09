@@ -20,6 +20,11 @@ main {
   --color-warning: oklch(0.78 0.08 75);
   --color-danger: oklch(0.65 0.10 25);
 
+  /* ===== 动画变量 - 与博客一致 ===== */
+  --transition-fast: 0.2s ease;
+  --transition-normal: 0.25s ease;
+  --transition-bounce: 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
+
   /* ===== Syntax Highlighting (Prettylights) ===== */
   --color-prettylights-syntax-comment: var(--color-muted);
   --color-prettylights-syntax-constant: oklch(0.75 0.12 300);
@@ -132,10 +137,6 @@ main {
   --font-family-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-family-monospace: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
   --font-family-default: var(--font-family-sans);
-
-  /* ===== 过渡动画时间 - 与博客一致 (0.2s-0.25s) ===== */
-  --transition-fast: 0.2s ease;
-  --transition-normal: 0.25s ease;
 }
 
 /* ===== 全局重置：无圆角设计 ===== */
@@ -145,13 +146,15 @@ main * {
               color var(--transition-fast),
               border-color var(--transition-fast),
               opacity var(--transition-fast),
-              transform var(--transition-fast);
+              transform var(--transition-fast),
+              box-shadow var(--transition-fast);
 }
 
 /* ===== 移除focus时的默认outline，使用边框颜色变化 ===== */
 main *:focus-visible {
   outline: none;
   border-color: var(--color-accent) !important;
+  box-shadow: none !important;
 }
 
 /* ===== 选中文字样式 - 与博客一致 ===== */
@@ -159,6 +162,76 @@ main ::selection {
   background: color-mix(in oklab, var(--color-accent) 30%, transparent);
   color: var(--color-foreground);
 }
+
+/* ===== 滚动条全局隐藏 - 与博客一致 ===== */
+main * {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+main ::-webkit-scrollbar,
+main ::-webkit-scrollbar-track,
+main ::-webkit-scrollbar-thumb {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  background: transparent !important;
+}
+
+/* ===== 页面载入动画 - fade-in-up 与博客onload-animation一致 ===== */
+@keyframes giscus-fade-in-up {
+  0% {
+    opacity: 0;
+    transform: translateY(2rem);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes giscus-fade-in {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@keyframes giscus-bounce-in {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+main .gsc-comments {
+  animation: giscus-fade-in-up 300ms ease-out forwards;
+  opacity: 0;
+}
+
+main .gsc-header {
+  animation: giscus-fade-in 400ms ease-out 100ms forwards;
+  opacity: 0;
+}
+
+main .gsc-comment-box {
+  animation: giscus-fade-in 300ms ease-out 150ms forwards;
+  opacity: 0;
+}
+
+main .gsc-timeline {
+  animation: giscus-fade-in 300ms ease-out 200ms forwards;
+  opacity: 0;
+}
+
+/* ===== 评论项 stagger 淡入 ===== */
+main .gsc-timeline .gsc-comment {
+  opacity: 0;
+  animation: giscus-fade-in-up 300ms ease-out forwards;
+}
+
+main .gsc-timeline .gsc-comment:nth-child(1) { animation-delay: 250ms; }
+main .gsc-timeline .gsc-comment:nth-child(2) { animation-delay: 300ms; }
+main .gsc-timeline .gsc-comment:nth-child(3) { animation-delay: 350ms; }
+main .gsc-timeline .gsc-comment:nth-child(4) { animation-delay: 400ms; }
+main .gsc-timeline .gsc-comment:nth-child(n+5) { animation-delay: 450ms; }
 
 /* ===== Layout Customizations ===== */
 
@@ -199,15 +272,62 @@ main ::selection {
 /* 加载指示器 */
 main .gsc-loading-image {
   background-image: url("https://github.githubassets.com/images/mona-loading-dimmed.gif");
-  opacity: 0.6;
+  opacity: 0.5;
+  animation: giscus-fade-in 400ms ease-out;
+}
+
+main .pagination-loader-container {
+  background-image: url("https://github.githubassets.com/images/modules/pulls/progressive-disclosure-line-dark.svg");
+  opacity: 0.4;
 }
 
 /* ===== 标题样式 - 与博客标题一致 ===== */
 main .gsc-comment-box-tabs button,
 main .gsc-header h1,
+main .gsc-header h2,
 main .gsc-comment-header {
   font-weight: 600;
   color: var(--color-foreground);
+}
+
+main .gsc-header h1,
+main .gsc-header h2 {
+  font-size: 1.25rem;
+}
+
+/* ===== expand-animation 扩散效果基础样式 ===== */
+main .btn,
+main .gsc-social-reaction-summary-item,
+main .gsc-comment,
+main .gsc-markdown-toolbar button,
+main .gsc-upvote-button,
+main .gsc-comment-reactions button {
+  position: relative !important;
+  overflow: hidden;
+}
+
+main .btn::before,
+main .gsc-social-reaction-summary-item::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: scale(0.85);
+  opacity: 0;
+  transition: all var(--transition-fast);
+  z-index: -1;
+  background-color: var(--color-surface-secondary);
+  pointer-events: none;
+}
+
+main .btn:hover::before,
+main .gsc-social-reaction-summary-item:hover::before {
+  transform: scale(1);
+  opacity: 1;
+}
+
+main .btn:active::before,
+main .gsc-social-reaction-summary-item:active::before {
+  background-color: var(--color-surface-tertiary);
 }
 
 /* ===== 按钮样式增强 - 匹配博客.button动画 ===== */
@@ -215,7 +335,8 @@ main .btn {
   border: 1px solid var(--color-border) !important;
   background-color: color-mix(in oklab, var(--color-surface) 50%, var(--color-surface-secondary)) !important;
   color: var(--color-foreground) !important;
-  transition: background-color var(--transition-normal) !important;
+  transition: all var(--transition-normal) !important;
+  font-weight: 500;
 }
 
 main .btn:hover {
@@ -233,6 +354,10 @@ main .btn-primary {
   color: var(--color-accent-foreground) !important;
 }
 
+main .btn-primary::before {
+  background-color: color-mix(in oklab, var(--color-accent) 92%, black);
+}
+
 main .btn-primary:hover {
   background-color: color-mix(in oklab, var(--color-accent) 92%, black) !important;
   opacity: 1 !important;
@@ -241,6 +366,13 @@ main .btn-primary:hover {
 main .btn-primary:active {
   background-color: color-mix(in oklab, var(--color-accent) 85%, black) !important;
   transform: scale(0.98);
+}
+
+main .btn-primary:disabled,
+main .btn[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
 }
 
 /* ===== 链接样式 - 与博客.prose a风格一致 ===== */
@@ -266,13 +398,19 @@ main a:active {
 }
 
 /* ===== 标签页按钮 ===== */
+main .gsc-comment-box-tabs {
+  border-bottom: 1px solid var(--color-border) !important;
+}
+
 main .gsc-comment-box-tabs button {
   background: transparent !important;
   border: none !important;
   border-bottom: 2px solid transparent !important;
   color: var(--color-muted) !important;
   transition: all var(--transition-fast) !important;
-  padding-bottom: 0.5rem;
+  padding: 0.5rem 1rem;
+  margin-bottom: -1px;
+  font-weight: 500;
 }
 
 main .gsc-comment-box-tabs button:hover {
@@ -280,7 +418,8 @@ main .gsc-comment-box-tabs button:hover {
   background: none !important;
 }
 
-main .gsc-comment-box-tabs button.color-text-primary {
+main .gsc-comment-box-tabs button.color-text-primary,
+main .gsc-comment-box-tabs button[aria-selected="true"] {
   color: var(--color-accent) !important;
   border-bottom-color: var(--color-accent) !important;
 }
@@ -288,18 +427,24 @@ main .gsc-comment-box-tabs button.color-text-primary {
 /* ===== 输入框 & 文本域 - 匹配博客.input样式 ===== */
 main .gsc-comment-box .gsc-new-comment-input,
 main textarea,
-main input[type="text"] {
+main input[type="text"],
+main input[type="search"],
+main input:not([type]),
+main .form-control {
   background-color: var(--color-surface) !important;
   border: 1px solid var(--color-border) !important;
   color: var(--color-foreground) !important;
-  border-radius: 0 !important;
-  transition: border-color var(--transition-normal) !important;
+  transition: border-color var(--transition-normal), background-color var(--transition-normal) !important;
   padding: 0.75rem 1rem;
+  font-family: var(--font-family-sans);
 }
 
 main .gsc-comment-box .gsc-new-comment-input:focus,
 main textarea:focus,
-main input[type="text"]:focus {
+main input[type="text"]:focus,
+main input[type="search"]:focus,
+main input:not([type]):focus,
+main .form-control:focus {
   border-color: var(--color-accent) !important;
   box-shadow: none !important;
   outline: none !important;
@@ -310,17 +455,44 @@ main .gsc-comment-box .gsc-new-comment-input::placeholder,
 main textarea::placeholder,
 main input::placeholder {
   color: var(--color-muted);
+  opacity: 1;
 }
 
-/* ===== 评论边框 ===== */
-.gsc-timeline .gsc-comment {
+main .gsc-comment-box-textarea {
+  background-color: var(--color-surface-secondary) !important;
+  border: 1px solid var(--color-border) !important;
+  padding: 1rem;
+  min-height: 120px;
+  resize: vertical;
+}
+
+main .gsc-comment-box-textarea:focus {
+  background-color: var(--color-surface-secondary) !important;
+  border-color: var(--color-accent) !important;
+}
+
+/* ===== 评论边框与容器 ===== */
+main .gsc-comment {
   border-color: var(--color-border) !important;
   background-color: var(--color-surface) !important;
+  transition: background-color var(--transition-normal), transform var(--transition-fast);
+  border-left: 3px solid transparent !important;
+  padding-left: calc(1rem - 3px) !important;
+}
+
+main .gsc-comment:hover {
+  background-color: color-mix(in oklab, var(--color-surface) 80%, var(--color-surface-secondary)) !important;
+  border-left-color: var(--color-accent) !important;
+}
+
+main .gsc-reply {
+  border-color: var(--color-border) !important;
+  background-color: color-mix(in oklab, var(--color-surface) 70%, transparent) !important;
   transition: background-color var(--transition-normal);
 }
 
-.gsc-timeline .gsc-comment:hover {
-  background-color: color-mix(in oklab, var(--color-surface) 80%, var(--color-surface-secondary)) !important;
+main .gsc-reply:hover {
+  background-color: color-mix(in oklab, var(--color-surface) 85%, var(--color-surface-secondary)) !important;
 }
 
 /* ===== 评论框容器 ===== */
@@ -329,13 +501,12 @@ main .gsc-comment-box {
   border: 1px solid var(--color-border) !important;
 }
 
-main .gsc-comment-box-textarea {
-  background-color: var(--color-surface-secondary) !important;
-  border: none !important;
+main .gsc-comment-box-tabs {
+  background-color: var(--color-surface) !important;
 }
 
-main .gsc-comment-box-textarea:focus {
-  background-color: var(--color-surface-secondary) !important;
+main .gsc-comment-box-main {
+  background-color: var(--color-surface) !important;
 }
 
 /* ===== 回复框 ===== */
@@ -349,13 +520,21 @@ main .gsc-comment-box-textarea:focus {
 }
 
 /* ===== "登录后评论" 链接 ===== */
-.gsc-login-link {
+.gsc-login-link,
+main .link-secondary,
+main .btn-link {
   color: var(--color-accent) !important;
-  transition: color var(--transition-fast);
+  transition: all var(--transition-fast);
+  border-bottom: none !important;
 }
 
-.gsc-login-link:hover {
+.gsc-login-link:hover,
+main .link-secondary:hover,
+main .btn-link:hover {
   color: var(--color-foreground) !important;
+  background: var(--color-surface-secondary) !important;
+  padding: 1px 4px !important;
+  margin: -1px -4px !important;
 }
 
 /* ===== 下拉菜单 / 选择框 ===== */
@@ -363,9 +542,10 @@ main select {
   background-color: var(--color-surface) !important;
   border: 1px solid var(--color-border) !important;
   color: var(--color-foreground) !important;
-  border-radius: 0 !important;
   transition: border-color var(--transition-normal);
   padding: 0.375rem 0.75rem;
+  font-family: var(--font-family-sans);
+  cursor: pointer;
 }
 
 main select:focus {
@@ -373,18 +553,14 @@ main select:focus {
   outline: none !important;
 }
 
-/* ===== 分页 ===== */
-.main-pagination .pagination-loader-container {
-  background-image: url("https://github.githubassets.com/images/modules/pulls/progressive-disclosure-line-dark.svg");
-  opacity: 0.4;
-}
-
 /* ===== 工具提示 / 弹出框 ===== */
-.gsc-tooltip {
+.gsc-tooltip,
+main .tooltipped::after {
   background-color: var(--color-overlay) !important;
   border: 1px solid var(--color-border) !important;
   color: var(--color-foreground) !important;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35) !important;
+  font-family: var(--font-family-sans);
 }
 
 /* ===== 社交反应按钮 (表情反馈) - 匹配博客.btn-plain风格 ===== */
@@ -393,6 +569,7 @@ main .gsc-social-reaction-summary-item {
   border: 1px solid var(--color-border) !important;
   color: var(--color-muted) !important;
   transition: all var(--transition-fast) !important;
+  font-weight: 500;
 }
 
 main .gsc-social-reaction-summary-item:hover {
@@ -416,40 +593,53 @@ main .gsc-social-reaction-summary-item.has-reacted:hover {
   background-color: color-mix(in oklab, var(--color-accent) 15%, var(--color-surface-secondary)) !important;
 }
 
+main .gsc-social-reaction-summary-item.has-reacted:active {
+  animation: giscus-bounce-in var(--transition-bounce);
+}
+
 /* ===== 评论操作按钮 (回复、点赞等) - 匹配博客按钮风格 ===== */
 main .gsc-comment-box-markdown-hint,
 main .gsc-comment-header .color-text-secondary,
-main .gsc-replies {
+main .gsc-replies,
+main .color-text-tertiary,
+main .color-fg-muted {
   color: var(--color-muted) !important;
 }
 
 main .link-secondary,
 main .btn-link {
   color: var(--color-muted) !important;
-  border-bottom: none !important;
-  transition: color var(--transition-fast) !important;
+  transition: color var(--transition-fast), background-color var(--transition-fast), transform var(--transition-fast) !important;
+  font-weight: 500;
 }
 
 main .link-secondary:hover,
 main .btn-link:hover {
   color: var(--color-accent) !important;
-  background: none !important;
-  padding: 0 !important;
-  margin: 0 !important;
+  background: var(--color-surface-secondary) !important;
+  padding: 2px 6px !important;
+  margin: -2px -6px !important;
+}
+
+main .link-secondary:active,
+main .btn-link:active {
+  transform: scale(0.95);
 }
 
 /* ===== 用户名/作者名 ===== */
-main .gsc-comment-header .link-primary {
+main .gsc-comment-header .link-primary,
+main .author {
   color: var(--color-foreground) !important;
   font-weight: 600 !important;
   border-bottom: none !important;
 }
 
-main .gsc-comment-header .link-primary:hover {
+main .gsc-comment-header .link-primary:hover,
+main .author:hover {
   color: var(--color-accent) !important;
-  background: none !important;
-  padding: 0 !important;
-  margin: 0 !important;
+  background: var(--color-surface-secondary) !important;
+  padding: 1px 3px !important;
+  margin: -1px -3px !important;
 }
 
 /* ===== 评论内容文字 - 匹配博客.prose风格 ===== */
@@ -457,11 +647,22 @@ main .gsc-comment-content,
 main .gsc-reply-content {
   color: var(--color-foreground);
   line-height: 1.8;
+  font-size: 0.95rem;
 }
 
 main .gsc-comment-content p,
 main .gsc-reply-content p {
   margin: 0.75rem 0;
+}
+
+main .gsc-comment-content p:first-child,
+main .gsc-reply-content p:first-child {
+  margin-top: 0;
+}
+
+main .gsc-comment-content p:last-child,
+main .gsc-reply-content p:last-child {
+  margin-bottom: 0;
 }
 
 /* ===== 代码块 - 匹配博客代码风格 ===== */
@@ -470,6 +671,7 @@ main pre {
   border: 1px solid var(--color-border) !important;
   padding: 1rem 1.25rem;
   overflow-x: auto;
+  margin: 1rem 0;
 }
 
 main code {
@@ -485,7 +687,13 @@ main pre code {
   background: none !important;
   padding: 0;
   border: none;
-  border-radius: 0;
+  font-size: 0.875rem;
+  line-height: 1.7;
+}
+
+main .highlight {
+  background-color: var(--color-surface-secondary) !important;
+  border: 1px solid var(--color-border) !important;
 }
 
 /* ===== 引用块 - 匹配博客blockquote风格 ===== */
@@ -508,12 +716,74 @@ main blockquote::before {
   background-color: var(--color-accent);
 }
 
+main blockquote p {
+  margin: 0.5rem 0;
+}
+
+main blockquote p:first-child {
+  margin-top: 0;
+}
+
+main blockquote p:last-child {
+  margin-bottom: 0;
+}
+
 /* ===== 分割线 - 匹配博客虚线风格 ===== */
 main hr {
   border: none;
   border-top: 1px dashed var(--color-border);
   margin: 1.5rem 0;
   opacity: 0.7;
+}
+
+/* ===== 列表样式 - 与prose一致 ===== */
+main ul,
+main ol {
+  padding-left: 1.5rem;
+  margin: 0.75rem 0;
+}
+
+main li {
+  margin: 0.375rem 0;
+  line-height: 1.7;
+}
+
+main ul li::marker {
+  color: var(--color-accent);
+}
+
+main ol li::marker {
+  color: var(--color-accent);
+  font-weight: 600;
+}
+
+/* ===== 表格样式 - 与博客prose表格一致 ===== */
+main table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+  font-size: 0.9375rem;
+}
+
+main th,
+main td {
+  border: 1px solid var(--color-border);
+  padding: 0.625rem 0.875rem;
+  text-align: left;
+}
+
+main th {
+  background-color: var(--color-surface-secondary);
+  font-weight: 600;
+  color: var(--color-foreground);
+}
+
+main tbody tr:nth-child(even) {
+  background-color: var(--color-surface);
+}
+
+main tbody tr:hover {
+  background-color: var(--color-surface-secondary);
 }
 
 /* ===== 复选框 - 匹配博客checkbox风格 ===== */
@@ -526,6 +796,7 @@ main input[type="checkbox"] {
   cursor: pointer;
   position: relative;
   flex-shrink: 0;
+  transition: all var(--transition-fast);
 }
 
 main input[type="checkbox"]:hover {
@@ -551,15 +822,24 @@ main input[type="checkbox"]:checked::after {
 
 /* ===== 头像边框 ===== */
 main .avatar,
+main .avatar-user,
 main .gsc-comment-avatar img,
 main .gsc-reply-avatar img {
   border: 1px solid var(--color-border) !important;
+  background-color: var(--color-surface);
 }
 
 /* ===== Markdown工具栏按钮 ===== */
+main .gsc-markdown-toolbar {
+  background-color: var(--color-surface) !important;
+  border-bottom: 1px solid var(--color-border) !important;
+}
+
 main .gsc-markdown-toolbar button {
   color: var(--color-muted) !important;
   transition: all var(--transition-fast) !important;
+  padding: 0.375rem 0.5rem;
+  border-radius: 0 !important;
 }
 
 main .gsc-markdown-toolbar button:hover {
@@ -568,28 +848,44 @@ main .gsc-markdown-toolbar button:hover {
 }
 
 main .gsc-markdown-toolbar button:active {
-  transform: scale(0.95);
+  transform: scale(0.9);
+}
+
+main .gsc-markdown-toolbar button.is-active {
+  color: var(--color-accent) !important;
+  background-color: color-mix(in oklab, var(--color-accent) 10%, var(--color-surface)) !important;
 }
 
 /* ===== 时间戳/元信息 ===== */
 main .color-text-tertiary,
 main .gsc-comment-header time,
-main .gsc-comment-header relative-time {
+main .gsc-comment-header relative-time,
+main .timestamp,
+main .text-sm {
   color: var(--color-muted) !important;
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
 }
 
 /* ===== 评论数/回复数徽章 ===== */
 main .gsc-replies-count,
-main .gsc-comment-count {
+main .gsc-comment-count,
+main .Counter {
   color: var(--color-muted) !important;
+  background-color: var(--color-surface-secondary) !important;
+  border: 1px solid var(--color-border) !important;
+  font-size: 0.75rem;
+  padding: 0.125rem 0.375rem;
+  font-weight: 500;
 }
 
 /* ===== 点赞/点踩按钮 ===== */
 main .gsc-comment-reactions button,
-main .gsc-upvote-button {
+main .gsc-upvote-button,
+main .reaction-button {
   color: var(--color-muted) !important;
   transition: all var(--transition-fast) !important;
+  padding: 0.375rem;
+  border-radius: 0 !important;
 }
 
 main .gsc-comment-reactions button:hover,
@@ -603,37 +899,273 @@ main .gsc-upvote-button:active {
   transform: scale(0.9);
 }
 
+main .gsc-comment-reactions button[aria-pressed="true"],
+main .gsc-upvote-button[aria-pressed="true"],
+main .gsc-upvote-button[aria-pressed="true"] svg {
+  color: var(--color-accent) !important;
+  fill: var(--color-accent) !important;
+}
+
 main .gsc-upvote-button[aria-pressed="true"] {
+  animation: giscus-bounce-in var(--transition-bounce);
+}
+
+/* ===== 预览标签 ===== */
+main .gsc-comment-box-preview {
+  background-color: var(--color-surface) !important;
+  border: 1px solid var(--color-border) !important;
+  padding: 1rem;
+}
+
+/* ===== 回复线程缩进线 ===== */
+main .gsc-replies {
+  border-left: 2px dashed var(--color-border) !important;
+  padding-left: 1rem !important;
+  margin-left: 0.5rem !important;
+}
+
+/* ===== 排序下拉 ===== */
+main .gsc-right-header .btn,
+main .gsc-header .btn-group .btn {
+  font-size: 0.875rem;
+}
+
+/* ===== 加载更多按钮 ===== */
+main .gsc-pagination .btn {
+  width: 100%;
+  justify-content: center;
+}
+
+main .gsc-pagination .btn:hover {
+  background-color: var(--color-surface-secondary) !important;
+}
+
+/* ===== Flash/Alert 提示框 ===== */
+main .flash,
+main .flash-error,
+main .flash-warn,
+main .flash-success {
+  border: 1px solid var(--color-border) !important;
+  padding: 0.875rem 1rem;
+  margin: 1rem 0;
+}
+
+main .flash {
+  background-color: var(--color-surface) !important;
+  color: var(--color-foreground) !important;
+}
+
+main .flash-error {
+  background-color: color-mix(in oklab, var(--color-danger) 8%, var(--color-surface)) !important;
+  border-color: var(--color-danger) !important;
+  color: var(--color-danger) !important;
+}
+
+main .flash-warn {
+  background-color: color-mix(in oklab, var(--color-warning) 8%, var(--color-surface)) !important;
+  border-color: var(--color-warning) !important;
+  color: var(--color-warning) !important;
+}
+
+main .flash-success {
+  background-color: color-mix(in oklab, var(--color-success) 8%, var(--color-surface)) !important;
+  border-color: var(--color-success) !important;
+  color: var(--color-success) !important;
+}
+
+/* ===== 弹出菜单 ===== */
+main .select-menu-modal,
+main .dropdown-menu {
+  background-color: var(--color-overlay) !important;
+  border: 1px solid var(--color-border) !important;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35) !important;
+}
+
+main .select-menu-item,
+main .dropdown-item {
+  color: var(--color-foreground) !important;
+  transition: background-color var(--transition-fast) !important;
+  padding: 0.5rem 1rem;
+}
+
+main .select-menu-item:hover,
+main .dropdown-item:hover {
+  background-color: var(--color-surface-secondary) !important;
   color: var(--color-accent) !important;
 }
 
-/* ===== 隐藏滚动条 - 与博客一致 ===== */
-main .gsc-comments,
-main .gsc-timeline,
-main .gsc-comment-content,
-main .gsc-reply-content {
-  scrollbar-width: none;
-  -ms-overflow-style: none;
+main .select-menu-item[aria-checked="true"],
+main .dropdown-item[aria-checked="true"] {
+  color: var(--color-accent) !important;
 }
 
-main ::-webkit-scrollbar {
-  display: none;
-  width: 0;
-  height: 0;
+/* ===== 图片样式 ===== */
+main .gsc-comment-content img,
+main .gsc-reply-content img {
+  max-width: 100%;
+  border: 1px solid var(--color-border);
+  margin: 1rem 0;
 }
 
-/* ===== 加载动画淡入效果 ===== */
-@keyframes giscus-fade-in {
-  0% {
-    opacity: 0;
-    transform: translateY(1rem);
+/* ===== 强调文本 ===== */
+main strong,
+main b {
+  color: var(--color-foreground);
+  font-weight: 700;
+}
+
+main em,
+main i {
+  font-style: italic;
+  color: color-mix(in oklab, var(--color-foreground) 90%, transparent);
+}
+
+main del {
+  color: var(--color-muted);
+  text-decoration: line-through;
+}
+
+/* ===== 键盘按键样式 ===== */
+main kbd {
+  background-color: var(--color-surface-secondary);
+  border: 1px solid var(--color-border);
+  border-bottom-width: 2px;
+  padding: 0.125rem 0.375rem;
+  font-size: 0.875em;
+  font-family: var(--font-family-monospace);
+}
+
+/* ===== 标记/高亮文本 ===== */
+main mark {
+  background-color: color-mix(in oklab, var(--color-accent) 25%, transparent);
+  color: var(--color-foreground);
+  padding: 0 0.125rem;
+}
+
+/* ===== 删除/编辑评论按钮 ===== */
+main .gsc-comment-footer .btn-link,
+main .gsc-reply-footer .btn-link {
+  font-size: 0.8125rem;
+}
+
+/* ===== 评论内容间距优化 ===== */
+main .gsc-comment > div {
+  padding: 1rem;
+}
+
+main .gsc-reply > div {
+  padding: 0.75rem;
+}
+
+main .gsc-comment-header {
+  margin-bottom: 0.5rem;
+}
+
+main .gsc-comment-footer,
+main .gsc-reply-footer {
+  margin-top: 0.75rem;
+  padding-top: 0.5rem;
+}
+
+/* ===== 回复按钮容器 ===== */
+main .gsc-replies {
+  margin-top: 0.75rem;
+}
+
+main .gsc-reply {
+  margin-top: 0.5rem;
+}
+
+/* ===== 写评论按钮区域 ===== */
+main .gsc-comment-box-buttons {
+  padding-top: 0.75rem;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+/* ===== 取消按钮样式 ===== */
+main .gsc-comment-box-buttons .btn:not(.btn-primary) {
+  margin-right: 0.5rem;
+}
+
+/* ===== Giscus 底部 Powered by 链接 ===== */
+main .gsc-footer {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px dashed var(--color-border);
+  text-align: center;
+  font-size: 0.8125rem;
+}
+
+main .gsc-footer a {
+  color: var(--color-muted);
+  border-bottom: none;
+}
+
+main .gsc-footer a:hover {
+  color: var(--color-accent);
+  background: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* ===== 输入指示器（正在输入...） ===== */
+main .gsc-comment-box-is-replying {
+  color: var(--color-muted);
+  font-size: 0.8125rem;
+  padding-top: 0.5rem;
+}
+
+/* ===== OAuth 登录按钮 ===== */
+main .gsc-comment-box-sign-in {
+  padding: 1.5rem;
+  text-align: center;
+  color: var(--color-muted);
+}
+
+main .gsc-comment-box-sign-in a {
+  color: var(--color-accent);
+  font-weight: 500;
+}
+
+/* ===== 无评论时的空状态 ===== */
+main .gsc-no-comments {
+  padding: 3rem 1rem;
+  text-align: center;
+  color: var(--color-muted);
+}
+
+main .gsc-no-comments svg {
+  opacity: 0.3;
+  margin-bottom: 1rem;
+}
+
+/* ===== 错误状态 ===== */
+main .gsc-error {
+  padding: 2rem;
+  text-align: center;
+  color: var(--color-danger);
+}
+
+/* =====  respects reduced motion preference ===== */
+@media (prefers-reduced-motion: reduce) {
+  main *,
+  main *::before,
+  main *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    transform: none !important;
   }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
+  
+  main .gsc-comments,
+  main .gsc-header,
+  main .gsc-comment-box,
+  main .gsc-timeline,
+  main .gsc-timeline .gsc-comment {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
   }
-}
-
-main .gsc-comments {
-  animation: giscus-fade-in 300ms ease-out forwards;
 }
