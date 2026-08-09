@@ -38,6 +38,13 @@ export const linksConfig = {
           icon: '/images/friend/friend[2x.nz].jpg',
           description: '《二叉树树》官方网站',
         },
+        {
+          name: 'SkyのXnok',
+          url: 'https://201562.xyz',
+          icon: 'https://201562.xyz/avatar.png',
+          description: '记录学习、生活与思考',
+        },
+
       ],
     },
   ],
