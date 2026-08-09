@@ -9,6 +9,7 @@ import remarkGfm from 'remark-gfm';
 
 export default defineConfig({
   output: 'static',
+  session: { driver: 'memory' },
   adapter: cloudflare({
     prerenderEnvironment: 'node',
     routes: {
