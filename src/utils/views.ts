@@ -10,12 +10,25 @@ export async function getViewsBatch(slugs: string[]): Promise<Record<string, num
   return data;
 }
 
+export async function getViews(slug: string): Promise<number> {
+  const data = await getViewsBatch([slug]);
+  const count = data[slug] ?? 0;
+  localStorage.setItem(`vw_${slug}`, String(count));
+  localStorage.setItem(`vw_ts_${slug}`, String(Date.now()));
+  return count;
+}
+
 export async function incrementView(slug: string): Promise<number> {
   const res = await fetch(`/api/views/${slug}/inc`, { method: 'POST' });
   const { count } = await res.json();
   localStorage.setItem(`vw_${slug}`, String(count));
   localStorage.setItem(`vw_ts_${slug}`, String(Date.now()));
+  localStorage.setItem(`vw_visited_${slug}`, '1');
   return count;
+}
+
+export function isVisited(slug: string): boolean {
+  return localStorage.getItem(`vw_visited_${slug}`) === '1';
 }
 
 export function getCachedView(slug: string): number | null {
@@ -26,7 +39,7 @@ export function getCachedView(slug: string): number | null {
 }
 
 function isCacheValid(slug: string): boolean {
-  const ts = localStorage.getItem(`vw_batch_ts_${slug}`);
+  const ts = localStorage.getItem(`vw_ts_${slug}`);
   if (!ts) return false;
   return Date.now() - Number(ts) < CACHE_TTL;
 }
@@ -35,7 +48,7 @@ function cacheViews(data: Record<string, number>): void {
   const now = String(Date.now());
   for (const [slug, count] of Object.entries(data)) {
     localStorage.setItem(`vw_${slug}`, String(count));
-    localStorage.setItem(`vw_batch_ts_${slug}`, now);
+    localStorage.setItem(`vw_ts_${slug}`, now);
   }
 }
 

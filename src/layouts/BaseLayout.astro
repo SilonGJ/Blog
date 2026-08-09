@@ -38,7 +38,7 @@ const pageDescription = description || siteConfig.description;
     <slot />
   <script>
     import PhotoSwipeLightbox from "photoswipe/lightbox";
-    import { getViewsBatchCached, incrementView } from "../utils/views";
+    import { getViewsBatchCached, incrementView, getViews, isVisited } from "../utils/views";
 
     let lightbox;
     let pswp = import("photoswipe");
@@ -152,11 +152,15 @@ const pageDescription = description || siteConfig.description;
 
       if (isDetailPage) {
         const slug = document.querySelector("article[data-slug]").getAttribute("data-slug");
-        const ts = localStorage.getItem("vw_ts_" + slug);
-        if (ts && Date.now() - Number(ts) < CACHE_TTL) {
-          renderDetailViews(Number(localStorage.getItem("vw_" + slug) ?? "0"));
-        } else {
+        if (!isVisited(slug)) {
           incrementView(slug).then((count) => renderDetailViews(count));
+        } else {
+          const ts = localStorage.getItem("vw_ts_" + slug);
+          if (ts && Date.now() - Number(ts) < CACHE_TTL) {
+            renderDetailViews(Number(localStorage.getItem("vw_" + slug) ?? "0"));
+          } else {
+            getViews(slug).then((count) => renderDetailViews(count));
+          }
         }
       } else {
         getViewsBatchCached(slugs).then((data) => {
