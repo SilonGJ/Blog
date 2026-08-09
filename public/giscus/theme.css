@@ -1,147 +1,183 @@
 /*!
  * Giscus Theme - 孤久の小站
- * Custom theme matching the blog's dark, sharp-cornered design.
- * All colors derived from the blog's OKLCH palette (hue 260, cool-neutral).
+ * 与博客深色冷色调(hue 260)、无圆角、平滑过渡动画风格完全统一
  */
 
 main {
-  /* ===== Syntax Highlighting (Prettylights) ===== */
-  --color-prettylights-syntax-comment: #83868b;
-  --color-prettylights-syntax-constant: #c5a8e0;
-  --color-prettylights-syntax-entity: #b8c4db;
-  --color-prettylights-syntax-storage-modifier-import: #83868b;
-  --color-prettylights-syntax-entity-tag: #8ab091;
-  --color-prettylights-syntax-keyword: #c57670;
-  --color-prettylights-syntax-string: #96b8d6;
-  --color-prettylights-syntax-variable: #d6b17d;
-  --color-prettylights-syntax-brackethighlighter-unmatched: #c57670;
-  --color-prettylights-syntax-invalid-illegal-text: #f0f2f4;
-  --color-prettylights-syntax-invalid-illegal-bg: #5c2222;
-  --color-prettylights-syntax-carriage-return-text: #f0f2f4;
-  --color-prettylights-syntax-carriage-return-bg: #5c2222;
-  --color-prettylights-syntax-string-regexp: #8ab091;
-  --color-prettylights-syntax-markup-list: #d6b17d;
-  --color-prettylights-syntax-markup-heading: #7b9fd6;
-  --color-prettylights-syntax-markup-italic: #83868b;
-  --color-prettylights-syntax-markup-bold: #e2e5e9;
-  --color-prettylights-syntax-markup-deleted-text: #f0d0cc;
-  --color-prettylights-syntax-markup-deleted-bg: #3d1515;
-  --color-prettylights-syntax-markup-inserted-text: #c4e8ca;
-  --color-prettylights-syntax-markup-inserted-bg: #152d1a;
-  --color-prettylights-syntax-markup-changed-text: #f0dcc0;
-  --color-prettylights-syntax-markup-changed-bg: #3d2a10;
-  --color-prettylights-syntax-markup-ignored-text: #83868b;
-  --color-prettylights-syntax-markup-ignored-bg: #1a2a40;
-  --color-prettylights-syntax-meta-diff-range: #c5a8e0;
-  --color-prettylights-syntax-brackethighlighter-angle: #83868b;
-  --color-prettylights-syntax-sublimelinter-gutter-mark: #3f4348;
-  --color-prettylights-syntax-constant-other-reference-link: #96b8d6;
+  /* ===== 博客配色系统 (OKLCH - hue 260) ===== */
+  --color-background: oklch(0.14 0.008 260);
+  --color-foreground: oklch(0.96 0.004 260);
+  --color-surface: oklch(0.20 0.008 260);
+  --color-surface-secondary: oklch(0.25 0.008 260);
+  --color-surface-tertiary: oklch(0.30 0.008 260);
+  --color-overlay: oklch(0.22 0.010 260);
+  --color-muted: oklch(0.62 0.008 260);
+  --color-accent: oklch(0.92 0.006 260);
+  --color-accent-foreground: oklch(0.14 0.008 260);
+  --color-border: oklch(0.30 0.010 260);
+  --color-separator: oklch(0.25 0.008 260);
+  --color-success: oklch(0.72 0.06 150);
+  --color-warning: oklch(0.78 0.08 75);
+  --color-danger: oklch(0.65 0.10 25);
 
-  /* ===== Buttons ===== */
-  --color-btn-text: #83868b;
-  --color-btn-bg: #1f2226;
-  --color-btn-border: #2b2e33;
+  /* ===== Syntax Highlighting (Prettylights) ===== */
+  --color-prettylights-syntax-comment: var(--color-muted);
+  --color-prettylights-syntax-constant: oklch(0.75 0.12 300);
+  --color-prettylights-syntax-entity: oklch(0.80 0.04 240);
+  --color-prettylights-syntax-storage-modifier-import: var(--color-muted);
+  --color-prettylights-syntax-entity-tag: var(--color-success);
+  --color-prettylights-syntax-keyword: var(--color-danger);
+  --color-prettylights-syntax-string: oklch(0.78 0.06 230);
+  --color-prettylights-syntax-variable: var(--color-warning);
+  --color-prettylights-syntax-brackethighlighter-unmatched: var(--color-danger);
+  --color-prettylights-syntax-invalid-illegal-text: var(--color-foreground);
+  --color-prettylights-syntax-invalid-illegal-bg: color-mix(in oklab, var(--color-danger) 20%, var(--color-background));
+  --color-prettylights-syntax-carriage-return-text: var(--color-foreground);
+  --color-prettylights-syntax-carriage-return-bg: color-mix(in oklab, var(--color-danger) 20%, var(--color-background));
+  --color-prettylights-syntax-string-regexp: var(--color-success);
+  --color-prettylights-syntax-markup-list: var(--color-warning);
+  --color-prettylights-syntax-markup-heading: oklch(0.75 0.08 240);
+  --color-prettylights-syntax-markup-italic: var(--color-muted);
+  --color-prettylights-syntax-markup-bold: var(--color-foreground);
+  --color-prettylights-syntax-markup-deleted-text: color-mix(in oklab, var(--color-danger) 30%, var(--color-foreground));
+  --color-prettylights-syntax-markup-deleted-bg: color-mix(in oklab, var(--color-danger) 15%, var(--color-surface));
+  --color-prettylights-syntax-markup-inserted-text: color-mix(in oklab, var(--color-success) 30%, var(--color-foreground));
+  --color-prettylights-syntax-markup-inserted-bg: color-mix(in oklab, var(--color-success) 15%, var(--color-surface));
+  --color-prettylights-syntax-markup-changed-text: color-mix(in oklab, var(--color-warning) 30%, var(--color-foreground));
+  --color-prettylights-syntax-markup-changed-bg: color-mix(in oklab, var(--color-warning) 15%, var(--color-surface));
+  --color-prettylights-syntax-markup-ignored-text: var(--color-muted);
+  --color-prettylights-syntax-markup-ignored-bg: color-mix(in oklab, var(--color-accent) 10%, var(--color-surface));
+  --color-prettylights-syntax-meta-diff-range: oklch(0.75 0.12 300);
+  --color-prettylights-syntax-brackethighlighter-angle: var(--color-muted);
+  --color-prettylights-syntax-sublimelinter-gutter-mark: var(--color-surface-tertiary);
+  --color-prettylights-syntax-constant-other-reference-link: oklch(0.78 0.06 230);
+
+  /* ===== Buttons - 与博客.button风格一致 ===== */
+  --color-btn-text: var(--color-foreground);
+  --color-btn-bg: color-mix(in oklab, var(--color-surface) 50%, var(--color-surface-secondary));
+  --color-btn-border: var(--color-border);
   --color-btn-shadow: 0 0 transparent;
   --color-btn-inset-shadow: 0 0 transparent;
-  --color-btn-hover-bg: #2b2e32;
-  --color-btn-hover-border: #3f4348;
-  --color-btn-active-bg: #2b2e32;
-  --color-btn-active-border: #3f4348;
-  --color-btn-selected-bg: #14161a;
+  --color-btn-hover-bg: var(--color-surface-tertiary);
+  --color-btn-hover-border: var(--color-border);
+  --color-btn-active-bg: color-mix(in oklab, var(--color-surface-tertiary) 80%, white);
+  --color-btn-active-border: var(--color-border);
+  --color-btn-selected-bg: var(--color-surface-secondary);
 
-  /* ===== Primary Buttons ===== */
-  --color-btn-primary-text: #07090c;
-  --color-btn-primary-bg: #e2e5e9;
-  --color-btn-primary-border: #2b2e33;
+  /* ===== Primary Buttons - 与博客.button--primary风格一致 ===== */
+  --color-btn-primary-text: var(--color-accent-foreground);
+  --color-btn-primary-bg: var(--color-accent);
+  --color-btn-primary-border: var(--color-accent);
   --color-btn-primary-shadow: 0 0 transparent;
   --color-btn-primary-inset-shadow: 0 0 transparent;
-  --color-btn-primary-hover-bg: #f0f2f4;
-  --color-btn-primary-hover-border: #2b2e33;
-  --color-btn-primary-selected-bg: #e2e5e9;
+  --color-btn-primary-hover-bg: color-mix(in oklab, var(--color-accent) 92%, black);
+  --color-btn-primary-hover-border: var(--color-accent);
+  --color-btn-primary-selected-bg: var(--color-accent);
   --color-btn-primary-selected-shadow: 0 0 transparent;
-  --color-btn-primary-disabled-text: #3f4348;
-  --color-btn-primary-disabled-bg: #1f2226;
-  --color-btn-primary-disabled-border: #2b2e33;
+  --color-btn-primary-disabled-text: var(--color-muted);
+  --color-btn-primary-disabled-bg: var(--color-surface);
+  --color-btn-primary-disabled-border: var(--color-border);
 
   /* ===== Action List & Segmented Control ===== */
-  --color-action-list-item-default-hover-bg: #1f2226;
-  --color-segmented-control-bg: #14161a;
-  --color-segmented-control-button-bg: #07090c;
-  --color-segmented-control-button-selected-border: #3f4348;
+  --color-action-list-item-default-hover-bg: var(--color-surface-secondary);
+  --color-segmented-control-bg: var(--color-surface);
+  --color-segmented-control-button-bg: var(--color-background);
+  --color-segmented-control-button-selected-border: var(--color-border);
 
   /* ===== Foreground ===== */
-  --color-fg-default: #f0f2f4;
-  --color-fg-muted: #83868b;
-  --color-fg-subtle: #3f4348;
+  --color-fg-default: var(--color-foreground);
+  --color-fg-muted: var(--color-muted);
+  --color-fg-subtle: var(--color-surface-tertiary);
 
   /* ===== Canvas (Backgrounds) ===== */
-  --color-canvas-default: #07090c;
-  --color-canvas-overlay: #14161a;
-  --color-canvas-inset: #07090c;
-  --color-canvas-subtle: #1f2226;
+  --color-canvas-default: var(--color-background);
+  --color-canvas-overlay: var(--color-overlay);
+  --color-canvas-inset: var(--color-background);
+  --color-canvas-subtle: var(--color-surface);
 
   /* ===== Borders ===== */
-  --color-border-default: #2b2e33;
-  --color-border-muted: #1f2226;
+  --color-border-default: var(--color-border);
+  --color-border-muted: var(--color-separator);
 
   /* ===== Neutral ===== */
-  --color-neutral-muted: #1f2226;
+  --color-neutral-muted: var(--color-surface);
 
   /* ===== Accent ===== */
-  --color-accent-fg: #e2e5e9;
-  --color-accent-emphasis: #2b2e32;
-  --color-accent-muted: #1f2226;
-  --color-accent-subtle: #14161a;
+  --color-accent-fg: var(--color-accent);
+  --color-accent-emphasis: var(--color-surface-secondary);
+  --color-accent-muted: var(--color-surface);
+  --color-accent-subtle: color-mix(in oklab, var(--color-accent) 5%, var(--color-surface));
 
   /* ===== Status Colors ===== */
-  --color-success-fg: #8ab091;
-  --color-attention-fg: #d6b17d;
-  --color-attention-muted: #3d2a10;
-  --color-attention-subtle: #1f1a10;
-  --color-danger-fg: #c57670;
-  --color-danger-muted: #3d1515;
-  --color-danger-subtle: #1f0e0e;
+  --color-success-fg: var(--color-success);
+  --color-attention-fg: var(--color-warning);
+  --color-attention-muted: color-mix(in oklab, var(--color-warning) 15%, var(--color-surface));
+  --color-attention-subtle: color-mix(in oklab, var(--color-warning) 8%, var(--color-surface));
+  --color-danger-fg: var(--color-danger);
+  --color-danger-muted: color-mix(in oklab, var(--color-danger) 15%, var(--color-surface));
+  --color-danger-subtle: color-mix(in oklab, var(--color-danger) 8%, var(--color-surface));
 
   /* ===== Shadows ===== */
   --color-primer-shadow-inset: 0 0 transparent;
 
   /* ===== Scale ===== */
-  --color-scale-gray-7: #2b2e32;
-  --color-scale-blue-8: #14161a;
+  --color-scale-gray-7: var(--color-surface-tertiary);
+  --color-scale-blue-8: var(--color-surface);
 
   /* ===== Social Reactions ===== */
-  --color-social-reaction-bg-hover: #2b2e32;
-  --color-social-reaction-bg-reacted-hover: #1a2a40;
+  --color-social-reaction-bg-hover: var(--color-surface-secondary);
+  --color-social-reaction-bg-reacted-hover: color-mix(in oklab, var(--color-accent) 10%, var(--color-surface));
 
-  /* ===== Font Families ===== */
+  /* ===== Font Families - 与博客保持一致 ===== */
   --font-family-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-family-monospace: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
   --font-family-default: var(--font-family-sans);
+
+  /* ===== 过渡动画时间 - 与博客一致 (0.2s-0.25s) ===== */
+  --transition-fast: 0.2s ease;
+  --transition-normal: 0.25s ease;
 }
 
-/* ===== Sharp Corners: All border-radius to 0 ===== */
+/* ===== 全局重置：无圆角设计 ===== */
 main * {
   border-radius: 0 !important;
+  transition: background-color var(--transition-normal), 
+              color var(--transition-fast),
+              border-color var(--transition-fast),
+              opacity var(--transition-fast),
+              transform var(--transition-fast);
+}
+
+/* ===== 移除focus时的默认outline，使用边框颜色变化 ===== */
+main *:focus-visible {
+  outline: none;
+  border-color: var(--color-accent) !important;
+}
+
+/* ===== 选中文字样式 - 与博客一致 ===== */
+main ::selection {
+  background: color-mix(in oklab, var(--color-accent) 30%, transparent);
+  color: var(--color-foreground);
 }
 
 /* ===== Layout Customizations ===== */
 
-/* Hide reaction counts for a cleaner look */
+/* 隐藏反应计数，保持简洁 */
 .gsc-reactions-count {
   display: none;
 }
 
-/* Show newest comments first */
+/* 最新评论在前 */
 .gsc-timeline {
   flex-direction: column-reverse;
 }
 
-/* Header spacing */
+/* Header间距 */
 .gsc-header {
   padding-bottom: 1rem;
 }
 
-/* Comment ordering: header → box → timeline */
+/* 评论排序：header → 输入框 → 评论列表 */
 .gsc-comments > .gsc-header {
   order: 1;
 }
@@ -155,67 +191,449 @@ main * {
   order: 3;
 }
 
-/* Background for the giscus homepage */
+/* giscus首页背景 */
 .gsc-homepage-bg {
-  background-color: #07090c;
+  background-color: var(--color-background);
 }
 
-/* Loading indicator */
+/* 加载指示器 */
 main .gsc-loading-image {
   background-image: url("https://github.githubassets.com/images/mona-loading-dimmed.gif");
+  opacity: 0.6;
 }
 
-/* ===== Input & Textarea Styling ===== */
+/* ===== 标题样式 - 与博客标题一致 ===== */
+main .gsc-comment-box-tabs button,
+main .gsc-header h1,
+main .gsc-comment-header {
+  font-weight: 600;
+  color: var(--color-foreground);
+}
+
+/* ===== 按钮样式增强 - 匹配博客.button动画 ===== */
+main .btn {
+  border: 1px solid var(--color-border) !important;
+  background-color: color-mix(in oklab, var(--color-surface) 50%, var(--color-surface-secondary)) !important;
+  color: var(--color-foreground) !important;
+  transition: background-color var(--transition-normal) !important;
+}
+
+main .btn:hover {
+  background-color: var(--color-surface-tertiary) !important;
+}
+
+main .btn:active {
+  background-color: color-mix(in oklab, var(--color-surface-tertiary) 80%, white) !important;
+  transform: scale(0.98);
+}
+
+main .btn-primary {
+  background-color: var(--color-accent) !important;
+  border-color: var(--color-accent) !important;
+  color: var(--color-accent-foreground) !important;
+}
+
+main .btn-primary:hover {
+  background-color: color-mix(in oklab, var(--color-accent) 92%, black) !important;
+  opacity: 1 !important;
+}
+
+main .btn-primary:active {
+  background-color: color-mix(in oklab, var(--color-accent) 85%, black) !important;
+  transform: scale(0.98);
+}
+
+/* ===== 链接样式 - 与博客.prose a风格一致 ===== */
+main a {
+  color: var(--color-accent);
+  text-decoration: none;
+  border-bottom: 1px dashed var(--color-border);
+  padding-bottom: 1px;
+  transition: all var(--transition-fast);
+  font-weight: 500;
+}
+
+main a:hover {
+  color: var(--color-foreground);
+  border-bottom-color: transparent;
+  background-color: var(--color-surface-secondary);
+  padding: 1px 2px;
+  margin: -1px -2px;
+}
+
+main a:active {
+  background-color: var(--color-surface-tertiary);
+}
+
+/* ===== 标签页按钮 ===== */
+main .gsc-comment-box-tabs button {
+  background: transparent !important;
+  border: none !important;
+  border-bottom: 2px solid transparent !important;
+  color: var(--color-muted) !important;
+  transition: all var(--transition-fast) !important;
+  padding-bottom: 0.5rem;
+}
+
+main .gsc-comment-box-tabs button:hover {
+  color: var(--color-foreground) !important;
+  background: none !important;
+}
+
+main .gsc-comment-box-tabs button.color-text-primary {
+  color: var(--color-accent) !important;
+  border-bottom-color: var(--color-accent) !important;
+}
+
+/* ===== 输入框 & 文本域 - 匹配博客.input样式 ===== */
 main .gsc-comment-box .gsc-new-comment-input,
-main textarea {
-  background-color: #07090c !important;
-  border-color: #2b2e33 !important;
-  color: #f0f2f4 !important;
+main textarea,
+main input[type="text"] {
+  background-color: var(--color-surface) !important;
+  border: 1px solid var(--color-border) !important;
+  color: var(--color-foreground) !important;
   border-radius: 0 !important;
+  transition: border-color var(--transition-normal) !important;
+  padding: 0.75rem 1rem;
 }
 
 main .gsc-comment-box .gsc-new-comment-input:focus,
-main textarea:focus {
-  border-color: #e2e5e9 !important;
+main textarea:focus,
+main input[type="text"]:focus {
+  border-color: var(--color-accent) !important;
   box-shadow: none !important;
   outline: none !important;
+  background-color: var(--color-surface) !important;
 }
 
-/* ===== Comment Thread Borders ===== */
+main .gsc-comment-box .gsc-new-comment-input::placeholder,
+main textarea::placeholder,
+main input::placeholder {
+  color: var(--color-muted);
+}
+
+/* ===== 评论边框 ===== */
 .gsc-timeline .gsc-comment {
-  border-color: #2b2e33 !important;
+  border-color: var(--color-border) !important;
+  background-color: var(--color-surface) !important;
+  transition: background-color var(--transition-normal);
 }
 
-/* ===== Reply Box ===== */
+.gsc-timeline .gsc-comment:hover {
+  background-color: color-mix(in oklab, var(--color-surface) 80%, var(--color-surface-secondary)) !important;
+}
+
+/* ===== 评论框容器 ===== */
+main .gsc-comment-box {
+  background-color: var(--color-surface) !important;
+  border: 1px solid var(--color-border) !important;
+}
+
+main .gsc-comment-box-textarea {
+  background-color: var(--color-surface-secondary) !important;
+  border: none !important;
+}
+
+main .gsc-comment-box-textarea:focus {
+  background-color: var(--color-surface-secondary) !important;
+}
+
+/* ===== 回复框 ===== */
 .gsc-reply-box {
-  border-color: #2b2e33 !important;
+  border-color: var(--color-border) !important;
+  background-color: var(--color-surface-secondary) !important;
 }
 
-/* ===== "Sign in to comment" link ===== */
+.gsc-reply-box:hover {
+  border-color: var(--color-border);
+}
+
+/* ===== "登录后评论" 链接 ===== */
 .gsc-login-link {
-  color: #e2e5e9 !important;
+  color: var(--color-accent) !important;
+  transition: color var(--transition-fast);
 }
 
 .gsc-login-link:hover {
-  color: #f0f2f4 !important;
+  color: var(--color-foreground) !important;
 }
 
-/* ===== Dropdown / Select ===== */
+/* ===== 下拉菜单 / 选择框 ===== */
 main select {
-  background-color: #1f2226 !important;
-  border-color: #2b2e33 !important;
-  color: #f0f2f4 !important;
+  background-color: var(--color-surface) !important;
+  border: 1px solid var(--color-border) !important;
+  color: var(--color-foreground) !important;
   border-radius: 0 !important;
+  transition: border-color var(--transition-normal);
+  padding: 0.375rem 0.75rem;
 }
 
-/* ===== Pagination ===== */
+main select:focus {
+  border-color: var(--color-accent) !important;
+  outline: none !important;
+}
+
+/* ===== 分页 ===== */
 .main-pagination .pagination-loader-container {
   background-image: url("https://github.githubassets.com/images/modules/pulls/progressive-disclosure-line-dark.svg");
+  opacity: 0.4;
 }
 
-/* ===== Tooltip / Popup ===== */
+/* ===== 工具提示 / 弹出框 ===== */
 .gsc-tooltip {
-  background-color: #14161a !important;
-  border-color: #2b2e33 !important;
-  color: #f0f2f4 !important;
+  background-color: var(--color-overlay) !important;
+  border: 1px solid var(--color-border) !important;
+  color: var(--color-foreground) !important;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35) !important;
+}
+
+/* ===== 社交反应按钮 (表情反馈) - 匹配博客.btn-plain风格 ===== */
+main .gsc-social-reaction-summary-item {
+  background: var(--color-surface) !important;
+  border: 1px solid var(--color-border) !important;
+  color: var(--color-muted) !important;
+  transition: all var(--transition-fast) !important;
+}
+
+main .gsc-social-reaction-summary-item:hover {
+  background-color: var(--color-surface-secondary) !important;
+  color: var(--color-accent) !important;
+  border-color: var(--color-border) !important;
+}
+
+main .gsc-social-reaction-summary-item:active {
+  background-color: var(--color-surface-tertiary) !important;
+  transform: scale(0.95);
+}
+
+main .gsc-social-reaction-summary-item.has-reacted {
+  background-color: color-mix(in oklab, var(--color-accent) 10%, var(--color-surface)) !important;
+  border-color: var(--color-accent) !important;
+  color: var(--color-accent) !important;
+}
+
+main .gsc-social-reaction-summary-item.has-reacted:hover {
+  background-color: color-mix(in oklab, var(--color-accent) 15%, var(--color-surface-secondary)) !important;
+}
+
+/* ===== 评论操作按钮 (回复、点赞等) - 匹配博客按钮风格 ===== */
+main .gsc-comment-box-markdown-hint,
+main .gsc-comment-header .color-text-secondary,
+main .gsc-replies {
+  color: var(--color-muted) !important;
+}
+
+main .link-secondary,
+main .btn-link {
+  color: var(--color-muted) !important;
+  border-bottom: none !important;
+  transition: color var(--transition-fast) !important;
+}
+
+main .link-secondary:hover,
+main .btn-link:hover {
+  color: var(--color-accent) !important;
+  background: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+/* ===== 用户名/作者名 ===== */
+main .gsc-comment-header .link-primary {
+  color: var(--color-foreground) !important;
+  font-weight: 600 !important;
+  border-bottom: none !important;
+}
+
+main .gsc-comment-header .link-primary:hover {
+  color: var(--color-accent) !important;
+  background: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+/* ===== 评论内容文字 - 匹配博客.prose风格 ===== */
+main .gsc-comment-content,
+main .gsc-reply-content {
+  color: var(--color-foreground);
+  line-height: 1.8;
+}
+
+main .gsc-comment-content p,
+main .gsc-reply-content p {
+  margin: 0.75rem 0;
+}
+
+/* ===== 代码块 - 匹配博客代码风格 ===== */
+main pre {
+  background-color: var(--color-surface-secondary) !important;
+  border: 1px solid var(--color-border) !important;
+  padding: 1rem 1.25rem;
+  overflow-x: auto;
+}
+
+main code {
+  background-color: var(--color-surface-secondary) !important;
+  color: var(--color-foreground);
+  padding: 0.125rem 0.4rem;
+  font-size: 0.875em;
+  font-family: var(--font-family-monospace);
+  border: 1px solid var(--color-border);
+}
+
+main pre code {
+  background: none !important;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+}
+
+/* ===== 引用块 - 匹配博客blockquote风格 ===== */
+main blockquote {
+  margin: 1rem 0;
+  padding: 0.75rem 1rem;
+  color: var(--color-muted);
+  background-color: var(--color-surface);
+  border-left: none;
+  position: relative;
+}
+
+main blockquote::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 4px;
+  background-color: var(--color-accent);
+}
+
+/* ===== 分割线 - 匹配博客虚线风格 ===== */
+main hr {
+  border: none;
+  border-top: 1px dashed var(--color-border);
+  margin: 1.5rem 0;
+  opacity: 0.7;
+}
+
+/* ===== 复选框 - 匹配博客checkbox风格 ===== */
+main input[type="checkbox"] {
+  appearance: none;
+  width: 1rem;
+  height: 1rem;
+  border: 1px solid var(--color-border);
+  background-color: transparent;
+  cursor: pointer;
+  position: relative;
+  flex-shrink: 0;
+}
+
+main input[type="checkbox"]:hover {
+  border-color: var(--color-accent);
+}
+
+main input[type="checkbox"]:checked {
+  background-color: var(--color-accent);
+  border-color: var(--color-border);
+}
+
+main input[type="checkbox"]:checked::after {
+  content: '';
+  position: absolute;
+  left: 0.3125rem;
+  top: 0.0625rem;
+  width: 0.3125rem;
+  height: 0.625rem;
+  border: solid var(--color-accent-foreground);
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+/* ===== 头像边框 ===== */
+main .avatar,
+main .gsc-comment-avatar img,
+main .gsc-reply-avatar img {
+  border: 1px solid var(--color-border) !important;
+}
+
+/* ===== Markdown工具栏按钮 ===== */
+main .gsc-markdown-toolbar button {
+  color: var(--color-muted) !important;
+  transition: all var(--transition-fast) !important;
+}
+
+main .gsc-markdown-toolbar button:hover {
+  color: var(--color-foreground) !important;
+  background-color: var(--color-surface-tertiary) !important;
+}
+
+main .gsc-markdown-toolbar button:active {
+  transform: scale(0.95);
+}
+
+/* ===== 时间戳/元信息 ===== */
+main .color-text-tertiary,
+main .gsc-comment-header time,
+main .gsc-comment-header relative-time {
+  color: var(--color-muted) !important;
+  font-size: 0.875rem;
+}
+
+/* ===== 评论数/回复数徽章 ===== */
+main .gsc-replies-count,
+main .gsc-comment-count {
+  color: var(--color-muted) !important;
+}
+
+/* ===== 点赞/点踩按钮 ===== */
+main .gsc-comment-reactions button,
+main .gsc-upvote-button {
+  color: var(--color-muted) !important;
+  transition: all var(--transition-fast) !important;
+}
+
+main .gsc-comment-reactions button:hover,
+main .gsc-upvote-button:hover {
+  color: var(--color-accent) !important;
+  background-color: var(--color-surface-secondary) !important;
+}
+
+main .gsc-comment-reactions button:active,
+main .gsc-upvote-button:active {
+  transform: scale(0.9);
+}
+
+main .gsc-upvote-button[aria-pressed="true"] {
+  color: var(--color-accent) !important;
+}
+
+/* ===== 隐藏滚动条 - 与博客一致 ===== */
+main .gsc-comments,
+main .gsc-timeline,
+main .gsc-comment-content,
+main .gsc-reply-content {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+main ::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+/* ===== 加载动画淡入效果 ===== */
+@keyframes giscus-fade-in {
+  0% {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+main .gsc-comments {
+  animation: giscus-fade-in 300ms ease-out forwards;
 }
