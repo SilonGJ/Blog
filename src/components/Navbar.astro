@@ -325,14 +325,29 @@ const needNoSwup = isBlogHome; // 跨子站跳转不用 swup
     }
   }
 
-  startProgress();
+  function isBlogHomePage() {
+    return window.location.pathname === '/blog/' || window.location.pathname === '/blog';
+  }
 
-  window.addEventListener('load', () => {
-    if (!initialLoadComplete) {
-      initialLoadComplete = true;
-      finishProgress();
+  // 用户要求：首屏直接进入博客首页时，不显示加载进度条；只有 swup 页面切换时才显示
+  if (isBlogHomePage()) {
+    // 博客首页首屏：直接隐藏进度条，跳过首屏加载动画
+    initialLoadComplete = true;
+    const bar = document.getElementById('page-progress-bar');
+    if (bar) {
+      bar.style.opacity = '0';
+      bar.style.width = '0%';
     }
-  });
+  } else {
+    // 非博客首页首屏：正常显示加载进度条
+    startProgress();
+    window.addEventListener('load', () => {
+      if (!initialLoadComplete) {
+        initialLoadComplete = true;
+        finishProgress();
+      }
+    });
+  }
 
   const setupProgressBar = () => {
     if (window.swup) {
@@ -349,10 +364,6 @@ const needNoSwup = isBlogHome; // 跨子站跳转不用 swup
     setupProgressBar();
   } else {
     document.addEventListener('swup:enable', setupProgressBar);
-  }
-
-  function isBlogHomePage() {
-    return window.location.pathname === '/blog/' || window.location.pathname === '/blog';
   }
 
   function playSlideInAnimation() {

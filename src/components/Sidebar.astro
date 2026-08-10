@@ -281,7 +281,8 @@ const iconMap: Record<string, string> = {
     const tocNav = document.getElementById('sidebar-toc-nav');
     if (!content || !tocNav) return;
 
-    const headings = content.querySelectorAll('h2, h3');
+    // 与 buildSidebarToc 保持一致：观察所有 h1-h4 标题的滚动位置
+    const headings = content.querySelectorAll('h1, h2, h3, h4');
     if (headings.length === 0) return;
 
     const observerOptions = {
