@@ -176,6 +176,16 @@ const iconMap: Record<string, string> = {
     history.pushState(null, '', `#${id}`);
   }
 
+  /** 把标题文字转成 kebab-case slug（用于 id 锚点） */
+  function slugifyHeading(text: string): string {
+    const s = text.trim()
+      .toLowerCase()
+      .replace(/[\s·・、，。！？!?;:,.()（）【】\[\]<>《》""''`~@#$%^&*+=|\\/]/g, '-')
+      .replace(/-+/g, '-')
+      .replace(/^-|-$/g, '');
+    return s || `heading-${Math.floor(Math.random() * 1e6)}`;
+  }
+
   function buildSidebarToc() {
     const tocCard = document.getElementById('sidebar-toc');
     const tocNav = document.getElementById('sidebar-toc-nav');
@@ -201,17 +211,37 @@ const iconMap: Record<string, string> = {
       tagsCard.classList.add('hidden');
     }
 
-    const headings = content.querySelectorAll('h2, h3');
+    /* ===== 兼容所有 1-4 级标题（部分文章用 # 当小节标题，如《迁移》） =====
+       之前只查 h2/h3 会让这些文章目录"整块消失" */
+    const headings = content.querySelectorAll<HTMLHeadingElement>('h1, h2, h3, h4');
+
     if (headings.length === 0) {
       tocCard.classList.add('hidden');
       if (tagsCard) tagsCard.classList.remove('hidden');
       return;
     }
 
+    // 保证每个标题都有 id（remark/rehype 漏生成时，前端兜底 kebab-case）
+    const usedIds = new Set<string>();
+    headings.forEach((h) => {
+      if (!h.id) {
+        let base = slugifyHeading(h.textContent || '');
+        let slug = base;
+        let i = 1;
+        while (usedIds.has(slug) || document.getElementById(slug)) {
+          slug = `${base}-${++i}`;
+        }
+        usedIds.add(slug);
+        h.id = slug;
+      } else {
+        usedIds.add(h.id);
+      }
+    });
+
     tocNav.innerHTML = '';
 
     headings.forEach((heading) => {
-      const depth = parseInt(heading.tagName.charAt(1));
+      const depth = parseInt(heading.tagName.charAt(1), 10);
       const text = heading.textContent || '';
       const slug = heading.id || '';
 
@@ -219,7 +249,8 @@ const iconMap: Record<string, string> = {
       link.href = `#${slug}`;
       link.dataset.slug = slug;
       link.className = 'toc-link block py-1.5 px-3 text-sm text-muted hover:text-accent hover:bg-surface-secondary transition-all truncate border-l-2 border-transparent hover:border-accent';
-      link.style.paddingLeft = `${(depth - 2) * 12 + 12}px`;
+      // 缩进：原本 h2 起点是 12px。现在兼容 h1/h4，把深度基准定在 h1=12px（每深一级 +12px）
+      link.style.paddingLeft = `${Math.max(0, depth - 1) * 12 + 12}px`;
       link.textContent = text;
 
       link.addEventListener('click', (e) => {

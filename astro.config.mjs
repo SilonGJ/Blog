@@ -39,6 +39,7 @@ export default defineConfig({
       animationClass: 'transition-swup-',
       containers: ['main'],
       smoothScrolling: true,
+      scrollToTop: false,       /* 用户要求自己控制"先滚顶再切"，禁用 swup 默认的"切完后滚顶"，避免重复冲突 */
       cache: false,
       preload: true,
       accessibility: true,

@@ -46,7 +46,7 @@ const needNoSwup = isBlogHome; // 跨子站跳转不用 swup
     </a>
 
     <div class="flex items-center gap-2 ml-auto">
-      <div id="nav-links-container" class="hidden md:flex items-center gap-2 relative">
+      <div id="nav-links-container" class="hidden md:flex items-center gap-2">
         {navBarConfig.links.map((link) => (
           <a
             href={link.url}
@@ -57,7 +57,6 @@ const needNoSwup = isBlogHome; // 跨子站跳转不用 swup
             {link.name}
           </a>
         ))}
-        <div id="nav-underline-indicator" class="absolute bottom-0 h-[2px] bg-[var(--accent)] rounded-full pointer-events-none transition-all duration-300 ease-out opacity-0"></div>
       </div>
 
       <button
@@ -369,9 +368,6 @@ const needNoSwup = isBlogHome; // 跨子站跳转不用 swup
       navbar.style.transform = 'translateY(0)';
       navbar.style.opacity = '1';
     });
-    // 关键：Navbar 动画结束后（500ms 后）再把指示器硬落位一次
-    // 因为首屏 opacity=0 期间 getBoundingClientRect 可能取到异常值
-    setTimeout(() => updateNavUnderline({ animate: false }), 520);
   }
 
   function ensureNavbarVisible() {
@@ -388,86 +384,41 @@ const needNoSwup = isBlogHome; // 跨子站跳转不用 swup
 
   initNavbarAnimation();
 
-  /* ===== Navbar 下划线指示器（极简稳定版） =====
-   *  - 单一"定位函数"：总是基于当前 DOM rect 实时算，不存任何旧值
-   *  - hover 期间 updateUnderline 完全被锁，不再反复覆盖位置造成跳
-   *  - mouseleave 时再实时计算 active rect 返回，不用"存的 style"
-   */
-  type Rect = { left: number; width: number };
-  function getLinkRect(container: HTMLElement, link: HTMLElement | null): Rect | null {
-    if (!link) return null;
-    const cr = container.getBoundingClientRect();
-    const lr = link.getBoundingClientRect();
-    return { left: lr.left - cr.left, width: lr.width };
-  }
-
+  // ===== 导航栏按钮：根据当前页面给「当前项」加一个静态高亮类（nav-link-active），
+  //       不再做下划线指示器 / 字体加粗动画，用户要求删除。
   function normalizePath(p: string): string {
-    // Astro base 可能是 /blog，所以 pathname 可能是 /blog/archive/。
-    // 兼容：去掉 /blog 前缀 + 末尾补 /（除了根），统一比较格式
     let s = p.replace(/\/+$/, '') || '/';
     if (s.startsWith('/blog')) s = s.slice('/blog'.length);
     if (!s.startsWith('/')) s = '/' + s;
-    // 只有 "/" 和末尾为 "/" 的路径需要前缀匹配，其他（如 /posts/about）也补 "/" 前缀匹配
     return s === '/' ? s : s + '/';
   }
-
-  function findActiveLink(links: NodeListOf<HTMLAnchorElement>): HTMLAnchorElement | null {
-    const raw = window.location.pathname;
-    const currentPath = normalizePath(raw);
+  function markActiveNavLink() {
+    const container = document.getElementById('nav-links-container');
+    if (!container) return;
+    const links = container.querySelectorAll<HTMLAnchorElement>('[data-nav-link]');
+    const current = normalizePath(window.location.pathname);
     let best: HTMLAnchorElement | null = null;
     let bestLen = 0;
     links.forEach((link) => {
-      const url = link.dataset.navUrl || '';
-      if (!url) return;
-      const normUrl = normalizePath(url);
-      const exact = currentPath === normUrl;
-      const prefix = currentPath.startsWith(normUrl);
-      if (exact && normUrl.length > bestLen) {
-        bestLen = normUrl.length;
-        best = link;
-      } else if (!best && prefix && normUrl.length > bestLen) {
-        bestLen = normUrl.length;
-        best = link;
-      }
+      const n = normalizePath(link.dataset.navUrl || '');
+      if (n === current && n.length > bestLen) { bestLen = n.length; best = link; }
+      else if (!best && n !== '/' && current.startsWith(n) && n.length > bestLen) { bestLen = n.length; best = link; }
     });
-    return best;
-  }
-
-  let isHovering = false; // hover 期间外部更新全部被锁，不碰指示器位置
-
-  function updateNavUnderline({ animate = false }: { animate?: boolean } = {}) {
-    const container = document.getElementById('nav-links-container');
-    const indicator = document.getElementById('nav-underline-indicator');
-    if (!container || !indicator) return;
-    const links = container.querySelectorAll<HTMLAnchorElement>('[data-nav-link]');
-    if (links.length === 0) return;
-
-    const active = findActiveLink(links);
-    links.forEach((l) => l.classList.toggle('nav-link-active', l === active));
-
-    // hover 期间只更新文字 active 状态，不更新指示器位置（让 hover 接管）
-    if (isHovering) return;
-
-    const rect = getLinkRect(container, active);
-
-    // 初始化/路由切换/resize 时关闭过渡瞬间落位，之后再开
-    if (!animate) {
-      indicator.style.transition = 'none';
-    } else {
-      indicator.style.transition = 'left 300ms ease-out, width 300ms ease-out, opacity 200ms ease-out';
+    // 详情/子分类页兜底：
+    if (!best) {
+      const map: [string, string][] = [
+        ['/posts/', '/archive/'], ['/post/', '/archive/'],
+        ['/category/', '/category/'], ['/categories/', '/category/'],
+        ['/tag/', '/tags/'], ['/tags/', '/tags/'],
+        ['/links/', '/links/'], ['/about/', '/posts/about/'],
+      ];
+      const fallback = map.find(([p]) => current.startsWith(p))?.[1];
+      if (fallback) {
+        const f = normalizePath(fallback);
+        for (const l of Array.from(links)) if (normalizePath(l.dataset.navUrl || '') === f) { best = l; break; }
+      }
     }
-    if (rect) {
-      indicator.style.left = `${rect.left}px`;
-      indicator.style.width = `${rect.width}px`;
-      indicator.style.opacity = '1';
-    } else {
-      indicator.style.opacity = '0';
-    }
-    if (!animate) {
-      // 强制 reflow 后再恢复过渡（让过渡用于后续变化）
-      void indicator.offsetWidth;
-      indicator.style.transition = 'left 300ms ease-out, width 300ms ease-out, opacity 200ms ease-out';
-    }
+    links.forEach((l) => l.classList.toggle('nav-link-active', l === best));
   }
 
   // 防止多次快速点击叠加以至 overlay 状态错乱
@@ -552,54 +503,24 @@ const needNoSwup = isBlogHome; // 跨子站跳转不用 swup
     });
   }
 
-  function setupNavLinkHoverIndicator() {
-    const links = document.querySelectorAll<HTMLAnchorElement>('[data-nav-link]');
-    // 需求：hover 不动横条，只做文字加粗和背景 hover
-    // 文字加粗/变色由 CSS 的 .nav-underline-btn:hover 负责
-    // 背景 hover 由 .button--ghost 自身样式负责
-    // 这里只需要在 hover 期间锁住外部 updateUnderline，以免在动画中间被 resize 之类事件意外覆盖
-    links.forEach((link) => {
-      link.addEventListener('mouseenter', () => {
-        isHovering = true;
-      });
-      link.addEventListener('mouseleave', () => {
-        isHovering = false;
-      });
-    });
-  }
-
-  // 初始化
-  const initNavUnderline = () => {
-    // 首屏瞬间落位（无动画，避免从 0,0 滑过来的跳）
+  // 初始化：高亮当前导航按钮 + 更新主页按钮状态
+  const initNavbarState = () => {
+    markActiveNavLink();
     updateHomeButton();
-    updateNavUnderline({ animate: false });
-    setupNavLinkHoverIndicator();
   };
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initNavUnderline);
+    document.addEventListener('DOMContentLoaded', initNavbarState);
   } else {
-    initNavUnderline();
+    initNavbarState();
   }
-  // resize 用无动画瞬时落位（窗口缩放应该是硬对齐不该有滑动动画，更稳不乱跳）
-  window.addEventListener('resize', () => updateNavUnderline({ animate: false }));
-  document.addEventListener('astro:page-load', () => {
-    updateHomeButton();
-    updateNavUnderline({ animate: true });
-  });
+  document.addEventListener('astro:page-load', initNavbarState);
 
   if (window.swup) {
     window.swup.hooks.on('page:view', () => {
       const navbar = document.getElementById('navbar');
-      if (navbar) {
-        playSlideInAnimation();
-      }
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          updateHomeButton();
-          updateNavUnderline({ animate: true });
-        });
-      });
+      if (navbar) playSlideInAnimation();
+      requestAnimationFrame(() => requestAnimationFrame(initNavbarState));
     });
   }
 </script>
@@ -717,15 +638,12 @@ const needNoSwup = isBlogHome; // 跨子站跳转不用 swup
   .navbar-home-btn[data-is-blog-home="false"] .navbar-home-text-title { opacity: 0; }
   .navbar-home-btn[data-is-blog-home="false"] .navbar-home-text-back  { opacity: 1; }
 
-  /* Navbar 文字粗细 & 颜色过渡 */
+  /* Navbar 按钮：用户要求删除加粗动画，统一 font-weight 500，hover/active 只变色 */
   .nav-underline-btn {
     font-weight: 500;
-    transition: font-weight 200ms ease-out, color 200ms ease-out;
   }
-
   .nav-underline-btn:hover,
   .nav-underline-btn.nav-link-active {
-    font-weight: 700;
     color: var(--accent);
   }
 </style>

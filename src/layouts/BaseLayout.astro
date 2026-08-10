@@ -216,9 +216,11 @@ const pageDescription = description || siteConfig.description;
       setupSearchHeightAnimation();
 
       if (window.swup) {
-        // 注：swup 切页过渡（旧反向消失 / 新进场）完全由 global.css 的 @keyframes
-        //     针对 transition-swup-is-animating / transition-swup-is-rendering 官方 class 驱动，
-        //     这里不再手动注入 class，避免和 astro.config 的 animationClass 时序冲突。
+        // 1) 注册"先滚顶再切"的阻塞前置钩子
+        registerSwupScrollToTop(window.swup);
+        // 2) swup 切页过渡（旧向下滑出 / 新反向淡入）完全由 global.css 的 @keyframes
+        //    针对 transition-swup-is-animating / transition-swup-is-rendering 官方 class 驱动，
+        //    这里不再手动注入 class，避免和 astro.config 的 animationClass 时序冲突。
         window.swup.hooks.on(
           "content:replace",
           () => {
@@ -234,6 +236,56 @@ const pageDescription = description || siteConfig.description;
         });
       }
     };
+
+    /* ===== 切页前：先平滑滚顶部 → 再发起导航
+     *  用 swup v4 官方阻塞式 hook（visit:start 返回 Promise 时 swup 等待 resolve 后才继续离场动画 + DOM 替换）
+     *  不再自己拦截 <a> click，100% 与 swup 流程同步，永不漏触发
+     *  同时 astro.config 已关 swup.scrollToTop，避免 swup 切完后再重复滚一次
+     */
+    function scrollToTopBlocking(): Promise<void> {
+      return new Promise((resolve) => {
+        const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        // 已经在顶部 → 立刻放行
+        if (window.scrollY === 0) { resolve(); return; }
+        const behavior: ScrollBehavior = reduced ? 'auto' : 'smooth';
+        window.scrollTo({ top: 0, left: 0, behavior });
+
+        let resolved = false;
+        const done = () => { if (!resolved) { resolved = true; resolve(); } };
+
+        // 通路 A：监听 scroll，真正到达顶部（scrollY <= 2）就放行
+        const onScroll = () => { if (window.scrollY <= 2) { cleanup(); done(); } };
+        const cleanup = () => window.removeEventListener('scroll', onScroll);
+        window.addEventListener('scroll', onScroll, { passive: true });
+
+        // 通路 B：兜底超时，到点未到顶也先硬滚 0 再放行（prefers-reduced 立即）
+        const timeout = reduced ? 0 : 500;
+        window.setTimeout(() => {
+          if (!resolved) {
+            if (window.scrollY > 2) window.scrollTo(0, 0);
+            cleanup();
+            done();
+          }
+        }, timeout);
+      });
+    }
+    // 注册 scrollToTopBlocking 为 swup 的 visit:start 前置阻塞钩子（全局唯一一次）
+    // 注意：swup v4 的 hooks 支持传入 before 选项返回 Promise 来阻塞整个 visit 流程
+    function registerSwupScrollToTop(swup: any) {
+      if ((swup as any).__scrollHookRegistered) return;
+      (swup as any).__scrollHookRegistered = true;
+      try {
+        swup.hooks.on('visit:start', async () => {
+          await scrollToTopBlocking();
+        });
+      } catch {
+        // 老版本 swup 不支持 async hook，降级为非阻塞但仍然立即滚顶
+        swup.hooks.on('visit:start', () => {
+          const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+          window.scrollTo({ top: 0, left: 0, behavior: reduced ? 'auto' : 'smooth' });
+        });
+      }
+    }
 
     if (window.swup) {
       setup();

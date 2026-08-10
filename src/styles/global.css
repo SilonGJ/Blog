@@ -541,7 +541,7 @@
   outline: none;
 }
 
-/* ----- 关键帧：反向消失（旧页面） ----- */
+/* ----- 关键帧：旧页面消失（用户要求：向下滑出 + 淡出；只改这个） ----- */
 @keyframes swup-out-reverse {
   from {
     opacity: 1;
@@ -549,14 +549,14 @@
   }
   to {
     opacity: 0;
-    transform: translateY(-2rem); /* 与 onload-animation 的 translateY(2rem) 完全反向对称 */
+    transform: translateY(2rem); /* 向下 2rem 滑出 */
   }
 }
-/* ----- 关键帧：进场（新页面，和 onload-animation 一模一样） ----- */
+/* ----- 关键帧：新页面进场（还原！跟首屏 onload-animation 完全一致：从下往上淡入） ----- */
 @keyframes swup-in {
   from {
     opacity: 0;
-    transform: translateY(2rem); /* 与 onload-animation 的起点 2rem 保持一致 */
+    transform: translateY(2rem); /* 起点在页面下方 2rem，随后向上滑入（与 onload-animation 相同） */
   }
   to {
     opacity: 1;
@@ -564,19 +564,19 @@
   }
 }
 
-/* ========== 旧内容：反向消失 ==========
+/* ========== 旧内容：向下消失 ==========
    匹配 swup 两种 class 注入方式，谁先命中都生效 */
 html.is-animating:not(.is-rendering) .transition-swup-fade,
 #swup-container.transition-swup-is-animating:not(.transition-swup-is-rendering) .transition-swup-fade {
   animation: 400ms cubic-bezier(0.4, 0, 0.2, 1) swup-out-reverse forwards;
   will-change: opacity, transform;
 }
-/* ========== 新内容：进场（onload-animation 同款） ========== */
+/* ========== 新内容：从上方滑下 ========== */
 html.is-rendering .transition-swup-fade,
 #swup-container.transition-swup-is-rendering .transition-swup-fade {
   animation: 500ms cubic-bezier(0.4, 0, 0.2, 1) swup-in 80ms forwards; /* 80ms 微延迟，等 swup 把 DOM 塞稳 */
   will-change: opacity, transform;
-  animation-fill-mode: backwards; /* 80ms 延迟期间保持 from 帧状态，不白屏闪现 */
+  animation-fill-mode: backwards; /* 延迟期间保持起点，不白屏闪现 */
 }
 
 /* swup 的 changing 准备阶段：关闭不必要的 transition，避免和 @keyframes 叠 */
