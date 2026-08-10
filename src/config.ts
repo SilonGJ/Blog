@@ -9,8 +9,6 @@ export const siteConfig = {
 
 export const navBarConfig = {
   links: [
-    { name: '首页', url: '/' },
-    { name: '博客', url: '/blog/' },
     { name: '归档', url: '/archive/' },
     { name: '分类', url: '/categories/' },
     { name: '标签', url: '/tags/' },

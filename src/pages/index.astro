@@ -18,7 +18,8 @@ const posts = (await getCollection('posts', ({ data }) => !data.draft && !data.h
 ---
 
 <BaseLayout title={siteConfig.title} description={siteConfig.description}>
-  <div id="hero-section" class="min-h-screen flex items-center justify-center px-6 py-16 max-md:px-4 max-md:py-8">
+  <main>
+    <div id="hero-section" class="min-h-screen flex items-center justify-center px-6 py-16 max-md:px-4 max-md:py-8">
     <div class="w-full max-w-5xl onload-animation">
       <div class="grid grid-cols-1 md:grid-cols-[240px_1fr] gap-0 border border-[var(--border)] overflow-hidden bg-[var(--surface)]">
         <aside class="flex flex-col">
@@ -63,7 +64,7 @@ const posts = (await getCollection('posts', ({ data }) => !data.draft && !data.h
           </div>
         </aside>
 
-        <main class="p-6 border-l border-[var(--border)] flex flex-col gap-6 max-md:p-4 max-md:border-l-0 max-md:border-t max-md:gap-4">
+        <section class="p-6 border-l border-[var(--border)] flex flex-col gap-6 max-md:p-4 max-md:border-l-0 max-md:border-t max-md:gap-4">
           <section>
             <h2 class="text-sm font-bold mb-3 text-muted uppercase tracking-wider">近期文章</h2>
             <div class="space-y-0">
@@ -89,17 +90,18 @@ const posts = (await getCollection('posts', ({ data }) => !data.draft && !data.h
               ))}
             </div>
           </section>
-        </main>
+        </section>
       </div>
     </div>
   </div>
+  </main>
 
   <script>
     async function loadHitokoto() {
       const el = document.getElementById('hitokoto');
       if (!el) return;
       try {
-        const res = await fetch('https://v1.hitokoto.cn/?c=a&c=b&c=c&c=d&c=i&c=k');
+        const res = await fetch('https://v1.hitokoto.cn/?c=a&c=b&c=c&d&c=i&c=k');
         const data = await res.json();
         if (data.hitokoto) {
           el.textContent = data.hitokoto;

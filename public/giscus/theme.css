@@ -295,48 +295,21 @@ main .gsc-header h2 {
   font-size: 1.25rem;
 }
 
-/* ===== expand-animation 扩散效果基础样式 ===== */
-main .btn,
-main .gsc-social-reaction-summary-item,
-main .gsc-comment,
+/* ===== 去掉过度定制的扩散动画，避免位置跳动 ===== */
 main .gsc-markdown-toolbar button,
 main .gsc-upvote-button,
 main .gsc-comment-reactions button {
   position: relative !important;
-  overflow: hidden;
 }
 
-main .btn::before,
-main .gsc-social-reaction-summary-item::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  transform: scale(0.85);
-  opacity: 0;
-  transition: all var(--transition-fast);
-  z-index: -1;
-  background-color: var(--color-surface-secondary);
-  pointer-events: none;
-}
-
-main .btn:hover::before,
-main .gsc-social-reaction-summary-item:hover::before {
-  transform: scale(1);
-  opacity: 1;
-}
-
-main .btn:active::before,
-main .gsc-social-reaction-summary-item:active::before {
-  background-color: var(--color-surface-tertiary);
-}
-
-/* ===== 按钮样式增强 - 匹配博客.button动画 ===== */
+/* ===== 按钮样式 - 更简洁，避免过度定制造成错位 ===== */
 main .btn {
   border: 1px solid var(--color-border) !important;
   background-color: color-mix(in oklab, var(--color-surface) 50%, var(--color-surface-secondary)) !important;
   color: var(--color-foreground) !important;
-  transition: all var(--transition-normal) !important;
+  transition: background-color var(--transition-normal), color var(--transition-fast), border-color var(--transition-fast) !important;
   font-weight: 500;
+  box-sizing: border-box;
 }
 
 main .btn:hover {
@@ -344,8 +317,7 @@ main .btn:hover {
 }
 
 main .btn:active {
-  background-color: color-mix(in oklab, var(--color-surface-tertiary) 80%, white) !important;
-  transform: scale(0.98);
+  background-color: color-mix(in oklab, var(--color-surface-tertiary) 80%, var(--color-foreground)) !important;
 }
 
 main .btn-primary {
@@ -364,8 +336,7 @@ main .btn-primary:hover {
 }
 
 main .btn-primary:active {
-  background-color: color-mix(in oklab, var(--color-accent) 85%, black) !important;
-  transform: scale(0.98);
+  background-color: color-mix(in oklab, var(--color-accent) 85%, var(--color-accent-foreground)) !important;
 }
 
 main .btn-primary:disabled,
@@ -471,28 +442,28 @@ main .gsc-comment-box-textarea:focus {
   border-color: var(--color-accent) !important;
 }
 
-/* ===== 评论边框与容器 ===== */
+/* ===== 评论布局 - 参考官方 dark.css，简洁风格，去掉过度定制 ===== */
 main .gsc-comment {
   border-color: var(--color-border) !important;
-  background-color: var(--color-surface) !important;
-  transition: background-color var(--transition-normal), transform var(--transition-fast);
-  border-left: 3px solid transparent !important;
-  padding-left: calc(1rem - 3px) !important;
+  background-color: transparent !important;
+  transition: background-color var(--transition-normal);
+  border-left: none !important;
+  padding-left: 0 !important;
 }
 
 main .gsc-comment:hover {
-  background-color: color-mix(in oklab, var(--color-surface) 80%, var(--color-surface-secondary)) !important;
-  border-left-color: var(--color-accent) !important;
+  background-color: transparent !important;
+  border-left-color: transparent !important;
 }
 
 main .gsc-reply {
   border-color: var(--color-border) !important;
-  background-color: color-mix(in oklab, var(--color-surface) 70%, transparent) !important;
+  background-color: transparent !important;
   transition: background-color var(--transition-normal);
 }
 
 main .gsc-reply:hover {
-  background-color: color-mix(in oklab, var(--color-surface) 85%, var(--color-surface-secondary)) !important;
+  background-color: transparent !important;
 }
 
 /* ===== 评论框容器 ===== */
@@ -519,22 +490,21 @@ main .gsc-comment-box-main {
   border-color: var(--color-border);
 }
 
-/* ===== "登录后评论" 链接 ===== */
-.gsc-login-link,
-main .link-secondary,
-main .btn-link {
+/* ===== "登录后评论" 链接：纯文字，不变布局 ===== */
+.gsc-login-link {
   color: var(--color-accent) !important;
-  transition: all var(--transition-fast);
+  transition: color var(--transition-fast) !important;
   border-bottom: none !important;
+  background: transparent !important;
+  padding: 0 !important;
+  margin: 0 !important;
 }
 
-.gsc-login-link:hover,
-main .link-secondary:hover,
-main .btn-link:hover {
+.gsc-login-link:hover {
   color: var(--color-foreground) !important;
-  background: var(--color-surface-secondary) !important;
-  padding: 1px 4px !important;
-  margin: -1px -4px !important;
+  background: transparent !important;
+  padding: 0 !important;
+  margin: 0 !important;
 }
 
 /* ===== 下拉菜单 / 选择框 ===== */
@@ -563,24 +533,29 @@ main .tooltipped::after {
   font-family: var(--font-family-sans);
 }
 
-/* ===== 社交反应按钮 (表情反馈) - 匹配博客.btn-plain风格 ===== */
+/* ===== 社交反应按钮 (表情反馈)：简洁风格，hover不变尺寸避免位置跳动 ===== */
 main .gsc-social-reaction-summary-item {
   background: var(--color-surface) !important;
   border: 1px solid var(--color-border) !important;
   color: var(--color-muted) !important;
-  transition: all var(--transition-fast) !important;
+  transition: background-color var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast) !important;
   font-weight: 500;
+  box-sizing: border-box;
+  overflow: visible !important;
+  position: static !important;
+  transform: none !important;
 }
 
 main .gsc-social-reaction-summary-item:hover {
   background-color: var(--color-surface-secondary) !important;
   color: var(--color-accent) !important;
   border-color: var(--color-border) !important;
+  transform: none !important;
 }
 
 main .gsc-social-reaction-summary-item:active {
   background-color: var(--color-surface-tertiary) !important;
-  transform: scale(0.95);
+  transform: none !important;
 }
 
 main .gsc-social-reaction-summary-item.has-reacted {
@@ -594,7 +569,7 @@ main .gsc-social-reaction-summary-item.has-reacted:hover {
 }
 
 main .gsc-social-reaction-summary-item.has-reacted:active {
-  animation: giscus-bounce-in var(--transition-bounce);
+  animation: none !important;
 }
 
 /* ===== 评论操作按钮 (回复、点赞等) - 匹配博客按钮风格 ===== */
@@ -606,24 +581,49 @@ main .color-fg-muted {
   color: var(--color-muted) !important;
 }
 
-main .link-secondary,
+/* ===== .btn-link（退出登录等文字按钮）：纯文字风格，无背景hover，不变换padding避免位置跳动 ===== */
 main .btn-link {
   color: var(--color-muted) !important;
-  transition: color var(--transition-fast), background-color var(--transition-fast), transform var(--transition-fast) !important;
+  transition: color var(--transition-fast) !important;
+  font-weight: 500;
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  box-shadow: none !important;
+  display: inline-flex;
+  align-items: center;
+  line-height: 1;
+  min-height: 2.5rem;
+}
+
+main .btn-link:hover {
+  color: var(--color-accent) !important;
+  background: transparent !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+main .btn-link:active {
+  transform: none;
+}
+
+/* ===== .link-secondary（回复/点赞等链接）：只变颜色，不改布局 ===== */
+main .link-secondary {
+  color: var(--color-muted) !important;
+  transition: color var(--transition-fast) !important;
   font-weight: 500;
 }
 
-main .link-secondary:hover,
-main .btn-link:hover {
+main .link-secondary:hover {
   color: var(--color-accent) !important;
-  background: var(--color-surface-secondary) !important;
-  padding: 2px 6px !important;
-  margin: -2px -6px !important;
+  background: transparent !important;
+  padding: 0 !important;
+  margin: 0 !important;
 }
 
-main .link-secondary:active,
-main .btn-link:active {
-  transform: scale(0.95);
+main .link-secondary:active {
+  transform: none;
 }
 
 /* ===== 用户名/作者名 ===== */
@@ -632,14 +632,15 @@ main .author {
   color: var(--color-foreground) !important;
   font-weight: 600 !important;
   border-bottom: none !important;
+  transition: color var(--transition-fast) !important;
 }
 
 main .gsc-comment-header .link-primary:hover,
 main .author:hover {
   color: var(--color-accent) !important;
-  background: var(--color-surface-secondary) !important;
-  padding: 1px 3px !important;
-  margin: -1px -3px !important;
+  background: transparent !important;
+  padding: 0 !important;
+  margin: 0 !important;
 }
 
 /* ===== 评论内容文字 - 匹配博客.prose风格 ===== */
@@ -848,7 +849,8 @@ main .gsc-markdown-toolbar button:hover {
 }
 
 main .gsc-markdown-toolbar button:active {
-  transform: scale(0.9);
+  background-color: var(--color-surface-tertiary) !important;
+  transform: none;
 }
 
 main .gsc-markdown-toolbar button.is-active {
@@ -878,25 +880,29 @@ main .Counter {
   font-weight: 500;
 }
 
-/* ===== 点赞/点踩按钮 ===== */
+/* ===== 点赞/点踩按钮：去掉 transform 避免位置跳动 ===== */
 main .gsc-comment-reactions button,
 main .gsc-upvote-button,
 main .reaction-button {
   color: var(--color-muted) !important;
-  transition: all var(--transition-fast) !important;
+  transition: background-color var(--transition-fast), color var(--transition-fast) !important;
   padding: 0.375rem;
   border-radius: 0 !important;
+  transform: none !important;
+  box-sizing: border-box;
 }
 
 main .gsc-comment-reactions button:hover,
 main .gsc-upvote-button:hover {
   color: var(--color-accent) !important;
   background-color: var(--color-surface-secondary) !important;
+  transform: none !important;
 }
 
 main .gsc-comment-reactions button:active,
 main .gsc-upvote-button:active {
-  transform: scale(0.9);
+  transform: none !important;
+  background-color: var(--color-surface-tertiary) !important;
 }
 
 main .gsc-comment-reactions button[aria-pressed="true"],
@@ -907,7 +913,7 @@ main .gsc-upvote-button[aria-pressed="true"] svg {
 }
 
 main .gsc-upvote-button[aria-pressed="true"] {
-  animation: giscus-bounce-in var(--transition-bounce);
+  animation: none !important;
 }
 
 /* ===== 预览标签 ===== */
@@ -1076,17 +1082,36 @@ main .gsc-reply {
   margin-top: 0.5rem;
 }
 
-/* ===== 写评论按钮区域 ===== */
+/* ===== 写评论按钮区域：强制所有子元素统一对齐高度 ===== */
 main .gsc-comment-box-buttons {
   padding-top: 0.75rem;
   display: flex;
   justify-content: flex-end;
-  gap: 0.5rem;
+  align-items: center;
+  gap: 0.75rem;
 }
 
-/* ===== 取消按钮样式 ===== */
-main .gsc-comment-box-buttons .btn:not(.btn-primary) {
-  margin-right: 0.5rem;
+main .gsc-comment-box-buttons > * {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.5rem;
+  line-height: 2.5rem;
+  box-sizing: border-box;
+  vertical-align: middle;
+}
+
+/* ===== 按钮容器内 .btn-link 与 .btn 高度强制一致 ===== */
+main .gsc-comment-box-buttons .btn-link,
+main .gsc-comment-box-buttons .btn {
+  height: 2.5rem;
+  min-height: 2.5rem;
+  padding-top: 0;
+  padding-bottom: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
 }
 
 /* ===== Giscus 底部 Powered by 链接 ===== */

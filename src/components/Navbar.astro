@@ -1,36 +1,63 @@
 ---
 import { navBarConfig, siteConfig } from '../config';
 import { Icon } from 'astro-icon/components';
+
+// 当前页面是否为博客首页（/blog 或 /blog/）
+const pathname = Astro.url.pathname;
+const isBlogHome = pathname === '/blog' || pathname === '/blog/';
+// 博客首页：跳转主站 /；其他页：跳转博客首页 /blog/
+const homeHref = isBlogHome ? '/' : '/blog/';
+const needNoSwup = isBlogHome; // 跨子站跳转不用 swup
 ---
 
 <div id="navbar" class="fixed top-0 left-0 right-0 z-40" style="opacity: 0;">
   <nav class="w-full flex items-center px-4 h-14 bg-surface/80 backdrop-blur-xl border-b border-border transition-all duration-300">
-    <a href="/blog" class="button button--ghost h-10 px-4 font-bold gap-2">
-      <Icon name="lucide:house" class="w-5 h-5" />
+    <a
+      id="navbar-home-btn"
+      href={homeHref}
+      data-is-blog-home={String(isBlogHome)}
+      class="button button--ghost h-10 px-4 font-bold navbar-home-btn-base navbar-home-btn"
+      {...(needNoSwup ? { 'data-no-swup': true } : {})}
+    >
+      <span class="navbar-home-icon-slot">
+        <span class="navbar-home-icon navbar-home-icon-house">
+          <Icon name="lucide:house" class="navbar-home-icon-svg" />
+        </span>
+        <span class="navbar-home-icon navbar-home-icon-arrow">
+          <Icon name="lucide:arrow-left" class="navbar-home-icon-svg" />
+        </span>
+      </span>
       <Icon name="lucide:folder" class="hidden" />
-      <span>{siteConfig.title}</span>
+      <span id="navbar-home-text-slot" class="navbar-home-text-slot">
+        <span
+          id="navbar-home-text-title"
+          class:list={['navbar-home-text', 'navbar-home-text-title', !isBlogHome && 'navbar-home-text-overlay']}
+        >{siteConfig.title}</span>
+        <span
+          id="navbar-home-text-back"
+          class:list={['navbar-home-text', 'navbar-home-text-back', isBlogHome && 'navbar-home-text-overlay']}
+        >返回博客</span>
+      </span>
+      {/* 离屏测宽器：用完全相同的文字（visibility:hidden）放到文档流里，随时读取真实宽度 */}
+      <span aria-hidden="true" class="navbar-home-text-measurer">
+        <span class="navbar-home-text-measurer-title">{siteConfig.title}</span>
+        <span class="navbar-home-text-measurer-back">返回博客</span>
+      </span>
     </a>
 
     <div class="flex items-center gap-2 ml-auto">
-      <div class="hidden md:flex items-center gap-2">
+      <div id="nav-links-container" class="hidden md:flex items-center gap-2 relative">
         {navBarConfig.links.map((link) => (
-          link.url === '/' ? (
-            <a
-              href={link.url}
-              data-no-swup
-              class="button button--ghost h-10 px-4 font-medium text-sm"
-            >
-              {link.name}
-            </a>
-          ) : (
-            <a
-              href={link.url}
-              class="button button--ghost h-10 px-4 font-medium text-sm"
-            >
-              {link.name}
-            </a>
-          )
+          <a
+            href={link.url}
+            data-nav-link
+            data-nav-url={link.url}
+            class="button button--ghost h-10 px-4 font-medium text-sm nav-underline-btn"
+          >
+            {link.name}
+          </a>
         ))}
+        <div id="nav-underline-indicator" class="absolute bottom-0 h-[2px] bg-[var(--accent)] rounded-full pointer-events-none transition-all duration-300 ease-out opacity-0"></div>
       </div>
 
       <button
@@ -64,30 +91,21 @@ import { Icon } from 'astro-icon/components';
         placeholder="搜索文章..."
       />
     </div>
-    <div id="search-results" class="mt-3 max-h-96 overflow-y-auto hide-scrollbar"></div>
+    <div id="search-results-wrapper" class="mt-3 search-results-grid">
+      <div id="search-results" class="overflow-y-auto hide-scrollbar max-h-96"></div>
+    </div>
   </div>
 
   <div id="nav-menu-panel" class="float-panel float-panel-closed fixed right-4 top-20 w-48 z-50 md:hidden">
     <div class="flex flex-col">
       {navBarConfig.links.map((link, i) => (
-        link.url === '/' ? (
-          <a
-            href={link.url}
-            data-no-swup
-            class="button button--ghost h-12 px-5 font-medium text-left justify-start w-full"
-            style={`border-top: ${i === 0 ? 'none' : '1px solid var(--separator)'}`}
-          >
-            {link.name}
-          </a>
-        ) : (
-          <a
-            href={link.url}
-            class="button button--ghost h-12 px-5 font-medium text-left justify-start w-full"
-            style={`border-top: ${i === 0 ? 'none' : '1px solid var(--separator)'}`}
-          >
-            {link.name}
-          </a>
-        )
+        <a
+          href={link.url}
+          class="button button--ghost h-12 px-5 font-medium text-left justify-start w-full"
+          style={`border-top: ${i === 0 ? 'none' : '1px solid var(--separator)'}`}
+        >
+          {link.name}
+        </a>
       ))}
     </div>
   </div>
@@ -351,6 +369,9 @@ import { Icon } from 'astro-icon/components';
       navbar.style.transform = 'translateY(0)';
       navbar.style.opacity = '1';
     });
+    // 关键：Navbar 动画结束后（500ms 后）再把指示器硬落位一次
+    // 因为首屏 opacity=0 期间 getBoundingClientRect 可能取到异常值
+    setTimeout(() => updateNavUnderline({ animate: false }), 520);
   }
 
   function ensureNavbarVisible() {
@@ -367,12 +388,218 @@ import { Icon } from 'astro-icon/components';
 
   initNavbarAnimation();
 
+  /* ===== Navbar 下划线指示器（极简稳定版） =====
+   *  - 单一"定位函数"：总是基于当前 DOM rect 实时算，不存任何旧值
+   *  - hover 期间 updateUnderline 完全被锁，不再反复覆盖位置造成跳
+   *  - mouseleave 时再实时计算 active rect 返回，不用"存的 style"
+   */
+  type Rect = { left: number; width: number };
+  function getLinkRect(container: HTMLElement, link: HTMLElement | null): Rect | null {
+    if (!link) return null;
+    const cr = container.getBoundingClientRect();
+    const lr = link.getBoundingClientRect();
+    return { left: lr.left - cr.left, width: lr.width };
+  }
+
+  function normalizePath(p: string): string {
+    // Astro base 可能是 /blog，所以 pathname 可能是 /blog/archive/。
+    // 兼容：去掉 /blog 前缀 + 末尾补 /（除了根），统一比较格式
+    let s = p.replace(/\/+$/, '') || '/';
+    if (s.startsWith('/blog')) s = s.slice('/blog'.length);
+    if (!s.startsWith('/')) s = '/' + s;
+    // 只有 "/" 和末尾为 "/" 的路径需要前缀匹配，其他（如 /posts/about）也补 "/" 前缀匹配
+    return s === '/' ? s : s + '/';
+  }
+
+  function findActiveLink(links: NodeListOf<HTMLAnchorElement>): HTMLAnchorElement | null {
+    const raw = window.location.pathname;
+    const currentPath = normalizePath(raw);
+    let best: HTMLAnchorElement | null = null;
+    let bestLen = 0;
+    links.forEach((link) => {
+      const url = link.dataset.navUrl || '';
+      if (!url) return;
+      const normUrl = normalizePath(url);
+      const exact = currentPath === normUrl;
+      const prefix = currentPath.startsWith(normUrl);
+      if (exact && normUrl.length > bestLen) {
+        bestLen = normUrl.length;
+        best = link;
+      } else if (!best && prefix && normUrl.length > bestLen) {
+        bestLen = normUrl.length;
+        best = link;
+      }
+    });
+    return best;
+  }
+
+  let isHovering = false; // hover 期间外部更新全部被锁，不碰指示器位置
+
+  function updateNavUnderline({ animate = false }: { animate?: boolean } = {}) {
+    const container = document.getElementById('nav-links-container');
+    const indicator = document.getElementById('nav-underline-indicator');
+    if (!container || !indicator) return;
+    const links = container.querySelectorAll<HTMLAnchorElement>('[data-nav-link]');
+    if (links.length === 0) return;
+
+    const active = findActiveLink(links);
+    links.forEach((l) => l.classList.toggle('nav-link-active', l === active));
+
+    // hover 期间只更新文字 active 状态，不更新指示器位置（让 hover 接管）
+    if (isHovering) return;
+
+    const rect = getLinkRect(container, active);
+
+    // 初始化/路由切换/resize 时关闭过渡瞬间落位，之后再开
+    if (!animate) {
+      indicator.style.transition = 'none';
+    } else {
+      indicator.style.transition = 'left 300ms ease-out, width 300ms ease-out, opacity 200ms ease-out';
+    }
+    if (rect) {
+      indicator.style.left = `${rect.left}px`;
+      indicator.style.width = `${rect.width}px`;
+      indicator.style.opacity = '1';
+    } else {
+      indicator.style.opacity = '0';
+    }
+    if (!animate) {
+      // 强制 reflow 后再恢复过渡（让过渡用于后续变化）
+      void indicator.offsetWidth;
+      indicator.style.transition = 'left 300ms ease-out, width 300ms ease-out, opacity 200ms ease-out';
+    }
+  }
+
+  // 防止多次快速点击叠加以至 overlay 状态错乱
+  let homeButtonSwitchTimer: number | null = null;
+
+  /* ===== 左侧主页按钮：路由变化后动态切换 图标/文字/href/宽度 =====
+   *  宽度平滑变化的步骤：
+   *    1. 用离屏 .navbar-home-text-measurer 取到"目标文字"的真实宽度
+   *    2. 下一帧把 slot.style.width 固定为这个值（CSS transition 会平滑过渡）
+   *    3. 同一帧：切换 overlay class（新文字变 overlay 即 absolute 重叠，不参与宽度；
+   *              旧文字暂时保留 static 作为过渡起点宽度）
+   *       同时：切换 data-is-blog-home 属性触发图标/文字的 opacity 交叉淡入淡出
+   *    4. 240ms 过渡结束：交换 overlay 归属（新文字变 static 接管宽度，旧变 overlay）
+   *              并清 width: auto，恢复自适应。此后 hover 用的是新文字真实宽度。
+   *  图标淡入淡出 + 宽度变化 + 文字淡入淡出三者 transition 参数完全相同（240ms ease-out），
+   *  因此三者在同一个 rAF 写入后"真正同时"开始和结束。
+   */
+  function updateHomeButton() {
+    const btn = document.getElementById('navbar-home-btn') as HTMLAnchorElement | null;
+    const slot = document.getElementById('navbar-home-text-slot') as HTMLElement | null;
+    const titleText = document.getElementById('navbar-home-text-title') as HTMLElement | null;
+    const backText = document.getElementById('navbar-home-text-back') as HTMLElement | null;
+    if (!btn || !slot || !titleText || !backText) return;
+
+    // 测宽器里文字完全复刻真实字体/字号，随时可用
+    const measurerTitle = btn.querySelector<HTMLElement>('.navbar-home-text-measurer-title');
+    const measurerBack = btn.querySelector<HTMLElement>('.navbar-home-text-measurer-back');
+    if (!measurerTitle || !measurerBack) return;
+
+    const p = window.location.pathname;
+    const isBlogHomeNow = p === '/blog' || p === '/blog/';
+    const wasBlogHome = btn.getAttribute('data-is-blog-home') === 'true';
+    // 状态没变就不做动画，只保证 href/属性最新
+    if (isBlogHomeNow === wasBlogHome && homeButtonSwitchTimer === null) {
+      btn.href = isBlogHomeNow ? '/' : '/blog/';
+      return;
+    }
+
+    const targetWidthPx = (isBlogHomeNow ? measurerTitle : measurerBack).getBoundingClientRect().width;
+    const currentWidthPx = slot.getBoundingClientRect().width;
+
+    // 先关闭旧的 width transition，固定在当前宽度，避免下一行写 width 时从 auto 直接跳到目标值（丢失过渡）
+    slot.style.transition = 'none';
+    slot.style.width = `${currentWidthPx}px`;
+    // 强制 reflow，让新 width 生效后再开 transition
+    void slot.offsetWidth;
+    slot.style.transition = ''; // 恢复 CSS 中声明的 width transition
+
+    if (homeButtonSwitchTimer !== null) {
+      clearTimeout(homeButtonSwitchTimer);
+      homeButtonSwitchTimer = null;
+    }
+
+    // 下一帧：1) 宽度写到目标值 2) 切换 data 属性触发 opacity 3) 两边 class 保持不变（宽度固定后是靠 width transition）
+    requestAnimationFrame(() => {
+      slot.style.width = `${targetWidthPx}px`;
+      if (isBlogHomeNow) {
+        btn.href = '/';
+        btn.setAttribute('data-is-blog-home', 'true');
+        btn.setAttribute('data-no-swup', 'true');
+      } else {
+        btn.href = '/blog/';
+        btn.setAttribute('data-is-blog-home', 'false');
+        btn.removeAttribute('data-no-swup');
+      }
+
+      homeButtonSwitchTimer = window.setTimeout(() => {
+        // 过渡结束：切换 overlay 的归属（新文字变 static 撑开宽度），并把宽度恢复为 auto（下一步 hover/布局自适应）
+        if (isBlogHomeNow) {
+          titleText.classList.remove('navbar-home-text-overlay');
+          backText.classList.add('navbar-home-text-overlay');
+        } else {
+          titleText.classList.add('navbar-home-text-overlay');
+          backText.classList.remove('navbar-home-text-overlay');
+        }
+        slot.style.transition = 'none';
+        slot.style.width = 'auto';
+        void slot.offsetWidth;
+        slot.style.transition = '';
+        homeButtonSwitchTimer = null;
+      }, 250); // 略大于 240ms，保证动画 100% 结束
+    });
+  }
+
+  function setupNavLinkHoverIndicator() {
+    const links = document.querySelectorAll<HTMLAnchorElement>('[data-nav-link]');
+    // 需求：hover 不动横条，只做文字加粗和背景 hover
+    // 文字加粗/变色由 CSS 的 .nav-underline-btn:hover 负责
+    // 背景 hover 由 .button--ghost 自身样式负责
+    // 这里只需要在 hover 期间锁住外部 updateUnderline，以免在动画中间被 resize 之类事件意外覆盖
+    links.forEach((link) => {
+      link.addEventListener('mouseenter', () => {
+        isHovering = true;
+      });
+      link.addEventListener('mouseleave', () => {
+        isHovering = false;
+      });
+    });
+  }
+
+  // 初始化
+  const initNavUnderline = () => {
+    // 首屏瞬间落位（无动画，避免从 0,0 滑过来的跳）
+    updateHomeButton();
+    updateNavUnderline({ animate: false });
+    setupNavLinkHoverIndicator();
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initNavUnderline);
+  } else {
+    initNavUnderline();
+  }
+  // resize 用无动画瞬时落位（窗口缩放应该是硬对齐不该有滑动动画，更稳不乱跳）
+  window.addEventListener('resize', () => updateNavUnderline({ animate: false }));
+  document.addEventListener('astro:page-load', () => {
+    updateHomeButton();
+    updateNavUnderline({ animate: true });
+  });
+
   if (window.swup) {
     window.swup.hooks.on('page:view', () => {
       const navbar = document.getElementById('navbar');
       if (navbar) {
         playSlideInAnimation();
       }
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          updateHomeButton();
+          updateNavUnderline({ animate: true });
+        });
+      });
     });
   }
 </script>
@@ -380,5 +607,125 @@ import { Icon } from 'astro-icon/components';
 <style>
   #page-progress-bar {
     transition: width 150ms ease-out, opacity 200ms ease-out;
+  }
+
+  /* ===== 左侧主页按钮：只布局对齐，样式完全复用 button/button--ghost ===== */
+  .navbar-home-btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 0.5rem !important;
+    line-height: 1 !important;
+    white-space: nowrap;
+  }
+
+  /* ===== 图标槽：CSS Grid stacking（共享 cell），两图标占据同一格，互相叠放
+     容器宽高 = 1.25rem（两个图标都能填进去），Grid 布局保证两者都参与尺寸
+     —— 最终槽永远取子元素的最大宽高，不会塌缩，不会错位。*/
+  .navbar-home-icon-slot {
+    width: 1.25rem;
+    height: 1.25rem;
+    flex: 0 0 1.25rem;
+    display: inline-grid;
+    grid-template: 1fr / 1fr;
+    place-items: center;
+  }
+  .navbar-home-icon {
+    grid-area: 1 / 1;          /* 两个图标都放在同一个 cell，完全重叠 */
+    display: inline-grid;
+    place-items: center;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    /* 只过渡 opacity，不用任何 transform，彻底消除横向跳动和"先偏移再回正" */
+    transition: opacity 240ms cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: opacity;
+  }
+  .navbar-home-icon-svg,
+  .navbar-home-icon svg {
+    width: 1.25rem !important;
+    height: 1.25rem !important;
+    display: block;
+    margin: auto;
+  }
+
+  /* ===== 文字槽：宽度用 transition 平滑变化
+     —— 当前显示的文字（不带 overlay）用 static 参与布局，决定槽宽度；
+     —— 另一个（带 overlay）用 absolute 重叠在同一位置，只做淡入淡出。*/
+  .navbar-home-text-slot {
+    position: relative;
+    height: 1.25rem;
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    /* 宽度变化的平滑过渡（与 opacity 同时长+同缓动），确保背景宽度同步平滑 */
+    transition: width 240ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .navbar-home-text {
+    height: 1.25rem;
+    line-height: 1.25rem;
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 240ms cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: opacity;
+  }
+  /* 当前"显示中"的文字：static 参与布局（撑开宽度） */
+  .navbar-home-text:not(.navbar-home-text-overlay) {
+    position: relative;
+  }
+  /* 当前"隐藏/过渡中"的文字：absolute 重叠，不占宽度 */
+  .navbar-home-text.navbar-home-text-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 1.25rem;
+    pointer-events: none;
+  }
+
+  /* 离屏测宽器：完全相同字体设置，文档流布局，保证测量宽度和实际显示完全一致 */
+  .navbar-home-text-measurer {
+    position: absolute;
+    visibility: hidden;
+    left: -9999px;
+    top: 0;
+    height: 1.25rem;
+    line-height: 1.25rem;
+    pointer-events: none;
+    white-space: nowrap;
+    font: inherit;
+  }
+  .navbar-home-text-measurer > span {
+    display: inline-block;
+    height: 1.25rem;
+    line-height: 1.25rem;
+    white-space: nowrap;
+  }
+
+  /* 交叉淡入淡出：只用 opacity，0→1 与 1→0 在同一条 transition 时间轴上真正同时发生
+     因为选择器只改变 opacity 一个属性、且 transition 参数两边完全一致，
+     浏览器会在同一帧内把"旧 opacity 1→0"和"新 opacity 0→1"同时开始过渡。*/
+  .navbar-home-btn[data-is-blog-home="true"] .navbar-home-icon-house  { opacity: 1; }
+  .navbar-home-btn[data-is-blog-home="true"] .navbar-home-icon-arrow  { opacity: 0; }
+  .navbar-home-btn[data-is-blog-home="true"] .navbar-home-text-title  { opacity: 1; }
+  .navbar-home-btn[data-is-blog-home="true"] .navbar-home-text-back   { opacity: 0; }
+
+  .navbar-home-btn[data-is-blog-home="false"] .navbar-home-icon-house { opacity: 0; }
+  .navbar-home-btn[data-is-blog-home="false"] .navbar-home-icon-arrow { opacity: 1; }
+  .navbar-home-btn[data-is-blog-home="false"] .navbar-home-text-title { opacity: 0; }
+  .navbar-home-btn[data-is-blog-home="false"] .navbar-home-text-back  { opacity: 1; }
+
+  /* Navbar 文字粗细 & 颜色过渡 */
+  .nav-underline-btn {
+    font-weight: 500;
+    transition: font-weight 200ms ease-out, color 200ms ease-out;
+  }
+
+  .nav-underline-btn:hover,
+  .nav-underline-btn.nav-link-active {
+    font-weight: 700;
+    color: var(--accent);
   }
 </style>

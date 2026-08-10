@@ -174,17 +174,51 @@ const pageDescription = description || siteConfig.description;
       }
     }
 
+    /* ===== 搜索结果高度动画：有内容时打开 Grid 行 ===== */
+    function setupSearchHeightAnimation() {
+      const searchInput = document.getElementById('search-input') as HTMLInputElement | null;
+      const searchResults = document.getElementById('search-results');
+      const wrapper = document.getElementById('search-results-wrapper');
+      if (!searchInput || !searchResults || !wrapper) return;
+
+      const updateOpen = () => {
+        const hasHeight = searchResults.children.length > 0 && searchResults.scrollHeight > 0;
+        const hasText = searchInput.value.trim().length > 0;
+        if (hasHeight && hasText) {
+          wrapper.classList.add('search-results-open');
+        } else {
+          wrapper.classList.remove('search-results-open');
+        }
+      };
+
+      searchInput.addEventListener('input', () => {
+        // 等搜索结果渲染后再判断
+        setTimeout(updateOpen, 30);
+        setTimeout(updateOpen, 150);
+      });
+
+      // 打开/关闭搜索面板时重置
+      const panel = document.getElementById('search-panel');
+      if (panel) {
+        const mo = new MutationObserver(() => {
+          if (panel.classList.contains('float-panel-closed')) {
+            wrapper.classList.remove('search-results-open');
+          }
+        });
+        mo.observe(panel, { attributes: true, attributeFilter: ['class'] });
+      }
+    }
+
     const setup = () => {
       createPhotoSwipe();
       setupCodeBlocks();
       setupViews();
+      setupSearchHeightAnimation();
 
       if (window.swup) {
-        window.swup.hooks.on("page:view", () => {
-          createPhotoSwipe();
-          setupCodeBlocks();
-          setupViews();
-        });
+        // 注：swup 切页过渡（旧反向消失 / 新进场）完全由 global.css 的 @keyframes
+        //     针对 transition-swup-is-animating / transition-swup-is-rendering 官方 class 驱动，
+        //     这里不再手动注入 class，避免和 astro.config 的 animationClass 时序冲突。
         window.swup.hooks.on(
           "content:replace",
           () => {
@@ -192,6 +226,12 @@ const pageDescription = description || siteConfig.description;
           },
           { before: true }
         );
+        window.swup.hooks.on("page:view", () => {
+          createPhotoSwipe();
+          setupCodeBlocks();
+          setupViews();
+          setTimeout(setupSearchHeightAnimation, 50);
+        });
       }
     };
 
@@ -199,6 +239,10 @@ const pageDescription = description || siteConfig.description;
       setup();
     } else {
       document.addEventListener("swup:enable", setup);
+      // 开发模式下 swup 未启用时兜底
+      window.addEventListener('load', () => {
+        setTimeout(setupSearchHeightAnimation, 100);
+      });
     }
   </script>
   </body>

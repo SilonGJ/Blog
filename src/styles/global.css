@@ -526,27 +526,98 @@
   animation-fill-mode: forwards;
 }
 
-html.is-changing .transition-swup-fade {
-  transition: all 200ms ease;
-}
-html.is-animating .transition-swup-fade {
-  opacity: 0;
-  transform: translateY(1rem);
-}
-
+/* ===== Swup 过渡：@keyframes + 双写选择器，保证 100% 命中 swup 官方的类注入
+ *  Swup 官方 class 注入有两种方式（本项目双保险，两种都写）：
+ *    1) <html> 全局 class：is-changing / is-animating / is-rendering（swup v4 插件/body class 体系）
+ *    2) container(#swup-container) 本地 class：astro.config 配的 animationClass 前缀 transition-swup-
+ *       → transition-swup-is-changing / transition-swup-is-animating / transition-swup-is-rendering
+ *
+ *  动画方向完全与 onload-animation(首屏) 对应：
+ *    onload-animation：opacity 0→1  translateY(2rem)→0 （从下往上淡入）
+ *    旧页反向消失   ：opacity 1→0  translateY(0)→-2rem（往上滑走+淡出，完全反向）
+ *    新页进场       ：和 onload-animation 完全相同的值 + 缓动 + 时长
+ */
 #swup-container {
   outline: none;
 }
 
+/* ----- 关键帧：反向消失（旧页面） ----- */
+@keyframes swup-out-reverse {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-2rem); /* 与 onload-animation 的 translateY(2rem) 完全反向对称 */
+  }
+}
+/* ----- 关键帧：进场（新页面，和 onload-animation 一模一样） ----- */
+@keyframes swup-in {
+  from {
+    opacity: 0;
+    transform: translateY(2rem); /* 与 onload-animation 的起点 2rem 保持一致 */
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ========== 旧内容：反向消失 ==========
+   匹配 swup 两种 class 注入方式，谁先命中都生效 */
+html.is-animating:not(.is-rendering) .transition-swup-fade,
+#swup-container.transition-swup-is-animating:not(.transition-swup-is-rendering) .transition-swup-fade {
+  animation: 400ms cubic-bezier(0.4, 0, 0.2, 1) swup-out-reverse forwards;
+  will-change: opacity, transform;
+}
+/* ========== 新内容：进场（onload-animation 同款） ========== */
+html.is-rendering .transition-swup-fade,
+#swup-container.transition-swup-is-rendering .transition-swup-fade {
+  animation: 500ms cubic-bezier(0.4, 0, 0.2, 1) swup-in 80ms forwards; /* 80ms 微延迟，等 swup 把 DOM 塞稳 */
+  will-change: opacity, transform;
+  animation-fill-mode: backwards; /* 80ms 延迟期间保持 from 帧状态，不白屏闪现 */
+}
+
+/* swup 的 changing 准备阶段：关闭不必要的 transition，避免和 @keyframes 叠 */
+html.is-changing .transition-swup-fade,
+#swup-container.transition-swup-is-changing .transition-swup-fade {
+  transition: none !important;
+}
+
+/* ===== 搜索结果容器：Grid 0fr/1fr 技巧实现 auto 高度平滑过渡 ===== */
+.search-results-grid {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 300ms ease-out;
+}
+
+.search-results-grid > * {
+  overflow: hidden;
+  min-height: 0;
+}
+
+.search-results-grid.search-results-open {
+  grid-template-rows: 1fr;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html.is-changing .transition-swup-fade,
-  html.is-animating .transition-swup-fade {
-    transition: none;
-    opacity: 1;
-    transform: none;
+  html.is-animating .transition-swup-fade,
+  html.is-rendering .transition-swup-fade,
+  #swup-container.transition-swup-is-changing .transition-swup-fade,
+  #swup-container.transition-swup-is-animating .transition-swup-fade,
+  #swup-container.transition-swup-is-rendering .transition-swup-fade {
+    animation: none !important;
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
   }
   .onload-animation {
     animation: none;
     opacity: 1;
+  }
+  .search-results-grid {
+    transition: none !important;
   }
 }
