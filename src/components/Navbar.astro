@@ -195,6 +195,7 @@ const needNoSwup = isBlogHome; // 跨子站跳转不用 swup
       }
     } catch (e) {
       console.warn('Pagefind not available (expected in dev mode)');
+      pagefindLoading = false;
     }
   }
 
@@ -216,19 +217,26 @@ const needNoSwup = isBlogHome; // 跨子站跳转不用 swup
       return;
     }
 
-    const search = await pagefind.search(query);
-    const results = await Promise.all(search.results.map((r: any) => r.data()));
+    try {
+      const search = await pagefind.search(query);
+      const results = await Promise.all(search.results.map((r: any) => r.data()));
 
-    if (searchResults) {
-      if (results.length === 0) {
-        searchResults.innerHTML = '<div class="text-muted text-center py-4">未找到相关结果</div>';
-      } else {
-        searchResults.innerHTML = results.map((result: any) => `
-          <a href="${result.url}" class="block p-3 hover:bg-surface-secondary transition-colors border-b border-b border-separator last:border-b-0">
-            <div class="font-bold text-foreground mb-1">${result.meta.title}</div>
-            <div class="text-sm text-muted line-clamp-2">${result.excerpt}</div>
-          </a>
-        `).join('');
+      if (searchResults) {
+        if (results.length === 0) {
+          searchResults.innerHTML = '<div class="text-muted text-center py-4">未找到相关结果</div>';
+        } else {
+          searchResults.innerHTML = results.map((result: any) => `
+            <a href="${result.url}" class="block p-3 hover:bg-surface-secondary transition-colors border-b border-b border-separator last:border-b-0">
+              <div class="font-bold text-foreground mb-1">${result.meta.title}</div>
+              <div class="text-sm text-muted line-clamp-2">${result.excerpt}</div>
+            </a>
+          `).join('');
+        }
+      }
+    } catch (err) {
+      console.error('Search error:', err);
+      if (searchResults) {
+        searchResults.innerHTML = '<div class="text-muted text-center py-4">搜索出错，请重试</div>';
       }
     }
   });

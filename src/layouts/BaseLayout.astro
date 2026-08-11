@@ -193,10 +193,14 @@ const pageDescription = description || siteConfig.description;
       };
 
       searchInput.addEventListener('input', () => {
-        // 等搜索结果渲染后再判断
         setTimeout(updateOpen, 30);
         setTimeout(updateOpen, 150);
       });
+
+      const observer = new MutationObserver(() => {
+        updateOpen();
+      });
+      observer.observe(searchResults, { childList: true });
 
       // 打开/关闭搜索面板时重置
       const panel = document.getElementById('search-panel');
