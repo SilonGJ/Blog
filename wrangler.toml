@@ -9,5 +9,5 @@ database_name = "blog-views"
 database_id = "9346117a-74df-4af3-bd52-7ad22df67ec6"
 
 [assets]
-directory = "./dist"
+directory = "./dist/client"
 binding = "ASSETS"
