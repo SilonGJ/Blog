@@ -19,7 +19,7 @@ export default defineConfig({
     },
   }),
 
-  site: 'https://example.com',
+  site: 'https://zcx0217.qzz.io',
   integrations: [
     react(),
     sitemap(),
