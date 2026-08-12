@@ -1,5 +1,5 @@
-@import url("https://giscus.app/themes/dark_protanopia.css")
+@import url("https://giscus.app/themes/dark_protanopia.css");
 
 * {
-  border-radius: 0px;
+  border-radius: 0px !important;
 }
