@@ -17,33 +17,31 @@ export const navBarConfig = {
   ],
 };
 
+export interface FriendLink {
+  issue: number;
+  name: string;
+  url: string;
+  icon?: string;
+  description?: string;
+  verifyUrl?: string;
+}
+
+const linkModules = import.meta.glob('./links/*.json', { eager: true }) as Record<
+  string,
+  { default: FriendLink }
+>;
+
+const friendLinks: FriendLink[] = Object.values(linkModules)
+  .map((m) => m.default)
+  .sort((a, b) => (a.issue ?? 0) - (b.issue ?? 0));
+
 export const linksConfig = {
   title: '友情链接',
   applyLink: 'https://github.com/SilonGJ/Blog/issues/new?template=friend-link.yml',
   groups: [
     {
       name: '好朋友们',
-      links: [
-        {
-          name: "黔中Geek's blog",
-          url: 'https://qzgeek.cn',
-          icon: '/images/friend/friend[www.qzgeek.cn].ico',
-          description: '黔中极客的博客',
-        },
-        {
-          name: "二叉树树",
-          url: 'https://2x.nz/',
-          icon: '/images/friend/friend[2x.nz].jpg',
-          description: '《二叉树树》官方网站',
-        },
-        {
-          name: 'SkyのXnok',
-          url: 'https://201562.xyz',
-          icon: 'https://201562.xyz/avatar.png',
-          description: '记录学习、生活与思考',
-        },
-
-      ],
+      links: friendLinks,
     },
   ],
 };

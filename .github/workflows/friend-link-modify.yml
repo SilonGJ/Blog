@@ -1,0 +1,441 @@
+name: 友链修改自动化
+
+on:
+  issues:
+    types: [opened, reopened, edited]
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
+concurrency:
+  group: friend-link-modify-${{ github.event.issue.number }}
+  cancel-in-progress: false
+
+jobs:
+  handle-modify:
+    name: 处理修改友链
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    if: |
+      (github.event.action != 'edited' || github.event.changes.body != null) &&
+      contains(github.event.issue.body, '### 旧ISSUE号')
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+        with:
+          ref: master
+
+      - name: 解析内容并判定阶段
+        id: parse
+        uses: actions/github-script@v7
+        with:
+          script: |
+            function extractField(text, fieldName) {
+              const regex = new RegExp(`### ${fieldName}\\s*\\n\\s*(.*?)(?=\\n### |\\n## |$)`, 's');
+              const match = text.match(regex);
+              return match ? match[1].trim() : '';
+            }
+            const body = context.payload.issue.body || '';
+            const num = context.payload.issue.number;
+            const action = context.payload.action;
+
+            let hasInstructions = false;
+            try {
+              const { data } = await github.rest.issues.listComments({
+                owner: context.repo.owner, repo: context.repo.repo, issue_number: num, per_page: 100,
+              });
+              hasInstructions = data.some((c) => c.body && c.body.includes('_friendlink-verify-'));
+            } catch (e) {}
+
+            let phase;
+            if (action === 'opened') phase = 1;
+            else if (action === 'reopened') phase = 2;
+            else phase = hasInstructions ? 2 : 1;
+
+            core.setOutput('phase', String(phase));
+            core.setOutput('old_issue', extractField(body, '旧ISSUE号'));
+            core.setOutput('site_name', extractField(body, '站点名称'));
+            core.setOutput('site_description', extractField(body, '站点描述'));
+            core.setOutput('site_url', extractField(body, '站点 URL'));
+            core.setOutput('site_icon', extractField(body, '站点图标 URL'));
+            core.setOutput('verify_address', extractField(body, '友链检查地址'));
+            console.log(`本 issue #${num}，阶段：${phase}`);
+
+      - name: 阶段一：验证旧友链并下发所有权验证
+        if: steps.parse.outputs.phase == '1'
+        env:
+          OLD_ISSUE: ${{ steps.parse.outputs.old_issue }}
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const num = context.payload.issue.number;
+            const user = context.payload.issue.user.login;
+            const oldStr = process.env.OLD_ISSUE || '';
+            const old = parseInt(oldStr, 10);
+
+            async function closeWith(out, msgs) {
+              await github.rest.issues.createComment({ owner: context.repo.owner, repo: context.repo.repo, issue_number: num, body: msgs.join('\n') });
+              await github.rest.issues.update({ owner: context.repo.owner, repo: context.repo.repo, issue_number: num, state: 'closed' });
+              out && out();
+            }
+
+            if (!old || old <= 0) {
+              await closeWith(null, [
+                `您好 @${user} 👋`,
+                '',
+                '❌ **未填写有效的「旧ISSUE号」**，无法定位要修改的友链。',
+                '请新开一个【修改友链】issue 并填写正确的旧 issue 编号。',
+                '',
+                '本 issue 已关闭。'
+              ]);
+              process.exit(0);
+            }
+
+            let oldBody = '';
+            try {
+              const r = await github.rest.issues.get({ owner: context.repo.owner, repo: context.repo.repo, issue_number: old });
+              if (r.data.pull_request) throw new Error('not-an-issue');
+              oldBody = r.data.body || '';
+            } catch (e) {
+              await closeWith(null, [
+                `您好 @${user} 👋`,
+                '',
+                `❌ **找不到 issue #${old}**（不存在或已被删除），无法定位要修改的友链。`,
+                `请确认「旧ISSUE号」为该友链最近一次申请/修改时的 issue 号。`,
+                '如有疑问请联系站长。',
+                '',
+                '本 issue 已关闭。'
+              ]);
+              process.exit(0);
+            }
+            if (!oldBody.includes('### 站点名称')) {
+              await closeWith(null, [
+                `您好 @${user} 👋`,
+                '',
+                `❌ **issue #${old} 不是友链申请**，无法定位要修改的友链。`,
+                '请确认「旧ISSUE号」为该友链最近一次申请/修改时的 issue 号。',
+                '',
+                '本 issue 已关闭。'
+              ]);
+              process.exit(0);
+            }
+            if (!fs.existsSync(`src/links/${old}.json`)) {
+              await closeWith(null, [
+                `您好 @${user} 👋`,
+                '',
+                `❌ **未找到 issue #${old} 对应的友链文件**（src/links/${old}.json 不存在）。`,
+                '「旧ISSUE号」应为该友链**最近一次**申请/修改时的 issue 号（即当前友链文件名）。',
+                '每次修改后文件名会自动更新，请确认填写的是最新编号。',
+                '如有疑问请联系站长。',
+                '',
+                '本 issue 已关闭。'
+              ]);
+              process.exit(0);
+            }
+
+            const code = `zcx0217-friendlink-verify-${num}`;
+            const oldJson = JSON.parse(fs.readFileSync(`src/links/${old}.json`, 'utf8'));
+            let oldHost = '';
+            try { oldHost = new URL(oldJson.url || '').hostname.toLowerCase(); } catch (e) {}
+
+            const msgs = [
+              `您好 @${user} 👋`,
+              '',
+              '收到您的**修改友链申请**。为避免他人恶意修改，请先完成**域名所有权验证**（本 issue 已暂时关闭）。',
+              '',
+              `**请在对应域名 \`${oldHost}\` 的 DNS 中添加一条 TXT 记录：**`,
+              '',
+              `- 主机记录：\`_friendlink-verify-${num}\``,
+              '- 记录类型：`TXT`',
+              `- 记录值：\`${code}\``,
+              '',
+              `设置完成后，**重新打开本 issue**，系统将自动验证（最多 3 次，每次间隔 1 分钟）。`,
+              '',
+              '> 若您无法控制该域名 DNS（例如 IP 站点或第三方托管不开放 DNS），请**直接联系站长人工处理**，勿反复重开。'
+            ];
+            await github.rest.issues.createComment({ owner: context.repo.owner, repo: context.repo.repo, issue_number: num, body: msgs.join('\n') });
+            await github.rest.issues.update({ owner: context.repo.owner, repo: context.repo.repo, issue_number: num, state: 'closed' });
+            console.log('阶段一完成，已下发验证码并关闭 issue');
+
+      - name: 阶段二：所有权验证与修改前检查
+        id: verify
+        if: steps.parse.outputs.phase == '2'
+        env:
+          OLD_ISSUE: ${{ steps.parse.outputs.old_issue }}
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const dns = require('dns/promises');
+            const num = context.payload.issue.number;
+            const user = context.payload.issue.user.login;
+            const old = parseInt(process.env.OLD_ISSUE || '', 10);
+
+            async function comment(msgs) {
+              await github.rest.issues.createComment({ owner: context.repo.owner, repo: context.repo.repo, issue_number: num, body: msgs.join('\n') });
+            }
+            async function closeIssue() {
+              await github.rest.issues.update({ owner: context.repo.owner, repo: context.repo.repo, issue_number: num, state: 'closed' });
+            }
+
+            // 1) 该次修改是否已合并上线
+            if (fs.existsSync(`src/links/${num}.json`)) {
+              core.setOutput('verified', 'false');
+              await comment([
+                `您好 @${user} 👋`,
+                '',
+                'ℹ️ **该次修改已完成并上线**（对应友链文件已更新）。',
+                '如需再次修改，请**新开一个【修改友链】issue**。',
+                '',
+                '本 issue 已关闭。'
+              ]);
+              await closeIssue();
+              process.exit(0);
+            }
+
+            // 2) 旧 issue / 旧文件校验
+            if (!old || old <= 0) {
+              core.setOutput('verified', 'false');
+              await comment([`❌ 未填写有效的「旧ISSUE号」。本 issue 已关闭，请新开修改 issue 并填写正确的旧 issue 号。`]);
+              await closeIssue();
+              process.exit(0);
+            }
+            let oldBody = '';
+            try {
+              const r = await github.rest.issues.get({ owner: context.repo.owner, repo: context.repo.repo, issue_number: old });
+              if (r.data.pull_request) throw new Error('not-an-issue');
+              oldBody = r.data.body || '';
+            } catch (e) {
+              core.setOutput('verified', 'false');
+              await comment([`❌ 找不到 issue #${old}，无法定位要修改的友链。本 issue 已关闭。`]);
+              await closeIssue();
+              process.exit(0);
+            }
+            if (!oldBody.includes('### 站点名称') || !fs.existsSync(`src/links/${old}.json`)) {
+              core.setOutput('verified', 'false');
+              await comment([
+                `❌ 无法定位要修改的友链：issue #${old} 不是友链申请，或对应的友链文件（src/links/${old}.json）不存在。`,
+                '「旧ISSUE号」应为该友链最近一次申请/修改时的 issue 号。本 issue 已关闭。'
+              ]);
+              await closeIssue();
+              process.exit(0);
+            }
+
+            // 3) DNS TXT 所有权验证：3 次，每次间隔 1 分钟
+            const oldJson = JSON.parse(fs.readFileSync(`src/links/${old}.json`, 'utf8'));
+            let oldHost = '';
+            try { oldHost = new URL(oldJson.url || '').hostname.toLowerCase(); } catch (e) {}
+            const code = `zcx0217-friendlink-verify-${num}`;
+            const host = `_friendlink-verify-${num}.${oldHost}`;
+            const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+            let found = false;
+            for (let i = 0; i < 3; i++) {
+              try {
+                const records = await dns.resolveTxt(host);
+                found = records.some((arr) => arr && arr.some((s) => { const v = (s || '').trim(); return v === code || v.includes(code); }));
+              } catch (e) { found = false; }
+              console.log(`验证第 ${i + 1}/3 次：${found ? '成功' : '未找到'}`);
+              if (found) break;
+              if (i < 2) await sleep(60000);
+            }
+
+            if (!found) {
+              core.setOutput('verified', 'false');
+              await comment([
+                `您好 @${user} 👋`,
+                '',
+                '❌ **所有权验证未通过**，3 次检查（间隔 1 分钟）均未在 DNS 中找到验证码。',
+                '',
+                `- 查询域名：\`${host}\``,
+                `- 期望记录值：\`${code}\``,
+                '',
+                '可能原因与处理方式：',
+                '1. TXT 记录尚未生效（DNS 传播需要时间）——等待片刻后**再次重新打开本 issue** 重试；',
+                '2. 主机名或记录值填写有误——请核对后重试；',
+                '3. **您无法控制该域名 DNS**（例如 IP 站点 / 第三方托管不开放 DNS）——请**直接联系站长人工处理**，勿反复重开。',
+                '',
+                '本 issue 已关闭。'
+              ]);
+              await closeIssue();
+              process.exit(0);
+            }
+
+            core.setOutput('verified', 'true');
+            await comment([
+              `✅ @${user} **域名所有权验证通过**。`,
+              '正在对修改后的信息进行自动审核，请稍候...'
+            ]);
+            console.log('所有权验证通过');
+
+      - name: 校验修改后的信息
+        id: validate
+        if: steps.parse.outputs.phase == '2' && steps.verify.outputs.verified == 'true'
+        uses: ./.github/actions/validate-friend-link
+        env:
+          GITHUB_ISSUE_NUMBER: ${{ github.event.issue.number }}
+        with:
+          issue-body: ${{ github.event.issue.body }}
+
+      - name: 修改信息审核失败处理
+        if: steps.parse.outputs.phase == '2' && steps.verify.outputs.verified == 'true' && steps.validate.outputs.passed == 'false'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const num = context.payload.issue.number;
+            const user = context.payload.issue.user.login;
+            let detail = '（无详细原因）';
+            try { detail = fs.readFileSync(`friend-validate-msg-${num}.txt`, 'utf8'); } catch (e) {}
+            const lines = detail.split('\n').map((l) => l || ' ');
+            const body = [
+              `您好 @${user} 👋`,
+              '',
+              '**修改后的友链信息未通过自动审核。**原因如下：',
+              '',
+              ...lines,
+              '',
+              '---',
+              '',
+              '请按问题修正后**重新打开本 issue** 重新审核。',
+              '（域名所有权验证码仍在生效，无需重复添加 TXT。）',
+              '',
+              '本 issue 已关闭。'
+            ].join('\n');
+            await github.rest.issues.createComment({ owner: context.repo.owner, repo: context.repo.repo, issue_number: num, body });
+            await github.rest.issues.update({ owner: context.repo.owner, repo: context.repo.repo, issue_number: num, state: 'closed' });
+
+      - name: 修改审核通过，创建 PR
+        id: create-pr
+        if: steps.parse.outputs.phase == '2' && steps.verify.outputs.verified == 'true' && steps.validate.outputs.passed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OLD_ISSUE: ${{ steps.parse.outputs.old_issue }}
+          SITE_NAME: ${{ steps.parse.outputs.site_name }}
+          SITE_URL: ${{ steps.parse.outputs.site_url }}
+          SITE_DESCRIPTION: ${{ steps.parse.outputs.site_description }}
+          VERIFY_ADDRESS: ${{ steps.parse.outputs.verify_address }}
+          ICON_TMP: ${{ steps.validate.outputs.icon-tmp-path }}
+          ICON_TARGET: ${{ steps.validate.outputs.icon-target }}
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+            const { spawnSync } = require('child_process');
+            const num = context.payload.issue.number;
+            const user = context.payload.issue.user.login;
+            const old = parseInt(process.env.OLD_ISSUE || '', 10);
+            const siteName = process.env.SITE_NAME || '';
+            const siteUrl = process.env.SITE_URL || '';
+            const siteDesc = process.env.SITE_DESCRIPTION || '';
+            const verifyAddr = process.env.VERIFY_ADDRESS || '';
+            const iconTmp = process.env.ICON_TMP || '';
+            const iconTarget = process.env.ICON_TARGET || '';
+
+            function run(cmd, args, opts = {}) {
+              const r = spawnSync(cmd, args, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], ...opts });
+              if (r.status !== 0 && !opts.allowFail) {
+                throw new Error(`${cmd} 失败: ${(r.stderr || '').toString().trim()}`);
+              }
+              return (r.stdout || '').toString().trim();
+            }
+
+            // 读取旧文件
+            const oldJson = JSON.parse(fs.readFileSync(`src/links/${old}.json`, 'utf8'));
+            const newIconLocal = iconTmp && iconTarget ? `/images/friend/${iconTarget}` : (oldJson.icon || '');
+
+            // 重复 PR 守卫
+            let dup = false;
+            try {
+              const out = run('gh', ['pr', 'list', '--state', 'open', '--json', 'headRefName,body']);
+              dup = (JSON.parse(out || '[]') || []).some((p) => p.body && p.body.includes(`Closes #${num}`));
+            } catch (e) {}
+            if (dup) {
+              const body = [
+                `您好 @${user} 👋`,
+                '',
+                `已存在引用本 issue（#${num}）的待合并 PR，请等待站长审核，无需重复操作。`,
+                '',
+                '本 issue 已关闭。'
+              ].join('\n');
+              await github.rest.issues.createComment({ owner: context.repo.owner, repo: context.repo.repo, issue_number: num, body });
+              await github.rest.issues.update({ owner: context.repo.owner, repo: context.repo.repo, issue_number: num, state: 'closed' });
+              process.exit(0);
+            }
+
+            const branch = `friend-link/modify-${num}`;
+            try { run('git', ['push', 'origin', '--delete', branch], { allowFail: true }); } catch (e) {}
+            run('git', ['checkout', '-b', branch]);
+
+            // 图标入库
+            if (iconTmp && iconTarget) {
+              fs.mkdirSync(path.join('public', 'images', 'friend'), { recursive: true });
+              fs.copyFileSync(iconTmp, path.join('public', 'images', 'friend', iconTarget));
+            }
+
+            // 重命名旧文件 -> 新 issue 号，并写入新内容
+            if (old !== num) {
+              run('git', ['mv', `src/links/${old}.json`, `src/links/${num}.json`]);
+            }
+            const data = { issue: num, name: siteName, url: siteUrl, icon: newIconLocal, description: siteDesc, verifyUrl: verifyAddr };
+            fs.writeFileSync(`src/links/${num}.json`, JSON.stringify(data, null, 2) + '\n');
+
+            // 清理旧图标（若被替换且不再被任何友链引用）
+            const refs = fs.readdirSync('src/links').filter((f) => f.endsWith('.json'));
+            const stillReferenced = refs.some((f) => {
+              try {
+                const t = JSON.parse(fs.readFileSync(path.join('src/links', f), 'utf8'));
+                return t.icon && t.icon === oldJson.icon;
+              } catch (e) { return false; }
+            });
+            const oldIconLocal = oldJson.icon || '';
+            if (oldIconLocal.startsWith('/images/friend/') && oldIconLocal !== newIconLocal && !stillReferenced) {
+              const rel = oldIconLocal.replace(/^\/images\//, '');
+              try { run('git', ['rm', '--ignore-unmatch', path.join('public', 'images', rel)]); } catch (e) {}
+            }
+
+            run('git', ['config', 'user.name', 'github-actions[bot]']);
+            run('git', ['config', 'user.email', 'github-actions[bot]@users.noreply.github.com']);
+            run('git', ['add', '-A']);
+            run('git', ['commit', '-m', `chore: 修改友链 ${siteName} (#${num})`]);
+            run('git', ['push', 'origin', `HEAD:refs/heads/${branch}`]);
+
+            const prBody = [
+              `### 修改友链 #${num}（原 issue #${old}）`,
+              '',
+              `- 站点名称：${siteName}`,
+              `- 站点地址：${siteUrl}`,
+              `- 站点描述：${siteDesc}`,
+              `- 图标：${newIconLocal || '（无，使用首字母占位）'}`,
+              `- 友链检查地址：${verifyAddr}`,
+              '',
+              `- 文件名变更：\`src/links/${old}.json\` → \`src/links/${num}.json\``,
+              '',
+              `请站长人工复核后合并。`,
+              '',
+              `Closes #${num}`
+            ].join('\n');
+            const prFile = path.join(process.env.GITHUB_WORKSPACE || '.', `pr-body-${num}.md`);
+            fs.writeFileSync(prFile, prBody);
+            let prUrl = run('gh', ['pr', 'create', '--title', `[友链修改] ${siteName}`, '--label', 'friend link modify', '--body-file', prFile], { allowFail: true });
+            if (!prUrl) {
+              prUrl = run('gh', ['pr', 'create', '--title', `[友链修改] ${siteName}`, '--body-file', prFile]);
+            }
+            const prNumber = (prUrl.match(/(\d+)\/?$/) || [])[1] || '';
+            core.setOutput('pr_number', prNumber);
+
+            const success = [
+              `✅ @${user} 您的**修改友链申请已通过全部审核**！`,
+              '',
+              `已为您创建 PR${prNumber ? ` #${prNumber}` : ''}：**${siteName}**（${siteUrl}）`,
+              '',
+              '站长会在人工复核后合并上线。',
+              '',
+              '> 提示：本次修改合并后，友链文件将改用本 issue 号命名；下次修改时「旧ISSUE号」请填写本号。'
+            ].join('\n');
+            await github.rest.issues.createComment({ owner: context.repo.owner, repo: context.repo.repo, issue_number: num, body: success });
+            await github.rest.issues.update({ owner: context.repo.owner, repo: context.repo.repo, issue_number: num, state: 'closed' });
+            console.log('已完成：', siteName, prUrl);
