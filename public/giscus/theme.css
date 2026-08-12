@@ -446,7 +446,7 @@ main .gsc-comment-box-textarea:focus {
 /* ===== 评论布局 - 参考官方 dark.css，简洁风格，去掉过度定制 ===== */
 main .gsc-comment {
   border-color: var(--color-border) !important;
-  background-color: transparent !important;
+  background-color: #222428 !important;
   transition: background-color var(--transition-normal);
   border-left: none !important;
   padding-left: 0 !important;
