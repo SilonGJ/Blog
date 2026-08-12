@@ -42,7 +42,6 @@ const iconMap: Record<string, string> = {
         <img src={profileConfig.avatar} alt={profileConfig.name} class="w-full h-full object-cover" />
       </div>
       <h3 class="text-xl font-bold mb-2 max-lg:text-lg">{profileConfig.name}</h3>
-      <p id="sidebar-hitokoto" class="text-sm text-muted mb-4">{profileConfig.bio}</p>
       <div class="flex justify-center gap-3">
         {profileConfig.links.map((link) => (
           <a
@@ -115,19 +114,6 @@ const iconMap: Record<string, string> = {
 <script>
   let tocObserver = null;
   let anchorNavTarget = null;
-
-  async function loadSidebarHitokoto() {
-    const el = document.getElementById('sidebar-hitokoto');
-    if (!el) return;
-    try {
-      const res = await fetch('https://v1.hitokoto.cn/?c=a&c=b&c=c&c=d&c=i&c=k');
-      const data = await res.json();
-      if (data.hitokoto) {
-        el.textContent = data.hitokoto;
-      }
-    } catch (e) {}
-  }
-  loadSidebarHitokoto();
 
   function updateTocHeight() {
     const tocNav = document.getElementById('sidebar-toc-nav');
