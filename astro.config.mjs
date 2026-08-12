@@ -30,7 +30,7 @@ export default defineConfig({
           'mail', 'pin', 'calendar', 'folder', 'file-text', 'clock',
           'house', 'search', 'menu', 'tag', 'chevron-up', 'rss',
           'rotate-cw', 'chevron-left', 'chevron-right', 'eye',
-          'external-link', 'link', 'list', 'arrow-left',
+          'external-link', 'link', 'list', 'arrow-left', 'network',
         ],
       },
     }),
