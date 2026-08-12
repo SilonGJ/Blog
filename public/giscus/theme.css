@@ -6,4 +6,9 @@
 
 .BtnGroup-item--selected {
   background-color: #C0C4CB !important;
+  border-color: #C0C4CB !important;
+}
+
+.BtnGroup-item--selected .btn {
+  color: #14161A !important;
 }
