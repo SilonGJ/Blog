@@ -5,5 +5,5 @@
 }
 
 .BtnGroup-item--selected {
-  background-color: #C0C4CB;
+  background-color: #C0C4CB !important;
 }
