@@ -3,3 +3,7 @@
 * {
   border-radius: 0px !important;
 }
+
+.BtnGroup-item--selected {
+  background-color: #C0C4CB;
+}
