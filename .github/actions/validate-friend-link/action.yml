@@ -2,7 +2,7 @@ name: 校验友链申请信息
 description: 校验友链申请：必填字段、站点可访问性、图标是否为图片、友链检查地址是否含本站回链
 inputs:
   issue-body:
-    description: Issue 正文（原始 Markdown）
+    description: Issue 正文
     required: true
   blog-site:
     description: 本站地址
@@ -10,9 +10,9 @@ inputs:
     default: "https://zcx0217.qzz.io"
 outputs:
   passed:
-    description: 是否全部通过 (true/false)
+    description: 是否全部通过
   message:
-    description: 详细审核结果（换行文本，同时写入 workspace 的 friend-validate-msg-<issue>.txt）
+    description: 详细审核结果
   site-name:
     description: 站点名称
   site-url:
@@ -20,15 +20,15 @@ outputs:
   site-description:
     description: 站点描述
   site-icon:
-    description: 站点图标 URL（原始输入）
+    description: 站点图标 URL
   verify-address:
     description: 友链检查地址
   icon-tmp-path:
-    description: 检测通过的图标临时路径（未提供/未通过则为空）
+    description: 检测通过的图标临时路径
   icon-target:
-    description: 入库图标文件名 friend[域名].扩展名（未提供/未通过则为空）
+    description: 入库图标文件名
   nofollow:
-    description: 回链是否为 nofollow (true/false)
+    description: 回链是否为
 runs:
   using: node24
   main: index.cjs

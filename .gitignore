@@ -28,3 +28,6 @@ pnpm-debug.log*
 
 # wrangler 你也是()
 .wrangler/
+
+# 友链校验产生的临时消息文件（运行时产物，勿入库）
+friend-validate-msg-*.txt

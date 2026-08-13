@@ -1,12 +1,12 @@
 name: 修改友链
-description: 修改您已有的友链信息（需先通过域名所有权验证）
+description: 修改您已有的友链信息
 labels: ["friend link modify"]
 body:
   - type: input
     id: old-issue
     attributes:
       label: 旧ISSUE号
-      description: 该友链最近一次申请/修改时的 issue 编号（即当前友链文件使用的编号）
+      description: 该友链最近一次申请/修改时的 issue 编号 [若忘记原先 issue 编号，请前往此处查看](https://github.com/SilonGJ/Blog/issues?q=is%3Aissue%20state%3Aclosed)
       placeholder: "例：5"
     validations:
       required: true
@@ -14,7 +14,7 @@ body:
     id: site-name
     attributes:
       label: 站点名称
-      description: 修改后的站点名称（直接覆盖旧值）
+      description: 修改后的站点名称
       placeholder: "例：我的小站"
     validations:
       required: true
@@ -22,7 +22,7 @@ body:
     id: site-description
     attributes:
       label: 站点描述
-      description: 修改后的站点描述（直接覆盖旧值）
+      description: 修改后的站点描述
       placeholder: "例：一个记录生活和技术的博客"
     validations:
       required: true
@@ -30,7 +30,7 @@ body:
     id: site-url
     attributes:
       label: 站点 URL
-      description: 修改后的站点地址（直接覆盖旧值）
+      description: 修改后的站点地址
       placeholder: "例：https://example.com"
     validations:
       required: true
@@ -46,7 +46,7 @@ body:
     id: verify-address
     attributes:
       label: 友链检查地址
-      description: 已添加本站友链的页面地址（直接覆盖旧值）
+      description: 已添加本站友链的页面地址
       placeholder: "例：https://example.com/links"
     validations:
       required: true
