@@ -1,4 +1,5 @@
 import { defineConfig } from 'astro/config';
+import { unified } from '@astrojs/markdown-remark';
 import react from '@astrojs/react';
 import cloudflare from '@astrojs/cloudflare';
 import sitemap from '@astrojs/sitemap';
@@ -10,7 +11,7 @@ import remarkBreaks from 'remark-breaks';
 
 export default defineConfig({
   output: 'static',
-  session: { driver: 'memory' },
+  session: false,
   adapter: cloudflare({
     prerenderEnvironment: 'node',
     routes: {
@@ -57,11 +58,13 @@ export default defineConfig({
     },
   },
   markdown: {
+    processor: unified({
+      remarkPlugins: [remarkGfm, remarkBreaks],
+    }),
     shikiConfig: {
       theme: 'github-dark',
       wrap: true,
     },
-    remarkPlugins: [remarkGfm, remarkBreaks],
   },
   image: {
     sharpConfig: {
