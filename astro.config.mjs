@@ -28,9 +28,9 @@ export default defineConfig({
         'simple-icons': ['github', 'twitter', 'qq', 'bilibili'],
         'lucide': [
           'mail', 'pin', 'calendar', 'folder', 'file-text', 'clock',
-          'house', 'search', 'menu', 'tag', 'chevron-up', 'rss',
+          'house', 'search', 'menu', 'tag', 'chevron-up', 'chevron-down', 'rss',
           'rotate-cw', 'chevron-left', 'chevron-right', 'eye',
-          'external-link', 'link', 'list', 'arrow-left', 'network',
+          'external-link', 'link', 'list', 'arrow-left', 'network', 'info', 'square-activity',
         ],
       },
     }),

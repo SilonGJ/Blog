@@ -45,18 +45,53 @@ const needNoSwup = isBlogHome; // 跨子站跳转不用 swup
       </span>
     </a>
 
-    <div class="flex items-center gap-2 ml-auto">
-      <div id="nav-links-container" class="hidden md:flex items-center gap-2">
-        {navBarConfig.links.map((link) => (
-          <a
-            href={link.url}
-            data-nav-link
-            data-nav-url={link.url}
-            class="button button--ghost h-10 px-4 font-medium text-sm nav-underline-btn"
-          >
-            {link.name}
-          </a>
-        ))}
+    <div class="flex items-center gap-1 ml-auto">
+      <div id="nav-links-container" class="hidden md:flex items-center gap-1">
+        {navBarConfig.links.map((item) =>
+          'children' in item ? (
+            <div class="relative self-stretch flex items-center">
+              <button
+                id="nav-group-toggle"
+                type="button"
+                data-nav-link
+                data-nav-urls={item.children.map((c) => c.url).join(' ')}
+                aria-haspopup="true"
+                aria-expanded="false"
+                class="button button--ghost h-10 px-4 font-medium text-sm nav-underline-btn flex items-center gap-1.5"
+              >
+                {item.icon && <Icon name={`lucide:${item.icon}`} class="w-4 h-4 shrink-0" />}
+                <span>{item.name}</span>
+                <Icon name="lucide:chevron-down" class="w-4 h-4 nav-group-chevron" />
+              </button>
+              <div id="nav-group-panel" class="float-panel float-panel-closed absolute top-full right-0 mt-6 w-fit z-50 p-1">
+                <div class="flex flex-col">
+                  {item.children.map((child, i) => (
+                    <a
+                      href={child.url}
+                      class="button button--ghost h-12 px-4 font-medium text-sm w-full flex items-center gap-2"
+                      style={`border-top: ${i === 0 ? 'none' : '1px solid var(--separator)'}`}
+                    >
+                      {child.icon && <Icon name={`lucide:${child.icon}`} class="w-4 h-4 shrink-0" />}
+                      <span>{child.name}</span>
+                    </a>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ) : (
+            <a
+              href={item.url}
+              data-nav-link
+              data-nav-url={item.url}
+              {...(item.newWindow ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+              {...(item.noExternalDialog ? { 'data-no-external-dialog': true } : {})}
+              class="button button--ghost h-10 px-4 font-medium text-sm nav-underline-btn flex items-center gap-1.5"
+            >
+              {item.icon && <Icon name={`lucide:${item.icon}`} class="w-4 h-4 shrink-0" />}
+              <span>{item.name}</span>
+            </a>
+          )
+        )}
       </div>
 
       <button
@@ -95,15 +130,18 @@ const needNoSwup = isBlogHome; // 跨子站跳转不用 swup
     </div>
   </div>
 
-  <div id="nav-menu-panel" class="float-panel float-panel-closed fixed right-4 top-20 w-48 z-50 md:hidden">
+  <div id="nav-menu-panel" class="float-panel float-panel-closed fixed right-4 top-20 w-fit z-50 md:hidden">
     <div class="flex flex-col">
-      {navBarConfig.links.map((link, i) => (
+      {navBarConfig.links.flatMap((item) => ('children' in item ? item.children : [item])).map((link, i) => (
         <a
           href={link.url}
-          class="button button--ghost h-12 px-5 font-medium text-left justify-start w-full"
+          {...(link.newWindow ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+          {...(link.noExternalDialog ? { 'data-no-external-dialog': true } : {})}
+          class="button button--ghost h-12 px-5 font-medium text-left justify-start w-full flex items-center gap-2"
           style={`border-top: ${i === 0 ? 'none' : '1px solid var(--separator)'}`}
         >
-          {link.name}
+          {link.icon && <Icon name={`lucide:${link.icon}`} class="w-4 h-4 shrink-0" />}
+          <span>{link.name}</span>
         </a>
       ))}
     </div>
@@ -145,11 +183,22 @@ const needNoSwup = isBlogHome; // 跨子站跳转不用 swup
 
   const searchToggle = document.getElementById('search-toggle');
   const navMenuToggle = document.getElementById('nav-menu-toggle');
+  const navGroupToggle = document.getElementById('nav-group-toggle');
+  const navGroupPanel = document.getElementById('nav-group-panel');
+
+  function toggleGroupPanel() {
+    if (!navGroupPanel) return;
+    navGroupPanel.classList.toggle('float-panel-closed');
+    const isOpen = !navGroupPanel.classList.contains('float-panel-closed');
+    navGroupToggle?.setAttribute('aria-expanded', String(isOpen));
+    return isOpen;
+  }
 
   searchToggle?.addEventListener('click', (e) => {
     e.stopPropagation();
     togglePanel('search-panel');
     closePanel('nav-menu-panel');
+    closePanel('nav-group-panel');
     setTimeout(() => {
       document.getElementById('search-input')?.focus();
     }, 50);
@@ -159,6 +208,19 @@ const needNoSwup = isBlogHome; // 跨子站跳转不用 swup
     e.stopPropagation();
     togglePanel('nav-menu-panel');
     closePanel('search-panel');
+    closePanel('nav-group-panel');
+  });
+
+  navGroupToggle?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    toggleGroupPanel();
+    closePanel('search-panel');
+    closePanel('nav-menu-panel');
+  });
+
+  navGroupPanel?.addEventListener('click', () => {
+    closePanel('nav-group-panel');
+    navGroupToggle?.setAttribute('aria-expanded', 'false');
   });
 
   const searchBackdrop = document.getElementById('search-backdrop');
@@ -176,6 +238,10 @@ const needNoSwup = isBlogHome; // 跨子站跳转不用 swup
     }
     if (navMenuPanel && !navMenuPanel.contains(target) && !navMenuToggle?.contains(target)) {
       closePanel('nav-menu-panel');
+    }
+    if (navGroupPanel && !navGroupPanel.contains(target) && !navGroupToggle?.contains(target)) {
+      closePanel('nav-group-panel');
+      navGroupToggle?.setAttribute('aria-expanded', 'false');
     }
   });
 
@@ -411,17 +477,23 @@ const needNoSwup = isBlogHome; // 跨子站跳转不用 swup
     if (!s.startsWith('/')) s = '/' + s;
     return s === '/' ? s : s + '/';
   }
+  function getNavUrls(el: HTMLElement): string[] {
+    return (el.dataset.navUrls || el.dataset.navUrl || '').split(' ').filter(Boolean);
+  }
+
   function markActiveNavLink() {
     const container = document.getElementById('nav-links-container');
     if (!container) return;
-    const links = container.querySelectorAll<HTMLAnchorElement>('[data-nav-link]');
+    const links = Array.from(container.querySelectorAll<HTMLElement>('[data-nav-link]'));
     const current = normalizePath(window.location.pathname);
-    let best: HTMLAnchorElement | null = null;
+    let best: HTMLElement | null = null;
     let bestLen = 0;
     links.forEach((link) => {
-      const n = normalizePath(link.dataset.navUrl || '');
-      if (n === current && n.length > bestLen) { bestLen = n.length; best = link; }
-      else if (!best && n !== '/' && current.startsWith(n) && n.length > bestLen) { bestLen = n.length; best = link; }
+      getNavUrls(link).forEach((u) => {
+        const n = normalizePath(u);
+        if (n === current && n.length > bestLen) { bestLen = n.length; best = link; }
+        else if (!best && n !== '/' && current.startsWith(n) && n.length > bestLen) { bestLen = n.length; best = link; }
+      });
     });
     // 详情/子分类页兜底：
     if (!best) {
@@ -434,7 +506,7 @@ const needNoSwup = isBlogHome; // 跨子站跳转不用 swup
       const fallback = map.find(([p]) => current.startsWith(p))?.[1];
       if (fallback) {
         const f = normalizePath(fallback);
-        for (const l of Array.from(links)) if (normalizePath(l.dataset.navUrl || '') === f) { best = l; break; }
+        for (const l of links) if (getNavUrls(l).some((u) => normalizePath(u) === f)) { best = l; break; }
       }
     }
     links.forEach((l) => l.classList.toggle('nav-link-active', l === best));
@@ -539,6 +611,8 @@ const needNoSwup = isBlogHome; // 跨子站跳转不用 swup
     window.swup.hooks.on('page:view', () => {
       const navbar = document.getElementById('navbar');
       if (navbar) playSlideInAnimation();
+      closePanel('nav-group-panel');
+      navGroupToggle?.setAttribute('aria-expanded', 'false');
       requestAnimationFrame(() => requestAnimationFrame(initNavbarState));
     });
   }
@@ -664,5 +738,12 @@ const needNoSwup = isBlogHome; // 跨子站跳转不用 swup
   .nav-underline-btn:hover,
   .nav-underline-btn.nav-link-active {
     color: var(--accent);
+  }
+
+  .nav-group-chevron {
+    transition: transform 200ms ease;
+  }
+  #nav-group-toggle[aria-expanded="true"] .nav-group-chevron {
+    transform: rotate(180deg);
   }
 </style>

@@ -7,14 +7,36 @@ export const siteConfig = {
   postsPerPage: 8,
 };
 
+export interface NavLink {
+  name: string;
+  url: string;
+  icon?: string;
+  newWindow?: boolean;
+  noExternalDialog?: boolean;
+}
+
+export interface NavGroup {
+  name: string;
+  icon?: string;
+  children: NavLink[];
+}
+
+export type NavItem = NavLink | NavGroup;
+
 export const navBarConfig = {
   links: [
-    { name: '归档', url: '/archive/' },
-    { name: '分类', url: '/categories/' },
-    { name: '标签', url: '/tags/' },
-    { name: '友链', url: '/links/' },
-    { name: '关于', url: '/posts/about/' },
-    { name: '状态', url: 'https://status.zcx0217.qzz.io/' },
+    {
+      name: '归档',
+      icon: 'list',
+      children: [
+        { name: '归档', url: '/archive/', icon: 'list' },
+        { name: '分类', url: '/categories/', icon: 'folder' },
+        { name: '标签', url: '/tags/', icon: 'tag' },
+      ],
+    },
+    { name: '友链', url: '/links/', icon: 'link' },
+    { name: '关于', url: '/posts/about/', icon: 'info' },
+    { name: '状态', url: 'https://status.zcx0217.qzz.io/', icon: 'square-activity', newWindow: true, noExternalDialog: true },
   ],
 };
 

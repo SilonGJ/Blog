@@ -3,6 +3,7 @@ import '../styles/global.css';
 import '../styles/photoswipe.css';
 import 'photoswipe/style.css';
 import { siteConfig } from '../config';
+import { Icon } from 'astro-icon/components';
 
 interface Props {
   title?: string;
@@ -37,6 +38,22 @@ const pageDescription = description || siteConfig.description;
   </head>
   <body class="min-h-screen bg-background text-foreground">
     <slot />
+
+    <div id="external-dialog" aria-hidden="true">
+      <div id="external-dialog-backdrop" class="external-dialog-backdrop"></div>
+      <div id="external-dialog-panel" class="float-panel external-dialog-panel external-dialog-closed w-[min(90vw,22rem)] p-5" role="dialog" aria-modal="true" aria-labelledby="external-dialog-title">
+        <h3 id="external-dialog-title" class="text-base font-bold flex items-center gap-2">
+          <Icon name="lucide:external-link" class="w-4 h-4" />
+          即将离开本站
+        </h3>
+        <p class="text-sm text-muted mt-2">该链接指向外部网站，请注意隐私政策以及风险</p>
+        <div id="external-dialog-url" class="mt-3 px-3 py-2 text-xs break-all bg-[var(--surface-secondary)] border border-[var(--border)]"></div>
+        <div class="mt-4 flex justify-end gap-2">
+          <button id="external-dialog-cancel" class="button button--ghost h-9 px-4 text-sm">取消</button>
+          <button id="external-dialog-confirm" class="button button--primary h-9 px-4 text-sm">继续前往</button>
+        </div>
+      </div>
+    </div>
   <script>
     import PhotoSwipeLightbox from "photoswipe/lightbox";
     import { getViewsBatchCached, incrementView, getViews, isVisited } from "../utils/views";
@@ -237,6 +254,7 @@ const pageDescription = description || siteConfig.description;
           createPhotoSwipe();
           setupCodeBlocks();
           setupViews();
+          closeExternalDialog();
           setTimeout(setupSearchHeightAnimation, 50);
         });
       }
@@ -301,6 +319,80 @@ const pageDescription = description || siteConfig.description;
         setTimeout(setupSearchHeightAnimation, 100);
       });
     }
+
+    /* ===== 外链跳转确认弹窗（document 级委托，swup 换页后依然有效） ===== */
+    let pendingExternalLink = null;
+
+    function isExternalHttp(href) {
+      try {
+        const url = new URL(href, window.location.href);
+        return /^https?:$/.test(url.protocol) && url.origin !== window.location.origin;
+      } catch {
+        return false;
+      }
+    }
+
+    function closeExternalDialog() {
+      const panel = document.getElementById('external-dialog-panel');
+      const backdrop = document.getElementById('external-dialog-backdrop');
+      const dialog = document.getElementById('external-dialog');
+      if (panel) panel.classList.add('external-dialog-closed');
+      if (backdrop) backdrop.classList.remove('external-dialog-open');
+      if (dialog) dialog.setAttribute('aria-hidden', 'true');
+      pendingExternalLink = null;
+    }
+
+    function openExternalDialog(anchor) {
+      const panel = document.getElementById('external-dialog-panel');
+      const backdrop = document.getElementById('external-dialog-backdrop');
+      const urlEl = document.getElementById('external-dialog-url');
+      const dialog = document.getElementById('external-dialog');
+      if (!panel || !backdrop) return;
+      pendingExternalLink = anchor;
+      if (urlEl) urlEl.textContent = anchor.href;
+      panel.classList.remove('external-dialog-closed');
+      backdrop.classList.add('external-dialog-open');
+      if (dialog) dialog.setAttribute('aria-hidden', 'false');
+      document.getElementById('external-dialog-confirm')?.focus();
+    }
+
+    function confirmExternalLink() {
+      if (!pendingExternalLink) { closeExternalDialog(); return; }
+      const href = pendingExternalLink.href;
+      if (pendingExternalLink.target === '_blank') {
+        window.open(href, '_blank', 'noopener,noreferrer');
+      } else {
+        window.location.href = href;
+      }
+      closeExternalDialog();
+    }
+
+    function setupExternalLinkDialog() {
+      if (window.__externalDialogReady) return;
+      window.__externalDialogReady = true;
+
+      document.addEventListener('click', (e) => {
+        const target = e.target;
+        if (!(target instanceof Element)) return;
+        const anchor = target.closest('a[href]');
+        if (!anchor) return;
+        if (e.defaultPrevented) return;
+        if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+        if (anchor.hasAttribute('data-no-external-dialog')) return;
+        if (!isExternalHttp(anchor.href)) return;
+        e.preventDefault();
+        openExternalDialog(anchor);
+      }, true);
+
+      document.getElementById('external-dialog-confirm')?.addEventListener('click', confirmExternalLink);
+      document.getElementById('external-dialog-cancel')?.addEventListener('click', closeExternalDialog);
+      document.getElementById('external-dialog-backdrop')?.addEventListener('click', closeExternalDialog);
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeExternalDialog();
+      });
+    }
+
+    setupExternalLinkDialog();
   </script>
   </body>
 </html>

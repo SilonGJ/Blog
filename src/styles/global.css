@@ -326,19 +326,67 @@
     pointer-events: none;
   }
 
+  /* ===== 外链跳转确认弹窗：模糊背景 + 居中面板（动画时长对齐搜索框） ===== */
+  #external-dialog {
+    position: fixed;
+    inset: 0;
+    z-index: 70;
+    pointer-events: none;
+  }
+  .external-dialog-backdrop {
+    position: absolute;
+    inset: 0;
+    background-color: var(--backdrop);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 300ms ease;
+  }
+  .external-dialog-backdrop.external-dialog-open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .external-dialog-panel {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: auto;
+    transition: opacity 200ms ease, transform 200ms ease;
+  }
+  .external-dialog-panel.external-dialog-closed {
+    transform: translate(-50%, calc(-50% - 8px));
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* 左→右延伸动画下划线：background-image 渐变，hover 时宽度 0→100%
+     用法：需要下划线动画的 <a> 加 .underline-animate；`.prose a` 已内置 */
+  .underline-animate {
+    text-decoration: none;
+    background-image: linear-gradient(currentColor, currentColor);
+    background-repeat: no-repeat;
+    background-size: 0% 2px;
+    background-position: left bottom;
+    transition: background-size 0.3s ease, color 0.2s ease, background-color 0.2s ease;
+  }
+  .underline-animate:hover {
+    background-size: 100% 2px;
+  }
+
   .link-underline {
-    text-decoration: underline;
-    text-decoration-thickness: 2px;
-    text-decoration-style: dashed;
-    text-decoration-color: var(--border);
-    text-underline-offset: 0.25rem;
-    transition: all 0.2s ease;
+    text-decoration: none;
+    background-image: linear-gradient(var(--accent), var(--accent));
+    background-repeat: no-repeat;
+    background-size: 0% 2px;
+    background-position: left bottom;
+    transition: background-size 0.3s ease, color 0.2s ease;
   }
-  .link-underline:hover {
-    text-decoration-color: var(--accent);
-  }
+  .link-underline:hover,
   .link-underline:active {
-    text-decoration-color: var(--accent);
+    background-size: 100% 2px;
+    color: var(--accent);
   }
 
   .text-90 { color: oklch(0.85 0.006 260); }
@@ -618,6 +666,11 @@ html.is-changing .transition-swup-fade,
     opacity: 1;
   }
   .search-results-grid {
+    transition: none !important;
+  }
+  #external-dialog .external-dialog-backdrop,
+  #external-dialog .external-dialog-panel,
+  .underline-animate {
     transition: none !important;
   }
 }

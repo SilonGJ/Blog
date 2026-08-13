@@ -62,12 +62,12 @@ const nextPost = currentIndex < allPosts.length - 1 ? allPosts[currentIndex + 1]
 
         <div class="flex flex-wrap items-center gap-2 mt-4">
           {post.data.category && (
-            <a href={`/categories/${post.data.category}/`} class="btn-plain px-2.5 py-1 text-sm border border-[var(--border)] max-md:text-xs">
+            <a href={`/categories/${post.data.category}/`} class="chip chip--default max-md:text-xs">
               {post.data.category}
             </a>
           )}
           {post.data.tags.length > 0 && post.data.tags.map((tag) => (
-            <a href={`/tags/${tag}/`} class="btn-plain px-2.5 py-1 text-sm border border-[var(--border)] max-md:text-xs">
+            <a href={`/tags/${tag}/`} class="chip chip--default chip--soft text-xs">
               #{tag}
             </a>
           ))}
@@ -216,19 +216,18 @@ const nextPost = currentIndex < allPosts.length - 1 ? allPosts[currentIndex + 1]
   .prose a {
     color: var(--primary);
     text-decoration: none;
-    border-bottom: 1px dashed var(--link-underline);
-    padding-bottom: 1px;
-    transition: all 0.2s ease;
     font-weight: 500;
+    background-image: linear-gradient(currentColor, currentColor);
+    background-repeat: no-repeat;
+    background-size: 0% 2px;
+    background-position: left bottom;
+    transition: background-size 0.3s ease, color 0.2s ease, background-color 0.2s ease;
   }
 
   .prose a:hover {
     color: var(--link-hover);
-    border-bottom-color: transparent;
     background-color: var(--btn-plain-bg-hover);
-    border-radius: 2px;
-    padding: 1px 2px;
-    margin: -1px -2px;
+    background-size: 100% 2px;
   }
 
   .prose code {

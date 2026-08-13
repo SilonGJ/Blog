@@ -16,7 +16,7 @@ const { title, description } = Astro.props;
 
 <BaseLayout title={title} description={description}>
   <div class="relative min-h-screen">
-    <div id="search-backdrop" class="fixed inset-0 bg-[var(--backdrop)] opacity-0 pointer-events-none transition-opacity duration-300 z-40"></div>
+    <div id="search-backdrop" class="fixed inset-0 bg-[var(--backdrop)] backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300 z-40"></div>
     <Navbar />
 
     <div class="relative z-30 pt-20 max-lg:pb-8">
