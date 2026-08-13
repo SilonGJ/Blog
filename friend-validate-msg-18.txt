@@ -1,0 +1,4 @@
+✅ 站点可访问：https://zcx0217.qzz.io（HTTP 200）
+✅ 站点图标有效：为 image/png 格式图片
+✅ 友链检查地址可访问：https://zcx0217.qzz.io/links（HTTP 200）
+✅ 已找到指向本站的友链：https://zcx0217.qzz.io
