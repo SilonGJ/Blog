@@ -101,7 +101,7 @@ const posts = (await getCollection('posts', ({ data }) => !data.draft && !data.h
       const el = document.getElementById('hitokoto');
       if (!el) return;
       try {
-        const res = await fetch('https://v1.hitokoto.cn/?c=a&c=b&c=c&d&c=i&c=k');
+        const res = await fetch('https://v1.hitokoto.cn/?c=k');
         const data = await res.json();
         if (data.hitokoto) {
           el.textContent = data.hitokoto;
