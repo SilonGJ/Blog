@@ -207,7 +207,7 @@ jobs:
             ].join('\n');
             const prFile = path.join(process.env.GITHUB_WORKSPACE || '.', `pr-body-${num}.md`);
             fs.writeFileSync(prFile, prBody);
-            const prUrl = run('gh', ['pr', 'create', '--title', `[友链] ${siteName}`, '--label', 'friend link', '--body-file', prFile], { allowFail: true });
+            let prUrl = run('gh', ['pr', 'create', '--title', `[友链] ${siteName}`, '--label', 'friend link', '--body-file', prFile], { allowFail: true });
             if (!prUrl) {
               prUrl = run('gh', ['pr', 'create', '--title', `[友链] ${siteName}`, '--body-file', prFile]);
             }
