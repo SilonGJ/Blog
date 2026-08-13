@@ -5,19 +5,22 @@ import { Icon } from 'astro-icon/components';
 
 <footer class="text-center py-8 text-sm text-[var(--muted)]">
   <div class="border-t border-[var(--divider)] pt-6">
-    <p>&copy; {new Date().getFullYear()} {profileConfig.name} 版权所有</p>
-    <p class="mt-2">
-      由 <a href="https://astro.build" target="_blank" rel="noopener noreferrer" class="text-[var(--primary)] underline-animate">Astro</a> 和 <a href="https://heroui.com" target="_blank" rel="noopener noreferrer" class="text-[var(--primary)] underline-animate">HeroUI</a> 强力驱动
+    <p>
+      <Icon name="lucide:copyright" class="w-3.5 h-3.5 inline mr-1 mb-0.5" />
+      {new Date().getFullYear()} {profileConfig.name}
     </p>
-    <p class="mt-2">
+    <p class="mt-1">
+       本博客在 <a href="https://github.com/SilonGJ/Blog" target="_blank" rel="noopener noreferrer" class="text-[var(--primary)] underline-animate"><Icon name="lucide:github" class="w-3.5 h-3.5 inline mr-1 mb-0.5" />Github</a> 上开源
+    </p>
+    <p class="mt-1">
       <a href="https://icp.gov.moe/?keyword=20260865" target="_blank" rel="noopener noreferrer" class="text-[var(--primary)] underline-animate">萌ICP备20260865号</a>
     </p>
-    <p class="mt-2">
+    <p class="mt-1">
       <a href="/rss.xml" target="_blank" rel="noopener noreferrer" class="text-[var(--muted)] hover:text-[var(--primary)] transition-colors">
         <Icon name="lucide:rss" class="w-3.5 h-3.5 inline mr-1 mb-0.5" />
         RSS
       </a>
-      <span class="mx-2">·</span>
+      <span class="mx-1">·</span>
       <a href="/sitemap-index.xml" target="_blank" rel="noopener noreferrer" class="text-[var(--muted)] hover:text-[var(--primary)] transition-colors">
         <Icon name="lucide:network" class="w-3.5 h-3.5 inline mr-1 mb-0.5" />
         Sitemap
