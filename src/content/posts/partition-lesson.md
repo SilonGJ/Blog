@@ -72,7 +72,6 @@ btrfs restore
 只有重装更划算
 ![重装系统](/images/archive/Screenshot_20260810_194909.png)
 这次倒是学聪明了，将/boot /home /都设为了btrfs子卷，看着不那么难受，减少空间焦虑了属于是
-![Screenshot_20260810_194935.png](/images/archive/Screenshot_20260810_194935.png)
 数据到是没太大问题，因为我碰巧有几天前的备份。碰巧那几天更改的也就只有项目文件夹，这些在NAS和Github上都有备份(备份的好处hhh)
 不过，系统设置一类的，以及一大堆软件包算是白布置了，于是我花了2天的时间把它们调回来...
 
