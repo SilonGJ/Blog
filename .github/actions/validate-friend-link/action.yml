@@ -30,5 +30,5 @@ outputs:
   nofollow:
     description: 回链是否为 nofollow (true/false)
 runs:
-  using: node20
-  main: index.js
+  using: node24
+  main: index.cjs
