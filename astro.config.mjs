@@ -6,6 +6,7 @@ import tailwindcss from '@tailwindcss/vite';
 import swup from '@swup/astro';
 import icon from 'astro-icon';
 import remarkGfm from 'remark-gfm';
+import remarkBreaks from 'remark-breaks';
 
 export default defineConfig({
   output: 'static',
@@ -60,7 +61,7 @@ export default defineConfig({
       theme: 'github-dark',
       wrap: true,
     },
-    remarkPlugins: [remarkGfm],
+    remarkPlugins: [remarkGfm, remarkBreaks],
   },
   image: {
     sharpConfig: {
