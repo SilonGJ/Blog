@@ -1,4 +1,4 @@
-const core = require('@actions/core');
+const { appendFileSync } = require('fs');
 const { execFileSync } = require('child_process');
 const { promises: fsp } = require('fs');
 const os = require('os');
@@ -6,7 +6,23 @@ const path = require('path');
 const net = require('net');
 const dns = require('dns/promises');
 
-const BLOG = core.getInput('blog-site') || 'https://zcx0217.qzz.io';
+function getInput(name) {
+  return (process.env['INPUT_' + name.replace(/ /g, '_').toUpperCase()] || '').trim();
+}
+
+function setOutput(name, value) {
+  const file = process.env.GITHUB_OUTPUT;
+  if (!file) return;
+  const s = String(value);
+  if (s.includes('\n')) {
+    const delim = 'ghadelimiter_' + (process.env.GITHUB_RUN_ID || 'run') + '_' + Math.floor(Math.random() * 1e9);
+    appendFileSync(file, `${name}<<${delim}\n${s}\n${delim}\n`);
+  } else {
+    appendFileSync(file, `${name}=${s}\n`);
+  }
+}
+
+const BLOG = getInput('blog-site') || 'https://zcx0217.qzz.io';
 const BLOG_HOST = new URL(BLOG).hostname.toLowerCase();
 const ISSUE = process.env.GITHUB_ISSUE_NUMBER || '';
 const WORKSPACE = process.env.GITHUB_WORKSPACE || process.cwd();
@@ -121,7 +137,7 @@ const MIME_EXT = {
 };
 
 (async () => {
-  const body = core.getInput('issue-body') || '';
+  const body = getInput('issue-body') || '';
   const siteName = extractField(body, '站点名称');
   const siteDescription = extractField(body, '站点描述');
   const siteUrl = extractField(body, '站点 URL');
@@ -226,20 +242,20 @@ const MIME_EXT = {
   const msgPath = path.join(WORKSPACE, `friend-validate-msg-${ISSUE}.txt`);
   await fsp.writeFile(msgPath, messages.join('\n'));
 
-  core.setOutput('passed', failed ? 'false' : 'true');
-  core.setOutput('message', messages.join('\n'));
-  core.setOutput('site-name', siteName);
-  core.setOutput('site-url', siteUrl);
-  core.setOutput('site-description', siteDescription);
-  core.setOutput('site-icon', siteIcon);
-  core.setOutput('verify-address', verifyAddress);
-  core.setOutput('icon-tmp-path', iconTmp);
-  core.setOutput('icon-target', iconTarget);
-  core.setOutput('nofollow', nofollow ? 'true' : 'false');
+  setOutput('passed', failed ? 'false' : 'true');
+  setOutput('message', messages.join('\n'));
+  setOutput('site-name', siteName);
+  setOutput('site-url', siteUrl);
+  setOutput('site-description', siteDescription);
+  setOutput('site-icon', siteIcon);
+  setOutput('verify-address', verifyAddress);
+  setOutput('icon-tmp-path', iconTmp);
+  setOutput('icon-target', iconTarget);
+  setOutput('nofollow', nofollow ? 'true' : 'false');
 
   console.log(failed ? '【校验未通过】' : '【校验通过】\n' + messages.join('\n'));
 })().catch((e) => {
   console.error('校验 action 异常：', e);
-  core.setOutput('passed', 'false');
-  core.setOutput('message', '校验过程出现异常：' + e.message);
+  setOutput('passed', 'false');
+  setOutput('message', '校验过程出现异常：' + e.message);
 });
