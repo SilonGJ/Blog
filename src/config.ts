@@ -14,6 +14,7 @@ export const navBarConfig = {
     { name: '标签', url: '/tags/' },
     { name: '友链', url: '/links/' },
     { name: '关于', url: '/posts/about/' },
+    { name: '状态', url: 'https://status.zcx0217.qzz.io/' },
   ],
 };
 
