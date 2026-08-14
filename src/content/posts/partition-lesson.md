@@ -60,7 +60,7 @@ btrfs restore
 问了Deepseek各种各样的问题
 
 结果是：
-![文件树丢失](/images/archive/Screenshot_20260810_195033.png)
+![文件树丢失](/images/archive/Screenshot_20260810_195033.webp)
 哇实在是太棒了
 我们的文件树丢了哈哈哈
 
@@ -70,7 +70,7 @@ btrfs restore
 # 最后
 然后就没有然后了
 只有重装更划算
-![重装系统](/images/archive/Screenshot_20260810_194909.png)
+![重装系统](/images/archive/Screenshot_20260810_194909.webp)
 这次倒是学聪明了，将/boot /home /都设为了btrfs子卷，看着不那么难受，减少空间焦虑了属于是
 数据到是没太大问题，因为我碰巧有几天前的备份。碰巧那几天更改的也就只有项目文件夹，这些在NAS和Github上都有备份(备份的好处hhh)
 不过，系统设置一类的，以及一大堆软件包算是白布置了，于是我花了2天的时间把它们调回来...

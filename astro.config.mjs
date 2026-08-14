@@ -1,6 +1,5 @@
 import { defineConfig } from 'astro/config';
 import { unified } from '@astrojs/markdown-remark';
-import react from '@astrojs/react';
 import cloudflare from '@astrojs/cloudflare';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
@@ -24,7 +23,6 @@ export default defineConfig({
 
   site: 'https://zcx0217.qzz.io',
   integrations: [
-    react(),
     sitemap(),
     icon({
       include: {
@@ -64,9 +62,6 @@ export default defineConfig({
         '@swup/astro/client/SwupScriptsPlugin',
         'photoswipe/lightbox',
       ],
-    },
-    ssr: {
-      noExternal: ['@heroui/react', '@heroui/styles'],
     },
   },
   markdown: {

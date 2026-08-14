@@ -71,7 +71,7 @@ export const linksConfig = {
 
 export const profileConfig = {
   name: '孤久きりのなか',
-  avatar: '/images/avatar.jpg',
+  avatar: '/images/avatar.webp',
   bio: '',
   location: 'China',
   email: 'zcx02172024@gmail.com',
