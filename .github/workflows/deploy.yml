@@ -22,8 +22,6 @@ jobs:
 
       - name: 配置 pnpm
         uses: pnpm/action-setup@v4
-        with:
-          version: 11
 
       - name: 安装依赖
         run: pnpm install
