@@ -265,7 +265,7 @@ const pageDescription = description || siteConfig.description;
     /* ===== 切页前：先平滑滚顶部 → 再发起导航
      *  用 swup v4 官方阻塞式 hook（visit:start 返回 Promise 时 swup 等待 resolve 后才继续离场动画 + DOM 替换）
      *  不再自己拦截 <a> click，100% 与 swup 流程同步，永不漏触发
-     *  同时 astro.config 已关 swup.scrollToTop，避免 swup 切完后再重复滚一次
+     *  同时 astro.config 已关 swup.smoothScrolling（不实例化 ScrollPlugin），避免 swup 切完后再重复滚一次
      */
     function scrollToTopBlocking(): Promise<void> {
       return new Promise((resolve) => {

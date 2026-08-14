@@ -8,6 +8,7 @@ import swup from '@swup/astro';
 import icon from 'astro-icon';
 import remarkGfm from 'remark-gfm';
 import remarkBreaks from 'remark-breaks';
+import rehypeImageAttrs from './src/utils/rehype-image-attrs.mjs';
 
 export default defineConfig({
   output: 'static',
@@ -41,9 +42,8 @@ export default defineConfig({
       theme: false,
       animationClass: 'transition-swup-',
       containers: ['main'],
-      smoothScrolling: true,
-      scrollToTop: false,       /* 用户要求自己控制"先滚顶再切"，禁用 swup 默认的"切完后滚顶"，避免重复冲突 */
-      cache: false,
+      smoothScrolling: false,   /* 禁用 ScrollPlugin（"切完后再滚"）。滚动完全交给自定义 scrollToTopBlocking（先滚顶再切） */
+      cache: true,
       preload: true,
       accessibility: true,
       updateHead: true,
@@ -53,6 +53,18 @@ export default defineConfig({
   ],
   vite: {
     plugins: [tailwindcss()],
+    optimizeDeps: {
+      include: [
+        '@swup/astro/serialise',
+        '@swup/astro/idle',
+        '@swup/astro/client/Swup',
+        '@swup/astro/client/SwupA11yPlugin',
+        '@swup/astro/client/SwupPreloadPlugin',
+        '@swup/astro/client/SwupHeadPlugin',
+        '@swup/astro/client/SwupScriptsPlugin',
+        'photoswipe/lightbox',
+      ],
+    },
     ssr: {
       noExternal: ['@heroui/react', '@heroui/styles'],
     },
@@ -60,6 +72,7 @@ export default defineConfig({
   markdown: {
     processor: unified({
       remarkPlugins: [remarkGfm, remarkBreaks],
+      rehypePlugins: [rehypeImageAttrs],
     }),
     shikiConfig: {
       theme: 'github-dark',
