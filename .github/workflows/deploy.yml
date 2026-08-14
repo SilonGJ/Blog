@@ -21,7 +21,7 @@ jobs:
           node-version: '22'
 
       - name: 配置 pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v6
 
       - name: 安装依赖
         run: pnpm install
