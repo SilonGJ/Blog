@@ -30,7 +30,7 @@ jobs:
 
       - name: 检查该申请是否已上线
         id: guard
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         with:
           script: |
             const fs = require('fs');
@@ -73,7 +73,7 @@ jobs:
 
       - name: 审核失败处理
         if: steps.guard.outputs.exists == 'false' && steps.validate.outputs.passed == 'false'
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         with:
           script: |
             const fs = require('fs');
@@ -119,7 +119,7 @@ jobs:
           VERIFY_ADDRESS: ${{ steps.validate.outputs.verify-address }}
           ICON_TMP: ${{ steps.validate.outputs.icon-tmp-path }}
           ICON_TARGET: ${{ steps.validate.outputs.icon-target }}
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         with:
           script: |
             const fs = require('fs');
