@@ -18,11 +18,11 @@ importers:
         specifier: ^3.7.3
         version: 3.7.3
       '@iconify-json/lucide':
-        specifier: ^1.2.118
-        version: 1.2.118
+        specifier: ^1.2.123
+        version: 1.2.123
       '@iconify-json/simple-icons':
-        specifier: ^1.2.91
-        version: 1.2.91
+        specifier: ^1.2.93
+        version: 1.2.93
       '@swup/astro':
         specifier: ^1.8.0
         version: 1.8.0(@types/babel__core@7.20.5)(supports-color@10.0.0)
@@ -1024,11 +1024,11 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@iconify-json/lucide@1.2.118':
-    resolution: {integrity: sha512-JBnK4YOq6K/lA0JP//27QxFxJ4120TjvfXAzGZZIGjCcXcRRRFxl1rcV7+IWdcVCe90KXdqVaAwLaLf6G3HELw==}
+  '@iconify-json/lucide@1.2.123':
+    resolution: {integrity: sha512-0CozmpKXEOEEhltrfT2zt+/t1hez67Y+hM2VJWoIcBKdBrb83VYuKf+b5A0QU9HfQm+RNn2GjFWlTOwi+Ss6IA==}
 
-  '@iconify-json/simple-icons@1.2.91':
-    resolution: {integrity: sha512-plQJHZxzpkIXaeYjJF0Sc9nkzYF32EDX9olx7j1hcKYFaiTrQXbcngZmvzuV0pG6uZPU3ZuA/GIsgxSHOm6jrQ==}
+  '@iconify-json/simple-icons@1.2.93':
+    resolution: {integrity: sha512-/XhANjfGYOuqvSR3TmUnkQkINvQ4GVjVuukvymRbxtVFBvIq/yiXJqCDycKcQPT401OYT9H2vIY6ihAlz1QIAw==}
 
   '@iconify/tools@4.0.5':
     resolution: {integrity: sha512-l8KoA1lxlN/FFjlMd3vjfD7BtcX/QnFWtlBapILMlJSBgM5zhDYak/ldw/LkKG3258q/0YmXa48sO/QpxX7ptg==}
@@ -4323,10 +4323,6 @@ packages:
   source-map-support@0.5.21:
     resolution: {integrity: sha512-uBHU3L3czsIyYXKX88fdrGovxdSCoTGDRZ6SYXtSRxLZUzHg5P/66Ht6uoUlHu9EZod+inXhKo3qQgwXUT/y1w==}
 
-  source-map@0.6.0:
-    resolution: {integrity: sha512-mTozplhTX4tLKIHYji92OTZzVyZvi+Z1qRZDeBvQFI2XUB89wrRoj/xXad3c9NZ1GPJXXRvB+k41PQCPTMC+aA==}
-    engines: {node: '>=0.10.0'}
-
   source-map@0.6.1:
     resolution: {integrity: sha512-UjgapumWlbMhkBgzT7Ykc5YXUT46F0iKu8SGXq0bcwP5dz/h0Plj6enJqjz1Zbq2l5WaqYnrVbwWOWMyF3F47g==}
     engines: {node: '>=0.10.0'}
@@ -4456,6 +4452,7 @@ packages:
   tar@6.2.1:
     resolution: {integrity: sha512-DZ4yORTwrbTj/7MZYq2w+/ZFdI6OZ/f9SFHR+71gIVUZhOQPHzVCLpvRnPgyaMpfWxxk/4ONva3GQSyNIKRv6A==}
     engines: {node: '>=10'}
+    deprecated: Old versions of tar are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
 
   terser@5.49.0:
     resolution: {integrity: sha512-SNiDnXyHSrxVcIOtVbULzcTmniUiwcV7Nwdyj1twVubeTmbjoa8p69KKDpfkdoOavuM4/GRm1+ykI8qqnavHoA==}
@@ -5951,11 +5948,11 @@ snapshots:
   '@esbuild/win32-x64@0.28.1':
     optional: true
 
-  '@iconify-json/lucide@1.2.118':
+  '@iconify-json/lucide@1.2.123':
     dependencies:
       '@iconify/types': 2.0.0
 
-  '@iconify-json/simple-icons@1.2.91':
+  '@iconify-json/simple-icons@1.2.93':
     dependencies:
       '@iconify/types': 2.0.0
 
@@ -6222,7 +6219,7 @@ snapshots:
 
   '@jridgewell/source-map@0.3.11':
     dependencies:
-      '@jridgewell/gen-mapping': 0.3.5
+      '@jridgewell/gen-mapping': 0.3.12
       '@jridgewell/trace-mapping': 0.3.31
 
   '@jridgewell/sourcemap-codec@1.5.5': {}
@@ -9766,9 +9763,7 @@ snapshots:
   source-map-support@0.5.21:
     dependencies:
       buffer-from: 1.1.2
-      source-map: 0.6.0
-
-  source-map@0.6.0: {}
+      source-map: 0.6.1
 
   source-map@0.6.1: {}
 
