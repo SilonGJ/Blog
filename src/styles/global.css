@@ -177,12 +177,26 @@
 @layer components {
   .card,
   .card--default {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
     background-color: var(--surface) !important;
     border: 1px solid var(--border) !important;
     transition: background-color 0.25s ease !important;
   }
 
   .button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    height: 2.5rem;
+    width: fit-content;
+    padding-inline: 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    white-space: nowrap;
+    user-select: none;
     position: relative !important;
     border: 1px solid var(--border) !important;
     background-color: color-mix(in oklab, var(--surface) 50%, var(--surface-secondary)) !important;
@@ -207,6 +221,11 @@
     background-color: color-mix(in oklab, var(--surface) 50%, var(--surface-secondary)) !important;
   }
 
+  .button--icon-only {
+    width: 2.5rem;
+    padding: 0;
+  }
+
   .button--primary {
     background-color: var(--accent) !important;
     border-color: var(--accent) !important;
@@ -223,6 +242,16 @@
   }
 
   .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: fit-content;
+    padding-inline: 0.5rem;
+    padding-block: 0.125rem;
+    font-size: 0.75rem;
+    line-height: 1.25rem;
+    font-weight: 500;
+    flex-shrink: 0;
     position: relative !important;
     border: 1px solid var(--border) !important;
     background-color: color-mix(in oklab, var(--surface) 50%, var(--surface-secondary)) !important;
