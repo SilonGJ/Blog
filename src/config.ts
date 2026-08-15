@@ -1,7 +1,7 @@
 export const siteConfig = {
-  title: '孤久の小站',
+  title: 'SilonGJ',
   subtitle: '主站',
-  description: '这里分享一些...呃，乱七八糟的东西',
+  description: '这里是孤久きりのなか(SilonGJ)的博客，主要分享技术以及一些乱七八糟的东西',
   lang: 'zh-CN',
   author: '孤久きりのなか',
   postsPerPage: 8,

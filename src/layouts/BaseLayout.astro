@@ -14,7 +14,11 @@ interface Props {
 
 const { title, description, showNavbar = true, showFooter = true } = Astro.props;
 
-const pageTitle = title ? `${title} - ${siteConfig.title}` : `${siteConfig.title} - ${siteConfig.subtitle}`;
+const pageTitle = title
+  ? title === siteConfig.title
+    ? siteConfig.title
+    : `${title} - ${siteConfig.title}`
+  : `${siteConfig.title} - ${siteConfig.subtitle}`;
 const pageDescription = description || siteConfig.description;
 ---
 
