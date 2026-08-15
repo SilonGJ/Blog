@@ -13,7 +13,7 @@ export default defineConfig({
   output: 'static',
   session: false,
   adapter: cloudflare({
-    prerenderEnvironment: 'node',
+    prerenderEnvironment: 'workerd',
     routes: {
       extend: {
         exclude: [{ pattern: '/pagefind/*' }],
