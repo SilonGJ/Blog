@@ -25,8 +25,20 @@ const prevPost = currentIndex > 0 ? allPosts[currentIndex - 1] : null;
 const nextPost = currentIndex < allPosts.length - 1 ? allPosts[currentIndex + 1] : null;
 ---
 
-<MainLayout title={post.data.title} description={post.data.description} headings={headings}>
+<MainLayout title={post.data.title} description={post.data.description} headings={headings} cover={post.data.cover} pubDate={post.data.pubDate} updatedDate={post.data.updatedDate}>
   <article class="card-base onload-animation max-w-4xl mx-auto" data-slug={post.id}>
+    {post.data.cover && (
+      <figure class="post-cover w-full">
+        <img
+          src={post.data.cover}
+          alt={post.data.coverAlt || post.data.title}
+          class="w-full aspect-video object-cover"
+          loading="eager"
+          fetchpriority="high"
+          decoding="async"
+        />
+      </figure>
+    )}
     <div class="px-6 md:px-8 pt-6 md:pt-7 pb-6 relative w-full max-md:px-4 max-md:pt-5 max-md:pb-5">
       <header class="mb-8 pb-6 border-b border-[var(--divider)] max-md:mb-6 max-md:pb-5">
         <h1 class="text-3xl md:text-4xl font-bold mb-4 text-[var(--foreground)] max-md:text-2xl max-md:leading-tight">
@@ -146,6 +158,10 @@ const nextPost = currentIndex < allPosts.length - 1 ? allPosts[currentIndex + 1]
 </MainLayout>
 
 <style is:global>
+  .post-cover img {
+    cursor: zoom-in;
+  }
+
   .prose h1,
   .prose h2,
   .prose h3,

@@ -9,6 +9,7 @@ tags:
 category: 博客相关
 draft: false
 comment: true
+cover: /images/archive/cf.png
 ---
 
 此博客由 [Astro](https://astro.js.cn/ "Astro 官方网站") 强力驱动
@@ -16,13 +17,11 @@ comment: true
 ## 前端框架
 
 - **Astro** — 静态站点生成器
-- **HeroUI** - UI 库
 
 ## 部署
 
 - **Cloudflare Pages** — 前端托管
-- **Cloudflare Workers + KV** — 浏览量计数器  
-- **Cloudflare D1** - 评论以及用户系统
+- **Cloudflare D1** - 浏览量计数
 
 ## 其他
 

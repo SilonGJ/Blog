@@ -500,7 +500,6 @@ const needNoSwup = isBlogHome; // 跨子站跳转不用 swup
       const map: [string, string][] = [
         ['/posts/', '/archive/'], ['/post/', '/archive/'],
         ['/category/', '/category/'], ['/categories/', '/category/'],
-        ['/tag/', '/tags/'], ['/tags/', '/tags/'],
         ['/links/', '/links/'], ['/about/', '/posts/about/'],
       ];
       const fallback = map.find(([p]) => current.startsWith(p))?.[1];

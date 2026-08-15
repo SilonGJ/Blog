@@ -197,6 +197,7 @@
     font-weight: 500;
     white-space: nowrap;
     user-select: none;
+    cursor: pointer;
     position: relative !important;
     border: 1px solid var(--border) !important;
     background-color: color-mix(in oklab, var(--surface) 50%, var(--surface-secondary)) !important;
@@ -252,6 +253,7 @@
     line-height: 1.25rem;
     font-weight: 500;
     flex-shrink: 0;
+    cursor: pointer;
     position: relative !important;
     border: 1px solid var(--border) !important;
     background-color: color-mix(in oklab, var(--surface) 50%, var(--surface-secondary)) !important;
@@ -400,8 +402,6 @@
     position: absolute;
     inset: 0;
     background-color: var(--backdrop);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
     opacity: 0;
     pointer-events: none;
     transition: opacity 300ms ease;

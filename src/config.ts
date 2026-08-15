@@ -31,7 +31,6 @@ export const navBarConfig = {
       children: [
         { name: '归档', url: '/archive/', icon: 'list' },
         { name: '分类', url: '/categories/', icon: 'folder' },
-        { name: '标签', url: '/tags/', icon: 'tag' },
       ],
     },
     { name: '友链', url: '/links/', icon: 'link' },

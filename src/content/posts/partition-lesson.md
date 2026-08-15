@@ -6,6 +6,8 @@ tags:
   - 技术
   - 杂谈
 category: 关于
+cover: /images/archive/part2319.png
+coverAlt: 分区操作后文件树丢失的截图
 draft: false
 comment: true
 hideNav: false

@@ -9,20 +9,23 @@ import { siteConfig } from '../config';
 interface Props {
   title?: string;
   description?: string;
+  cover?: string;
+  pubDate?: Date;
+  updatedDate?: Date;
 }
 
-const { title, description } = Astro.props;
+const { title, description, cover, pubDate, updatedDate } = Astro.props;
 ---
 
-<BaseLayout title={title} description={description}>
+<BaseLayout title={title} description={description} cover={cover} pubDate={pubDate} updatedDate={updatedDate}>
   <div class="relative min-h-screen">
-    <div id="search-backdrop" class="fixed inset-0 bg-[var(--backdrop)] backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300 z-40"></div>
+    <div id="search-backdrop" class="fixed inset-0 bg-[var(--backdrop)] opacity-0 pointer-events-none transition-opacity duration-300 z-40"></div>
     <Navbar />
 
     <div class="relative z-30 pt-20 max-lg:pb-8">
       <div class="max-w-6xl mx-auto px-4">
-        <div id="main-grid" class="grid grid-cols-1 lg:grid-cols-[auto_17.5rem] gap-6 w-full max-lg:gap-4">
-          <main id="swup-container" class="order-1 lg:order-1 min-h-[60vh] transition-swup-fade">
+        <div id="main-grid" class="grid grid-cols-1 lg:grid-cols-[17.5rem_auto] gap-6 w-full max-lg:gap-4">
+          <main id="swup-container" class="order-1 lg:order-2 min-h-[60vh] transition-swup-fade">
             <div id="content-wrapper" class="onload-animation">
               <slot />
               <div class="footer mt-12 hidden lg:block">
@@ -31,7 +34,7 @@ const { title, description } = Astro.props;
             </div>
           </main>
 
-          <Sidebar class="order-2 lg:order-2 onload-animation" />
+          <Sidebar class="order-2 lg:order-1 onload-animation" />
 
           <div class="footer block lg:hidden mt-12 max-lg:mt-8 order-last">
             <Footer />

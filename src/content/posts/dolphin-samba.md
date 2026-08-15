@@ -7,6 +7,8 @@ tags:
   - KDE
   - Samba
 category: 技术
+cover: /images/archive/scr2303.png
+coverAlt: Dolphin 无法连接的报错截图
 draft: false
 ---
 ## 前言

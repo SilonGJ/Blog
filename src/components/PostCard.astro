@@ -1,6 +1,5 @@
 ---
 import type { CollectionEntry } from 'astro:content';
-import readingTime from 'reading-time';
 import { Icon } from 'astro-icon/components';
 
 interface Props {
@@ -12,75 +11,66 @@ interface Props {
 const { entry, class: className, index = 0 } = Astro.props;
 const { data } = entry;
 const url = `/posts/${entry.id}/`;
-
-const stats = readingTime(entry.body);
 ---
 
-<div class:list={["card-base flex flex-col w-full relative onload-animation", className]} data-slug={entry.id}>
-  <div class="pl-10 md:pl-12 pr-6 pt-6 md:pt-7 pb-6 relative w-full max-md:pl-6 max-md:pr-4 max-md:pt-5 max-md:pb-5">
+<div class:list={["card-base flex flex-col w-full relative onload-animation group", className]} data-slug={entry.id}>
+  {data.cover && (
+    <a href={url} class="block relative overflow-hidden aspect-video" aria-label={data.title}>
+      <img
+        src={data.cover}
+        alt={data.coverAlt || data.title}
+        class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+        loading="lazy"
+        decoding="async"
+      />
+    </a>
+  )}
+
+  <div class="p-5 flex-1 flex flex-col relative w-full max-md:p-4">
     <a
       href={url}
-      class="transition group w-full block relative font-bold mb-3 text-2xl md:text-3xl text-90 hover:text-[var(--primary)] active:text-[var(--title-active)]
-             before:w-1 before:h-6 before:bg-[var(--primary)]
-             before:absolute before:top-1/2 before:-translate-y-1/2 before:-left-4 md:before:-left-6 before:hidden md:before:block
-             max-md:mb-2 max-md:text-xl"
+      class="transition font-bold mb-3 text-xl md:text-2xl text-90 hover:text-[var(--primary)] active:text-[var(--title-active)] max-md:text-lg"
     >
       {data.title}
     </a>
 
-    <div class="text-sm text-[var(--muted)] flex gap-4 transition mb-2 max-md:flex-wrap max-md:gap-2 max-md:text-xs">
+    <div class="text-sm text-[var(--muted)] flex flex-wrap items-center gap-x-3 gap-y-1 mb-2 max-md:text-xs">
       {data.pinned && (
         <span class="flex items-center text-yellow-500">
           <Icon name="lucide:pin" class="w-3.5 h-3.5 mr-1" />
           置顶
         </span>
       )}
-      {data.pinned && <span class="max-sm:hidden text-yellow-500">|</span>}
       {data.pubDate && (
         <span class="flex items-center">
           <Icon name="lucide:calendar" class="w-3.5 h-3.5 mr-1" />
           {data.pubDate.toLocaleDateString('zh-CN')}
         </span>
       )}
-      {data.pubDate && <span class="max-sm:hidden">|</span>}
       {data.category && (
         <a href={`/categories/${data.category}/`} class="flex items-center text-sm text-[var(--muted)] hover:text-[var(--primary)] max-md:text-xs">
           <Icon name="lucide:folder" class="w-3.5 h-3.5 mr-1" />
           {data.category}
         </a>
       )}
-      {data.category && <span class="max-sm:hidden">|</span>}
-      <span class="flex items-center max-sm:hidden">
-        <Icon name="lucide:file-text" class="w-3.5 h-3.5 mr-1" />
-        {Math.round(stats.words)} 字
-      </span>
-      <span class="max-sm:hidden">|</span>
-      <span class="flex items-center max-sm:hidden">
-        <Icon name="lucide:clock" class="w-3.5 h-3.5 mr-1" />
-        {Math.max(1, Math.round(stats.minutes))} 分钟
-      </span>
-      <span class="max-sm:hidden">|</span>
-      <span class="flex items-center max-sm:hidden">
+      <span class="flex items-center">
         <Icon name="lucide:eye" class="w-3.5 h-3.5 mr-1" />
         <span class="view-count" data-slug={entry.id}>--</span>
       </span>
     </div>
 
-    <div class="text-75 mb-1 line-clamp-2 max-md:text-sm max-md:mb-2">
+    <div class="text-75 text-sm mb-3 line-clamp-2 max-md:text-sm">
       {data.description}
     </div>
 
-    <div class="flex flex-wrap items-center gap-2 text-sm">
-      {data.tags.length > 0 && (
-        <span class="flex flex-wrap items-center gap-2">
-          {data.tags.slice(0, 3).map((tag) => (
-            <a href={`/tags/${tag}/`} class="py-0 text-xs leading-none text-[var(--muted)] hover:text-[var(--primary)]">
-              #{tag}
-            </a>
-          ))}
-        </span>
-      )}
-    </div>
+    {data.tags.length > 0 && (
+      <div class="flex flex-wrap items-center gap-2 text-sm mt-auto">
+        {data.tags.slice(0, 3).map((tag) => (
+          <a href={`/tags/${tag}/`} class="py-0 text-xs leading-none text-[var(--muted)] hover:text-[var(--primary)]">
+            #{tag}
+          </a>
+        ))}
+      </div>
+    )}
   </div>
 </div>
-<div class="transition border-t border-dashed mx-6 border-[var(--divider)] last:border-t-0 md:hidden max-md:mx-4"></div>
