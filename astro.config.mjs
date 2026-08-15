@@ -1,3 +1,4 @@
+import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'astro/config';
 import { unified } from '@astrojs/markdown-remark';
 import cloudflare from '@astrojs/cloudflare';
@@ -40,7 +41,7 @@ export default defineConfig({
       theme: false,
       animationClass: 'transition-swup-',
       containers: ['main'],
-      smoothScrolling: false,   /* 禁用 ScrollPlugin（"切完后再滚"）。滚动完全交给自定义 scrollToTopBlocking（先滚顶再切） */
+      smoothScrolling: false,
       cache: true,
       preload: true,
       accessibility: true,
@@ -51,6 +52,11 @@ export default defineConfig({
   ],
   vite: {
     plugins: [tailwindcss()],
+    resolve: {
+      alias: {
+        debug: fileURLToPath(new URL('./src/shims/debug.js', import.meta.url)),
+      },
+    },
     optimizeDeps: {
       include: [
         '@swup/astro/serialise',
