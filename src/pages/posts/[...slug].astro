@@ -23,9 +23,53 @@ const allPosts = (await getCollection('posts', ({ data }) => !data.draft))
 const currentIndex = allPosts.findIndex((p) => p.id === post.id);
 const prevPost = currentIndex > 0 ? allPosts[currentIndex - 1] : null;
 const nextPost = currentIndex < allPosts.length - 1 ? allPosts[currentIndex + 1] : null;
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site).href;
+
+const breadcrumbItems = [
+  { '@type': 'ListItem', position: 1, name: '首页', item: new URL('/', Astro.site).href },
+];
+if (post.data.category) {
+  breadcrumbItems.push({
+    '@type': 'ListItem',
+    position: 2,
+    name: post.data.category,
+    item: new URL(`/categories/${post.data.category}/`, Astro.site).href,
+  });
+}
+breadcrumbItems.push({
+  '@type': 'ListItem',
+  position: breadcrumbItems.length + 1,
+  name: post.data.title,
+  item: canonicalURL,
+});
+
+const postJsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'BlogPosting',
+      '@id': `${canonicalURL}#article`,
+      headline: post.data.title,
+      description: post.data.description,
+      datePublished: post.data.pubDate.toISOString(),
+      ...(post.data.updatedDate && { dateModified: post.data.updatedDate.toISOString() }),
+      author: { '@type': 'Person', name: siteConfig.author },
+      publisher: {
+        '@type': 'Organization',
+        name: siteConfig.title,
+        logo: { '@type': 'ImageObject', url: new URL('/images/favicon.png', Astro.site).href },
+      },
+      mainEntityOfPage: { '@type': 'WebPage', '@id': canonicalURL },
+      ...(post.data.cover && { image: new URL(post.data.cover, Astro.site).href }),
+    },
+    { '@type': 'BreadcrumbList', '@id': `${canonicalURL}#breadcrumb`, itemListElement: breadcrumbItems },
+  ],
+};
 ---
 
 <MainLayout title={post.data.title} description={post.data.description} headings={headings} cover={post.data.cover} pubDate={post.data.pubDate} updatedDate={post.data.updatedDate}>
+  <script type="application/ld+json" set:html={JSON.stringify(postJsonLd)} />
   <article class="card-base onload-animation max-w-4xl mx-auto" data-slug={post.id}>
     {post.data.cover && (
       <figure class="post-cover w-full">

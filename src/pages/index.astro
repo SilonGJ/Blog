@@ -37,9 +37,13 @@ const siteNameJsonLd = {
           </div>
 
           <div class="p-5 flex-1 flex flex-col max-md:p-4">
-            <h1 class="text-lg font-bold mb-1 text-[var(--foreground)] max-md:text-base">
-              {profileConfig.name}
+            <h1 class="text-lg font-bold mb-0.5 text-[var(--foreground)] max-md:text-base">
+              {siteConfig.title}
             </h1>
+
+            <div class="text-xs text-[var(--muted)] mb-3">
+              {profileConfig.name}
+            </div>
 
             <div class="mb-4 max-md:mb-3">
               <p id="hitokoto" class="text-xs text-[var(--muted)] leading-relaxed min-h-[2.5rem] italic">
