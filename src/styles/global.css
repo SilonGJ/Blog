@@ -649,6 +649,15 @@
   animation-fill-mode: forwards;
 }
 
+/* ===== 图片加载完成后淡入 ===== */
+.img-fade {
+  opacity: 0;
+}
+
+.img-fade.img-loaded {
+  animation: 600ms fade-in ease forwards;
+}
+
 /* ===== Swup 过渡：@keyframes + 双写选择器，保证 100% 命中 swup 官方的类注入
  *  Swup 官方 class 注入有两种方式（本项目双保险，两种都写）：
  *    1) <html> 全局 class：is-changing / is-animating / is-rendering（swup v4 插件/body class 体系）
@@ -739,6 +748,10 @@ html.is-changing .transition-swup-fade,
   .onload-animation {
     animation: none;
     opacity: 1;
+  }
+  .img-fade {
+    opacity: 1;
+    animation: none;
   }
   .search-results-grid {
     transition: none !important;
