@@ -23,6 +23,11 @@ export default defineConfig({
   }),
 
   site: 'https://zcx0217.qzz.io',
+
+  server: {
+    host: true,
+    port: 4321,
+  },
   integrations: [
     sitemap(),
     icon({
