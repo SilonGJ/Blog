@@ -312,6 +312,18 @@
     display: none !important;
   }
 
+  /* ============ Sidebar 个人卡片按钮特殊处理 ============ */
+  .sidebar-profile .button,
+  .sidebar-profile .button.button--ghost,
+  .sidebar-profile .button.button--icon-only {
+    border: none !important;
+    background-color: transparent !important;
+  }
+
+  .sidebar-profile .button:hover {
+    background-color: var(--surface-tertiary) !important;
+  }
+
   .input-wrapper .input {
     border: 1px solid var(--border) !important;
     background-color: var(--field-background) !important;

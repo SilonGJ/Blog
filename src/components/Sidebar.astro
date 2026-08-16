@@ -29,7 +29,8 @@ const tags = Array.from(tagsMap.entries()).sort((a, b) => b[1] - a[1]);
 const iconMap: Record<string, string> = {
   github: 'simple-icons:github',
   twitter: 'simple-icons:twitter',
-  email: 'simple-icons:maildotru',
+  maildotru: 'simple-icons:maildotru',
+  namemc: 'simple-icons:namemc',
   qq: 'simple-icons:qq',
   bilibili: 'simple-icons:bilibili',
 };
@@ -37,11 +38,11 @@ const iconMap: Record<string, string> = {
 
 <div id="sidebar" class:list={[className, "w-full h-full"]}>
   <div class="flex flex-col w-full h-full gap-4">
-    <div class="card card--default p-6 text-center sidebar-profile max-lg:p-5">
-      <div class="w-24 h-24 mx-auto mb-4 overflow-hidden border border-border max-lg:w-20 max-lg:h-20">
+    <div class="card card--default p-4 text-center sidebar-profile max-lg:p-3.5">
+      <div class="w-full aspect-square mb-4 overflow-hidden border border-border">
         <img src={profileConfig.avatar} alt={profileConfig.name} class="w-full h-full object-cover" />
       </div>
-      <h3 class="text-xl font-bold mb-2 max-lg:text-lg">{profileConfig.name}</h3>
+      <h3 class="text-xl font-bold max-lg:text-lg">{profileConfig.name}</h3>
       <div class="flex justify-center gap-3">
         {profileConfig.links.map((link) => (
           <a

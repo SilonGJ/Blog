@@ -27,7 +27,7 @@ export default defineConfig({
     sitemap(),
     icon({
       include: {
-        'simple-icons': ['github', 'twitter', 'qq', 'bilibili', 'maildotru'],
+        'simple-icons': ['github', 'twitter', 'qq', 'bilibili', 'maildotru', 'namemc'],
         'lucide': [
           'mail', 'pin', 'calendar', 'folder', 'file-text', 'clock',
           'house', 'search', 'menu', 'tag', 'chevron-up', 'chevron-down', 'rss',

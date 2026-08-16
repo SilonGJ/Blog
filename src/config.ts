@@ -78,7 +78,8 @@ export const profileConfig = {
     { name: 'QQ', icon: 'qq', url: 'https://qm.qq.com/cgi-bin/qm/qr?k=1910115941' },
     { name: 'GitHub', icon: 'github', url: 'https://github.com/SilonGJ' },
     { name: 'BiliBili', icon: 'bilibili', url: 'https://space.bilibili.com/1038766354' },
-    { name: 'Email', icon: 'email', url: 'mailto:zcx02172024@gmail.com' },
+    { name: 'Email', icon: 'maildotru', url: 'mailto:zcx02172024@gmail.com' },
+    { name: 'NameMC', icon: 'namemc', url: 'https://namemc.com/profile/ZCX0217' },
   ],
   skills: ['TypeScript', 'React', 'Astro', 'Node.js', 'Python', 'Go'],
 };

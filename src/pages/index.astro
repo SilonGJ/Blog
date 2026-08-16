@@ -7,7 +7,8 @@ import { Icon } from 'astro-icon/components';
 const iconMap: Record<string, string> = {
   github: 'simple-icons:github',
   twitter: 'simple-icons:twitter',
-  email: 'lucide:mail',
+  maildotru: 'simple-icons:maildotru',
+  namemc: 'simple-icons:namemc',
   qq: 'simple-icons:qq',
   bilibili: 'simple-icons:bilibili',
 };
@@ -51,7 +52,7 @@ const siteNameJsonLd = {
               </p>
             </div>
 
-            <div class="flex gap-2 mb-4 max-md:mb-3">
+            <div class="flex justify-center gap-2 mb-4 max-md:mb-3">
               {profileConfig.links.map((link) => (
                 <a
                   key={link.name}
