@@ -431,7 +431,7 @@
     transition: opacity 200ms ease, transform 200ms ease;
   }
   .external-dialog-panel.external-dialog-closed {
-    transform: translate(-50%, calc(-50% - 8px));
+    transform: translate(-50%, calc(-50% + 8px));
     opacity: 0;
     pointer-events: none;
   }
