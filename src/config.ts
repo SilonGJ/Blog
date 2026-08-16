@@ -58,7 +58,7 @@ const friendLinks: FriendLink[] = Object.values(linkModules)
   .sort((a, b) => (a.issue ?? 0) - (b.issue ?? 0));
 
 export const linksConfig = {
-  title: '友情链接',
+  title: '友链',
   applyLink: 'https://github.com/SilonGJ/Blog/issues/new?template=friend-link.yml',
   groups: [
     {
