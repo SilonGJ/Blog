@@ -27,13 +27,13 @@ export default defineConfig({
     sitemap(),
     icon({
       include: {
-        'simple-icons': ['github', 'twitter', 'qq', 'bilibili'],
+        'simple-icons': ['github', 'twitter', 'qq', 'bilibili', 'maildotru'],
         'lucide': [
           'mail', 'pin', 'calendar', 'folder', 'file-text', 'clock',
           'house', 'search', 'menu', 'tag', 'chevron-up', 'chevron-down', 'rss',
           'rotate-cw', 'chevron-left', 'chevron-right', 'eye',
           'external-link', 'link', 'list', 'arrow-left', 'network', 'info', 'square-activity',
-          'copyright', 'github', 'image', 'maildotru'
+          'copyright', 'github', 'image'
         ],
       },
     }),
