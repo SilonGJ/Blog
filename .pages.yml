@@ -26,6 +26,7 @@ content:
     actions:
       - name: deploy-site
         label: 部署
+        scope: collection
         workflow: pages-cms-action.yml
         ref: current
         confirm:
