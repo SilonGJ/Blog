@@ -1,6 +1,12 @@
 name: 部署至 Cloudflare Workers
 
 on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'src/links/**'
+      - 'public/images/friend/**'
   workflow_dispatch:
     inputs:
       payload:
