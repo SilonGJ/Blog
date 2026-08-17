@@ -1,0 +1,21 @@
+name: Pages CMS 部署
+on:
+  workflow_dispatch:
+    inputs:
+      payload:
+        description: Pages CMS payload as JSON
+        required: true
+        type: string
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+      contents: read
+    steps:
+      - name: 触发部署
+        run: gh workflow run deploy.yml --ref "$REF"
+        env:
+          REF: ${{ fromJson(github.event.inputs.payload).repository.ref }}
+          GH_TOKEN: ${{ github.token }}

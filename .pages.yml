@@ -1,0 +1,39 @@
+content:
+  - name: posts
+    label: 文章
+    type: collection
+    path: src/content/posts
+    filename:
+      template: "{primary}.md"
+      field: create
+    view:
+      fields: [title, category, pubDate, draft]
+    fields:
+      - { name: title, label: 标题, type: string, required: true }
+      - { name: pubDate, label: 发布日期, type: date, required: true, options: { format: yyyy-MM-dd } }
+      - { name: updatedDate, label: 更新日期, type: date, options: { format: yyyy-MM-dd } }
+      - { name: description, label: 描述, type: text }
+      - { name: tags, label: 标签, type: string, list: true }
+      - { name: category, label: 分类, type: string }
+      - { name: cover, label: 封面图, type: image }
+      - { name: coverAlt, label: 封面替代文本, type: string }
+      - { name: draft, label: 草稿, type: boolean }
+      - { name: comment, label: 允许评论, type: boolean }
+      - { name: hideNav, label: 隐藏导航, type: boolean }
+      - { name: hideHome, label: 隐藏首页, type: boolean }
+      - { name: pinned, label: 置顶, type: boolean }
+      - { name: body, label: 正文, type: text }
+    actions:
+      - name: deploy-site
+        label: 部署
+        workflow: pages-cms-action.yml
+        ref: current
+        confirm:
+          title: 部署站点？
+          message: 将触发 Cloudflare 部署流程。
+          button: 部署
+
+media:
+  input: public/images
+  output: /images
+  categories: [image]
