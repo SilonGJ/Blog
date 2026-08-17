@@ -2,6 +2,11 @@ name: 部署至 Cloudflare Workers
 
 on:
   workflow_dispatch:
+    inputs:
+      payload:
+        description: Pages CMS payload
+        required: false
+        type: string
 
 jobs:
   deploy:

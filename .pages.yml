@@ -33,7 +33,7 @@ content:
       - name: deploy-site
         label: 部署
         scope: collection
-        workflow: pages-cms-action.yml
+        workflow: deploy.yml
         ref: current
         confirm:
           title: 部署站点？
