@@ -22,7 +22,13 @@ content:
       - { name: hideNav, label: 隐藏导航, type: boolean }
       - { name: hideHome, label: 隐藏首页, type: boolean }
       - { name: pinned, label: 置顶, type: boolean }
-      - { name: body, label: 正文, type: text }
+      - name: body
+        label: 正文
+        type: rich-text
+        options:
+          format: markdown
+          switcher: true
+          path: archive
     actions:
       - name: deploy-site
         label: 部署

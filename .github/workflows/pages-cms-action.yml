@@ -15,7 +15,7 @@ jobs:
       contents: read
     steps:
       - name: 触发部署
-        run: gh workflow run deploy.yml --ref "$REF"
+        run: gh workflow run deploy.yml --ref "$REF" -R "$GITHUB_REPOSITORY"
         env:
           REF: ${{ fromJson(github.event.inputs.payload).repository.ref }}
           GH_TOKEN: ${{ github.token }}
