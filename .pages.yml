@@ -18,7 +18,7 @@ content:
       - { name: description, label: 描述, type: text }
       - { name: tags, label: 标签, type: string, list: true }
       - { name: category, label: 分类, type: string }
-      - { name: cover, label: 封面图, type: image }
+      - { name: cover, label: 封面图, type: image, options: { media: "Archive" } }
       - { name: coverAlt, label: 封面替代文本, type: string }
       - { name: draft, label: 草稿, type: boolean }
       - { name: comment, label: 允许评论, type: boolean }
