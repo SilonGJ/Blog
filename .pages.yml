@@ -44,6 +44,36 @@ content:
           message: 将触发 Cloudflare 部署流程。
           button: 部署
 
+  - name: links
+    label: Links
+    type: collection
+    path: src/links
+    filename:
+      template: "{name}.json"
+      field: name
+    view:
+      fields: [issue, name, url]
+      default:
+        sort: issue
+        order: asc
+    fields:
+      - { name: issue, label: 编号, type: number, required: true }
+      - { name: name, label: 名称, type: string, required: true }
+      - { name: url, label: 网站地址, type: string, required: true }
+      - { name: icon, label: 图标, type: image, options: { media: friend } }
+      - { name: description, label: 描述, type: text }
+      - { name: verifyUrl, label: 验证地址, type: string }
+    actions:
+      - name: deploy-site
+        label: 部署
+        scope: collection
+        workflow: deploy.yml
+        ref: current
+        confirm:
+          title: 部署站点？
+          message: 将触发 Cloudflare 部署流程。
+          button: 部署
+
 media:
   - name: images
     label: Images
@@ -55,4 +85,10 @@ media:
     label: Archive
     input: public/images/archive
     output: /images/archive
+    categories: [image]
+
+  - name: friend
+    label: Friend
+    input: public/images/friend
+    output: /images/friend
     categories: [image]
