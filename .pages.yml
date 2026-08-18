@@ -8,6 +8,9 @@ content:
       field: create
     view:
       fields: [title, category, pubDate, draft]
+      default:
+        sort: pubDate
+        order: desc
     fields:
       - { name: title, label: 标题, type: string, required: true }
       - { name: pubDate, label: 发布日期, type: date, required: true, options: { format: yyyy-MM-dd } }
