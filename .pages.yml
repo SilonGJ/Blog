@@ -92,3 +92,14 @@ media:
     input: public/images/friend
     output: /images/friend
     categories: [image]
+
+actions:
+  - name: deploy-site
+    label: 部署
+    scope: collection
+    workflow: deploy.yml
+    ref: current
+    confirm:
+      title: 部署站点？
+      message: 将触发 Cloudflare 部署流程。
+      button: 部署
