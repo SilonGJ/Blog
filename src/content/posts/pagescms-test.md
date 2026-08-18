@@ -8,7 +8,7 @@ tags:
   - 技术
   - 博客
 category: 博客相关
-cover: /images/archive/2026-08-18_01-04.png
+cover: /images/archive/2026-08-18_01-03.png
 draft: false
 comment: true
 hideNav: false
