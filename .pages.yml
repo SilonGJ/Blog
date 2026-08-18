@@ -32,7 +32,7 @@ content:
           format: markdown
           switcher: true
           media: images
-          path: archive
+          path: Archive
     actions:
       - name: deploy-site
         label: 部署
@@ -45,7 +45,15 @@ content:
           button: 部署
 
 media:
-  - name: images
+  - name: Public
+    input: public
+    output: /
+    categories: [image]
+  - name: Images
     input: public/images
     output: /images
+    categories: [image]
+  - name: Archive
+    input: public/images/archive
+    output: /images/archive
     categories: [image]
