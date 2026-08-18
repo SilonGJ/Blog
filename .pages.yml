@@ -31,7 +31,8 @@ content:
         options:
           format: markdown
           switcher: true
-          path: archive
+          media_folder: "public/images/archive"
+          public_folder: "/images/archive"
     actions:
       - name: deploy-site
         label: 部署
