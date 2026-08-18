@@ -45,10 +45,6 @@ content:
           button: 部署
 
 media:
-  - name: Public
-    input: public
-    output: /
-    categories: [image]
   - name: Images
     input: public/images
     output: /images
