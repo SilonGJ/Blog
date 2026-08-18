@@ -49,10 +49,10 @@ content:
     type: collection
     path: src/links
     filename:
-      template: "{name}.json"
-      field: name
+      template: "{primary}.json"
+      field: true
     view:
-      fields: [issue, name, url]
+      fields: [name, url, issue]
       default:
         sort: issue
         order: asc
