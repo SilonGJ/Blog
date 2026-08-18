@@ -1,6 +1,6 @@
 content:
   - name: posts
-    label: 文章
+    label: Posts
     type: collection
     path: src/content/posts
     filename:
