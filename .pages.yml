@@ -1,6 +1,6 @@
 content:
   - name: posts
-    label: Posts
+    label: 文章
     type: collection
     path: src/content/posts
     filename:
@@ -45,7 +45,7 @@ content:
           button: 部署
 
   - name: links
-    label: Links
+    label: 友链
     type: collection
     path: src/links
     filename:
@@ -76,19 +76,19 @@ content:
 
 media:
   - name: images
-    label: Images
+    label: 图像
     input: public/images
     output: /images
     categories: [image]
 
   - name: archive
-    label: Archive
+    label: 文章图
     input: public/images/archive
     output: /images/archive
     categories: [image]
 
   - name: friend
-    label: Friend
+    label: 友链图
     input: public/images/friend
     output: /images/friend
     categories: [image]
