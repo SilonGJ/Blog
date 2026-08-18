@@ -18,7 +18,7 @@ content:
       - { name: description, label: 描述, type: text }
       - { name: tags, label: 标签, type: string, list: true }
       - { name: category, label: 分类, type: string }
-      - { name: cover, label: 封面图, type: image, options: { media: "Archive" } }
+      - { name: cover, label: 封面图, type: image, options: { media: archive } }
       - { name: coverAlt, label: 封面替代文本, type: string }
       - { name: draft, label: 草稿, type: boolean }
       - { name: comment, label: 允许评论, type: boolean }
@@ -32,7 +32,7 @@ content:
           format: markdown
           switcher: true
           media: images
-          path: Archive
+          path: archive
     actions:
       - name: deploy-site
         label: 部署
@@ -45,11 +45,14 @@ content:
           button: 部署
 
 media:
-  - name: Images
+  - name: images
+    label: Images
     input: public/images
     output: /images
     categories: [image]
-  - name: Archive
+
+  - name: archive
+    label: Archive
     input: public/images/archive
     output: /images/archive
     categories: [image]
