@@ -59,7 +59,6 @@ content:
     fields:
       - { name: name, label: 名称, type: string, required: true }
       - { name: issue, label: 编号, type: issue, required: true }
-
       - { name: url, label: 网站地址, type: string, required: true }
       - { name: icon, label: 图标, type: image, options: { media: friend } }
       - { name: description, label: 描述, type: text }
