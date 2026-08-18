@@ -1,5 +1,6 @@
-.pswp__button {
-    transition: background-color 0.15s ease;
+.pswp__button--close,
+.pswp__button--zoom {
+    transition: background-color 0.15s ease, transform 0.15s ease;
     background-color: rgba(0, 0, 0, 0.4);
     display: flex;
     align-items: center;
@@ -7,21 +8,14 @@
     margin-right: 0;
     width: 3rem;
     height: 3rem;
-}
-.pswp__button:hover {
-    background-color: rgba(0, 0, 0, 0.5);
-}
-.pswp__button:active {
-    background-color: rgba(0, 0, 0, 0.6);
-}
-.pswp__button--zoom,
-.pswp__button--close {
     margin-top: 1rem;
     border-radius: 0.75rem;
-    transition: transform 0.15s ease;
 }
-.pswp__button--zoom:active,
-.pswp__button--close:active {
+.pswp__button--zoom:hover {
+    background-color: rgba(0, 0, 0, 0.5);
+}
+.pswp__button--zoom:active {
+    background-color: rgba(0, 0, 0, 0.6);
     transform: scale(0.9);
 }
 .pswp__button--zoom {
@@ -29,4 +23,15 @@
 }
 .pswp__button--close {
     margin-right: 1rem;
+    background-color: color-mix(in oklab, var(--overlay) 60%, transparent);
+}
+.pswp__button--close:hover {
+    background-color: color-mix(in oklab, var(--overlay) 80%, transparent);
+}
+.pswp__button--close:active {
+    background-color: color-mix(in oklab, var(--overlay) 95%, transparent);
+    transform: scale(0.9);
+}
+.pswp__button--close .pswp__icn {
+    position: static;
 }

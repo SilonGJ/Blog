@@ -9,6 +9,8 @@ interface Props {
 
 const { class: className } = Astro.props;
 
+const linksRowWidth = `${profileConfig.links.length * 2.5 + (profileConfig.links.length - 1) * 0.75}rem`;
+
 const posts = await getCollection('posts', ({ data }) => !data.draft);
 
 const categoriesMap = new Map<string, number>();
@@ -38,24 +40,29 @@ const iconMap: Record<string, string> = {
 
 <div id="sidebar" class:list={[className, "w-full h-full"]}>
   <div class="flex flex-col w-full h-full gap-4">
-    <div class="card card--default p-4 text-center sidebar-profile max-lg:p-3.5">
-      <div class="w-full aspect-square mb-4 overflow-hidden border border-border">
+    <div class="card card--default text-center sidebar-profile overflow-hidden">
+      <div
+        class="w-full aspect-square overflow-hidden border-b border-border max-lg:mx-auto max-lg:w-[var(--sidebar-links-w)] max-lg:mt-4 max-lg:border-0"
+        style={`--sidebar-links-w: ${linksRowWidth}`}
+      >
         <img src={profileConfig.avatar} alt={profileConfig.name} class="img-fade w-full h-full object-cover" />
       </div>
-      <h3 class="text-xl font-bold max-lg:text-lg">{profileConfig.name}</h3>
-      <div class="flex justify-center gap-3">
-        {profileConfig.links.map((link) => (
-          <a
-            key={link.name}
-            href={link.url}
-            target={link.url.startsWith('http') ? '_blank' : '_self'}
-            rel="noopener noreferrer"
-            class="button button--ghost button--icon-only w-10 h-10"
-            aria-label={link.name}
-          >
-            <Icon name={iconMap[link.icon] || link.icon} class="w-5 h-5" />
-          </a>
-        ))}
+      <div class="p-4">
+        <h3 class="relative -top-2 text-xl font-bold max-lg:text-lg">{profileConfig.name}</h3>
+        <div class="flex justify-center gap-3">
+          {profileConfig.links.map((link) => (
+            <a
+              key={link.name}
+              href={link.url}
+              target={link.url.startsWith('http') ? '_blank' : '_self'}
+              rel="noopener noreferrer"
+              class="button button--ghost button--icon-only w-10 h-10"
+              aria-label={link.name}
+            >
+              <Icon name={iconMap[link.icon] || link.icon} class="w-5 h-5" />
+            </a>
+          ))}
+        </div>
       </div>
     </div>
 

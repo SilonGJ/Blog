@@ -1,7 +1,7 @@
 ---
 import '../styles/global.css';
-import '../styles/photoswipe.css';
 import 'photoswipe/style.css';
+import '../styles/photoswipe.css';
 import { siteConfig } from '../config';
 import { Icon } from 'astro-icon/components';
 
@@ -100,7 +100,7 @@ const isArticle = !!pubDate;
       lightbox = new PhotoSwipeLightbox({
         gallery: ".prose img, .post-cover img",
         pswpModule: () => pswp,
-        closeSVG: '<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#ffffff"><path d="M480-424 284-228q-11 11-28 11t-28-11q-11-11-11-28t11-28l196-196-196-196q-11-11-11-28t11-28q11-11 28-11t28 11l196 196 196-196q11-11 28-11t28 11q11 11 11 28t-11 28L536-480l196 196q11 11 11 28t-11 28q-11 11-28 11t-28-11L480-424Z"/></svg>',
+        closeSVG: '<svg class="pswp__icn" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#ffffff"><path d="M480-424 284-228q-11 11-28 11t-28-11q-11-11-11-28t11-28l196-196-196-196q-11-11-11-28t11-28q11-11 28-11t28 11l196 196 196-196q11-11 28-11t28 11q11 11 11 28t-11 28L536-480l196 196q11 11 11 28t-11 28q-11 11-28 11t-28-11L480-424Z"/></svg>',
         padding: { top: 20, bottom: 20, left: 20, right: 20 },
         wheelToZoom: true,
         imageClickAction: "close",
@@ -109,6 +109,8 @@ const isArticle = !!pubDate;
         showHideAnimationType: "fade",
         zoom: false,
         bgOpacity: 0.6,
+        maxWidthToAnimate: Infinity,
+        closeTitle: "关闭",
       });
 
       lightbox.addFilter("domItemData", (itemData, element) => {
@@ -122,6 +124,68 @@ const isArticle = !!pubDate;
       });
 
       lightbox.init();
+
+      let wheelRaf = 0;
+      let wheelTarget = 0;
+      const wheelPoint = { x: 0, y: 0 };
+
+      lightbox.on("close", () => {
+        if (wheelRaf) {
+          cancelAnimationFrame(wheelRaf);
+          wheelRaf = 0;
+        }
+      });
+
+      lightbox.on("change", () => {
+        if (wheelRaf) {
+          cancelAnimationFrame(wheelRaf);
+          wheelRaf = 0;
+        }
+      });
+
+      lightbox.on("wheel", (e) => {
+        e.preventDefault();
+        const pswp = lightbox.pswp;
+        const slide = pswp?.currSlide;
+        if (!slide || !slide.isZoomable() || pswp.mainScroll.isShifted()) return;
+
+        const oe = e.originalEvent;
+        if (!oe.deltaY) return;
+
+        let zoomFactor = -oe.deltaY;
+        if (oe.deltaMode === 1) {
+          zoomFactor *= 0.05;
+        } else {
+          zoomFactor *= oe.deltaMode ? 1 : 0.002;
+        }
+        zoomFactor = 2 ** zoomFactor;
+
+        if (!wheelRaf) {
+          wheelTarget = slide.currZoomLevel;
+        }
+        wheelTarget = Math.min(slide.zoomLevels.max, Math.max(slide.zoomLevels.min, wheelTarget * zoomFactor));
+        wheelPoint.x = oe.clientX;
+        wheelPoint.y = oe.clientY;
+
+        if (wheelRaf) return;
+
+        const frame = () => {
+          const diff = wheelTarget - slide.currZoomLevel;
+          if (Math.abs(diff) < 0.0005) {
+            slide.zoomTo(wheelTarget, wheelPoint, 0);
+            wheelRaf = 0;
+            return;
+          }
+          const next = slide.currZoomLevel + diff * 0.25;
+          const prevZoom = slide.currZoomLevel;
+          slide.setZoomLevel(next);
+          slide.pan.x = slide.calculateZoomToPanOffset("x", wheelPoint, prevZoom);
+          slide.pan.y = slide.calculateZoomToPanOffset("y", wheelPoint, prevZoom);
+          slide.applyCurrentZoomPan();
+          wheelRaf = requestAnimationFrame(frame);
+        };
+        wheelRaf = requestAnimationFrame(frame);
+      });
     }
 
     function destroyPhotoSwipe() {
