@@ -78,11 +78,11 @@ content:
           button: 部署
 
 media:
-  - name: default
-    input: public/images
-    output: /images
+  - name: Public
+    input: public
+    output: /
     categories: [image]
-  - name: content_images
+  - name: Archive
     input: public/images/archive
     output: /images/archive
     categories: [image]
