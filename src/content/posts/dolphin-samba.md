@@ -11,7 +11,7 @@ category: 技术
 cover: /images/archive/scr2303.png
 coverAlt: Dolphin 无法连接的报错截图
 draft: false
-comment: false
+comment: true
 hideNav: false
 hideHome: false
 pinned: false
@@ -39,7 +39,7 @@ pinned: false
 需要注意的是，如果用户名或者密码有像是 `@`、`#` 等特殊字符，需要使用 `%` 转译。例如 `@` 需要转译为 `%40`  
 不过这种方法只能生效一次，每次访问都很麻烦，且无法固定到左侧标签栏
 
-2. 这种方法更彻底，适合在主力机里使用  
+2. 这种方法更彻底，适合在主力机里使用
 
 使用你喜欢的编辑器编辑 `/etc/fstab`，这里我使用 `kate`，在末尾加上一行  
 
