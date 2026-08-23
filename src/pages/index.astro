@@ -21,13 +21,23 @@ const siteNameJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
   name: siteConfig.title,
-  alternateName: [siteConfig.author, Astro.site?.host.toLowerCase()],
+  alternateName: [siteConfig.author],
   url: new URL('/', Astro.site).href,
+};
+
+const organizationJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: siteConfig.title,
+  url: new URL('/', Astro.site).href,
+  logo: new URL('/images/avatar.webp', Astro.site).href,
+  sameAs: profileConfig.links.map((l) => l.url),
 };
 ---
 
 <BaseLayout title={siteConfig.title} description={siteConfig.description}>
   <script type="application/ld+json" set:html={JSON.stringify(siteNameJsonLd)} />
+  <script type="application/ld+json" set:html={JSON.stringify(organizationJsonLd)} />
   <main>
     <div id="hero-section" class="min-h-screen flex items-center justify-center px-6 py-16 max-md:px-4 max-md:py-8">
     <div class="w-full max-w-5xl onload-animation">

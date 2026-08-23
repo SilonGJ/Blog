@@ -1,0 +1,16 @@
+{
+  "name": "SilonGJ",
+  "short_name": "SilonGJ",
+  "description": "这里是孤久きりのなか(SilonGJ)的博客",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0d1117",
+  "theme_color": "#0d1117",
+  "icons": [
+    {
+      "src": "/images/favicon.png",
+      "sizes": "any",
+      "type": "image/png"
+    }
+  ]
+}
