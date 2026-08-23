@@ -1,7 +1,7 @@
 {
   "name": "SilonGJ",
   "short_name": "SilonGJ",
-  "description": "这里是孤久きりのなか(SilonGJ)的博客",
+  "description": "这里是孤久きりのなか(SilonGJ)的博客，主要分享技术以及一些乱七八糟的东西",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0d1117",
