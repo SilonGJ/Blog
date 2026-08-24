@@ -21,7 +21,7 @@
     "@swup/astro": "^1.8.0",
     "@tailwindcss/typography": "^0.5.20",
     "astro": "^7.2.2",
-    "astro-icon": "^1.1.5",
+    "astro-icon": "^1.2.0",
     "obug": "^2.1.4",
     "pagefind": "^1.5.2",
     "photoswipe": "^5.4.4",
