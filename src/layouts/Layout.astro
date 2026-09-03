@@ -565,3 +565,49 @@ if (window.swup) {
 	document.addEventListener("swup:enable", setup)
 }
 </script>
+
+<script>
+import { getViewsBatchCached, incrementView, isVisited, getCachedView, getViews } from "../utils/views";
+
+async function setupViews() {
+	const article = document.querySelector("article[data-slug]") as HTMLElement;
+	if (article) {
+		const slug = article.dataset.slug!;
+		const viewCountEl = document.getElementById("view-count");
+		if (!viewCountEl) return;
+
+		if (!isVisited(slug)) {
+			const count = await incrementView(slug);
+			viewCountEl.textContent = String(count);
+		} else {
+			const cached = getCachedView(slug);
+			if (cached !== null) {
+				viewCountEl.textContent = String(cached);
+			} else {
+				const count = await getViews(slug);
+				viewCountEl.textContent = String(count);
+			}
+		}
+	} else {
+		const viewElements = document.querySelectorAll(".view-count[data-slug]") as NodeListOf<HTMLElement>;
+		if (viewElements.length === 0) return;
+
+		const slugs = Array.from(viewElements).map(el => el.dataset.slug!);
+		const data = await getViewsBatchCached(slugs);
+		viewElements.forEach(el => {
+			const slug = el.dataset.slug!;
+			el.textContent = String(data[slug] ?? 0);
+		});
+	}
+}
+
+setupViews();
+
+if (window?.swup?.hooks) {
+	window.swup.hooks.on("page:view", setupViews);
+} else {
+	document.addEventListener("swup:enable", () => {
+		window.swup.hooks.on("page:view", setupViews);
+	});
+}
+</script>

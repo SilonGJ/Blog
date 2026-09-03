@@ -1,0 +1,100 @@
+name: 检查并删除垃圾评论
+on:
+  discussion_comment:
+    types: [created]
+
+jobs:
+  check-akismet:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检查并删除垃圾评论
+        env:
+          AKISMET_API_KEY: ${{ secrets.AKISMET_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          COMMENT_BODY: ${{ github.event.comment.body }}
+          COMMENT_AUTHOR: ${{ github.event.comment.user.login }}
+          COMMENT_NODE_ID: ${{ github.event.comment.node_id }}
+          COMMENT_HTML_URL: ${{ github.event.comment.html_url }}
+          DISCUSSION_TITLE: ${{ github.event.discussion.title }}
+          REPO_OWNER: ${{ github.repository_owner }}
+          REPO_NAME: ${{ github.event.repository.name }}
+        run: |
+          set -uo pipefail
+          echo "评论作者: ${COMMENT_AUTHOR}"
+          echo "讨论标题: ${DISCUSSION_TITLE}"
+          echo "评论链接: ${COMMENT_HTML_URL}"
+          echo "评论内容: ${COMMENT_BODY}"
+          
+          # 构建 Akismet API 请求
+          AKISMET_URL="https://${AKISMET_API_KEY}.rest.akismet.com/1.1/comment-check"
+          AKISMET_RESPONSE=$(curl -s -w "\nHTTP_CODE:%{http_code}\nTOTAL_TIME:%{time_total}" \
+            -X POST "$AKISMET_URL" \
+            -H "Content-Type: application/x-www-form-urlencoded" \
+            -H "User-Agent: GitHubActionBot/1.0" \
+            --data-urlencode "blog=https://github.com/${REPO_OWNER}/${REPO_NAME}" \
+            --data-urlencode "user_ip=127.0.0.1" \
+            --data-urlencode "user_agent=GitHubActionBot/1.0" \
+            --data-urlencode "comment_type=comment" \
+            --data-urlencode "comment_author=${COMMENT_AUTHOR}" \
+            --data-urlencode "comment_content=${COMMENT_BODY}" \
+            2>/dev/null || echo "false")
+          
+          # 解析响应
+          SPAM_CHECK_RESULT=$(echo "$AKISMET_RESPONSE" | head -n1)
+          HTTP_CODE=$(echo "$AKISMET_RESPONSE" | grep "HTTP_CODE:" | cut -d: -f2)
+          RESPONSE_TIME=$(echo "$AKISMET_RESPONSE" | grep "TOTAL_TIME:" | cut -d: -f2)
+          
+          echo "垃圾评论检测结果: '${SPAM_CHECK_RESULT}'"
+          
+          # 检查是否为垃圾评论
+          if [ "$SPAM_CHECK_RESULT" = "true" ]; then
+            echo "删除垃圾评论..."
+            GRAPHQL_MUTATION='{
+              "query": "mutation DeleteDiscussionComment($commentId: ID!) { deleteDiscussionComment(input: { id: $commentId }) { clientMutationId } }",
+              "variables": {
+                "commentId": "'${COMMENT_NODE_ID}'"
+              }
+            }'
+            DELETE_RESPONSE=$(curl -s -w "\nHTTP_CODE:%{http_code}\nTOTAL_TIME:%{time_total}" \
+              -X POST "https://api.github.com/graphql" \
+              -H "Authorization: token ${GITHUB_TOKEN}" \
+              -H "Content-Type: application/json" \
+              -H "User-Agent: AkismetBot/1.0" \
+              -d "$GRAPHQL_MUTATION" \
+              2>/dev/null || echo "DELETE_ERROR")
+            
+            DELETE_HTTP_CODE=$(echo "$DELETE_RESPONSE" | grep "HTTP_CODE:" | cut -d: -f2)
+            DELETE_TIME=$(echo "$DELETE_RESPONSE" | grep "TOTAL_TIME:" | cut -d: -f2)
+            DELETE_BODY=$(echo "$DELETE_RESPONSE" | head -n -2)
+            
+            # 检查是否删除成功
+            if [ "$DELETE_HTTP_CODE" = "200" ]; then
+              # 检查 GraphQL 响应中是否有错误
+              if echo "$DELETE_BODY" | grep -q '"errors"'; then
+                echo "GraphQL 错误: $DELETE_BODY" | jq '.errors' 2>/dev/null || echo "$DELETE_BODY"
+                
+                # 分析常见错误
+                if echo "$DELETE_BODY" | grep -q "Resource not accessible"; then
+                  echo "资源不可访问 - 可能是权限问题或评论已被删除"
+                elif echo "$DELETE_BODY" | grep -q "Could not resolve to a node"; then
+                  echo "无法解析节点ID - Node ID 可能不正确"
+                else
+                  echo "其他 GraphQL 错误"
+                fi
+              else
+                echo "垃圾评论已成功删除"
+              fi
+            else
+              echo "失败: HTTP 请求失败"
+              echo "TTP 状态码: ${DELETE_HTTP_CODE}"
+              echo "错误响应: ${DELETE_BODY}"
+            fi
+            
+          elif [ "$SPAM_CHECK_RESULT" = "false" ]; then
+            echo "正常评论"
+            
+          else
+            echo "AKISMET 错误"
+            echo "原始响应: '${SPAM_CHECK_RESULT}'"
+            echo "HTTP 状态码: ${HTTP_CODE:-未知}"
+          fi

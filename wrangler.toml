@@ -1,0 +1,13 @@
+name = "blog-fuwari"
+compatibility_date = "2024-09-23"
+compatibility_flags = ["nodejs_compat"]
+main = "@astrojs/cloudflare/entrypoints/server"
+
+[[d1_databases]]
+binding = "D1"
+database_name = "blog-views"
+database_id = "9346117a-74df-4af3-bd52-7ad22df67ec6"
+
+[assets]
+directory = "./dist/client"
+binding = "ASSETS"

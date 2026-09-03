@@ -1,3 +1,4 @@
+import cloudflare from "@astrojs/cloudflare";
 import sitemap from "@astrojs/sitemap";
 import svelte from "@astrojs/svelte";
 import tailwind from "@astrojs/tailwind";
@@ -26,6 +27,15 @@ import { pluginCustomCopyButton } from "./src/plugins/expressive-code/custom-cop
 
 // https://astro.build/config
 export default defineConfig({
+	output: "static",
+	adapter: cloudflare({
+		prerenderEnvironment: "workerd",
+		routes: {
+			extend: {
+				exclude: [{ pattern: "/pagefind/*" }],
+			},
+		},
+	}),
 	site: "https://zcx0217.qzz.io/",
 	base: "/",
 	trailingSlash: "always",
@@ -54,6 +64,7 @@ export default defineConfig({
 			"fa6-regular": ["*"],
 			"fa6-solid": ["*"],
 			"simple-icons": ["*"],
+			"lucide": ["eye"],
 		},
 	}),
 		expressiveCode({
