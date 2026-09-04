@@ -3,6 +3,9 @@ import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 
+import "photoswipe/style.css";
+import "../styles/main.css";
+
 import ConfigCarrier from "@components/ConfigCarrier.astro";
 import { profileConfig, siteConfig } from "@/config";
 import {
@@ -164,7 +167,8 @@ const bannerOffset =
 	'banner-height-home': `${BANNER_HEIGHT_HOME}vh`,
 	'banner-height': `${BANNER_HEIGHT}vh`,
 }}>
-@tailwind components;
+@reference "tailwindcss";
+@reference "../styles/main.css";
 @layer components {
 	.enable-banner.is-home #banner-wrapper {
 		@apply h-[var(--banner-height-home)] translate-y-[var(--banner-height-extend)]
@@ -506,7 +510,6 @@ window.onresize = () => {
 
 <script>
 import PhotoSwipeLightbox from "photoswipe/lightbox"
-import "photoswipe/style.css"
 
 let lightbox: PhotoSwipeLightbox
 let pswp = import("photoswipe")
