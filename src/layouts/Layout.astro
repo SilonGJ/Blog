@@ -32,7 +32,8 @@ interface Props {
 	noindex?: boolean;
 }
 
-let { title, banner, description, lang, setOGTypeArticle, noindex } = Astro.props;
+let { title, banner, description, lang, setOGTypeArticle, noindex } =
+	Astro.props;
 
 // apply a class to the body element to decide the height of the banner, only used for initial page load
 // Swup can update the body for each page visit, but it's after the page transition, causing a delay for banner height change
@@ -98,7 +99,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site).href;
         ) : (
         <meta property="og:type" content="website" />
         )}
-		<meta property="og:locale" content="zh_CN">
+		<meta property="og:locale" content={siteConfig.lang}>
 		<meta property="og:image" content={ogImage} />
 		<meta property="og:image:alt" content={pageTitle} />
 
@@ -240,6 +241,28 @@ setClickOutsideToClose("display-setting", ["display-setting", "display-settings-
 setClickOutsideToClose("nav-menu-panel", ["nav-menu-panel", "nav-menu-switch"])
 setClickOutsideToClose("search-panel", ["search-panel", "search-bar", "search-switch"])
 
+function initButtonToggles() {
+	let settingBtn = document.getElementById("display-settings-switch");
+	if (settingBtn) {
+		settingBtn.onclick = function () {
+			let settingPanel = document.getElementById("display-setting");
+			if (settingPanel) {
+				settingPanel.classList.toggle("float-panel-closed");
+			}
+		};
+	}
+	let menuBtn = document.getElementById("nav-menu-switch");
+	if (menuBtn) {
+		menuBtn.onclick = function () {
+			let menuPanel = document.getElementById("nav-menu-panel");
+			if (menuPanel) {
+				menuPanel.classList.toggle("float-panel-closed");
+			}
+		};
+	}
+}
+initButtonToggles();
+
 
 function loadTheme() {
 	const theme = getStoredTheme()
@@ -337,6 +360,15 @@ function init() {
 /* Load settings when entering the site */
 init();
 
+function getNavbarHideThreshold(): number {
+	let bannerH = BANNER_HEIGHT;
+	if (document.body.classList.contains('lg:is-home') && window.innerWidth >= 1024) {
+		bannerH = BANNER_HEIGHT_HOME;
+	}
+	const MAIN_PANEL_EXCESS_HEIGHT = MAIN_PANEL_OVERLAPS_BANNER_HEIGHT * 16;
+	return window.innerHeight * (bannerH / 100) - NAVBAR_HEIGHT - MAIN_PANEL_EXCESS_HEIGHT - 16;
+}
+
 const setup = () => {
 	window.swup.hooks.on('link:click', () => {
 		// Remove the delay for the first time page load
@@ -346,7 +378,7 @@ const setup = () => {
 		if (!bannerEnabled) {
 			return
 		}
-		let threshold = window.innerHeight * (BANNER_HEIGHT / 100) - 72 - 16
+		let threshold = getNavbarHideThreshold()
 		let navbar = document.getElementById('navbar-wrapper')
 		if (!navbar || !document.body.classList.contains('lg:is-home')) {
 			return
@@ -429,13 +461,7 @@ function scrollFunction() {
 
 	if (!bannerEnabled) return
 	if (navbar) {
-		const MAIN_PANEL_EXCESS_HEIGHT = MAIN_PANEL_OVERLAPS_BANNER_HEIGHT * 16			// The height the main panel overlaps the banner
-
-		let bannerHeight = BANNER_HEIGHT
-		if (document.body.classList.contains('lg:is-home') && window.innerWidth >= 1024) {
-			bannerHeight = BANNER_HEIGHT_HOME
-		}
-		let threshold = window.innerHeight * (bannerHeight / 100) - NAVBAR_HEIGHT - MAIN_PANEL_EXCESS_HEIGHT - 16
+		let threshold = getNavbarHideThreshold()
 		if (document.body.scrollTop >= threshold || document.documentElement.scrollTop >= threshold) {
 			navbar.classList.add('navbar-hidden')
 		} else {

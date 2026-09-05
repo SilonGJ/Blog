@@ -2,6 +2,7 @@
  * Based on the discussion at https://github.com/expressive-code/expressive-code/issues/153#issuecomment-2282218684
  */
 import { definePlugin } from "@expressive-code/core";
+import { codeFontFamily } from "../../config";
 
 export function pluginLanguageBadge() {
 	return definePlugin({
@@ -15,7 +16,7 @@ export function pluginLanguageBadge() {
         top: 0.5rem;
         padding: 0.1rem 0.5rem;
         content: attr(data-language);
-        font-family: "JetBrains Mono Variable", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        font-family: ${codeFontFamily};
         font-size: 0.75rem;
         font-weight: bold;
         text-transform: uppercase;

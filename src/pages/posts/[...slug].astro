@@ -1,4 +1,5 @@
 ---
+import { render } from "astro:content";
 import path from "node:path";
 import License from "@components/misc/License.astro";
 import Markdown from "@components/misc/Markdown.astro";
@@ -13,7 +14,6 @@ import ImageWrapper from "../../components/misc/ImageWrapper.astro";
 import PostMetadata from "../../components/PostMeta.astro";
 import { profileConfig, siteConfig } from "../../config";
 import { formatDateToYYYYMMDD } from "../../utils/date-utils";
-import { render } from "astro:content";
 
 export async function getStaticPaths() {
 	const blogEntries = await getSortedPosts();
@@ -38,8 +38,12 @@ const jsonLd = {
 		url: Astro.site,
 	},
 	datePublished: formatDateToYYYYMMDD(entry.data.published),
-	dateModified: entry.data.updated ? formatDateToYYYYMMDD(entry.data.updated) : formatDateToYYYYMMDD(entry.data.published),
-	image: entry.data.image ? new URL(entry.data.image, Astro.site).href : undefined,
+	dateModified: entry.data.updated
+		? formatDateToYYYYMMDD(entry.data.updated)
+		: formatDateToYYYYMMDD(entry.data.published),
+	image: entry.data.image
+		? new URL(entry.data.image, Astro.site).href
+		: undefined,
 	url: new URL(Astro.url.pathname, Astro.site).href,
 	mainEntityOfPage: new URL(Astro.url.pathname, Astro.site).href,
 	wordCount: remarkPluginFrontmatter.words,

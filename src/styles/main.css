@@ -4,6 +4,7 @@
 
 @theme {
   --font-sans: "Roboto", "sans-serif", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --code-font-family: "JetBrains Mono Variable", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
 
 @plugin "@tailwindcss/typography";
@@ -275,7 +276,7 @@ html.is-animating .transition-swup-fade {
     code {
         @apply bg-[var(--inline-code-bg)] text-[var(--inline-code-color)] px-1 py-0.5 rounded-md overflow-hidden;
 
-        font-family: 'JetBrains Mono Variable', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace;
+        font-family: var(--code-font-family);
         &:before {
             content:none;
         }
@@ -357,6 +358,20 @@ html.is-animating .transition-swup-fade {
 
 }
 
+/* back-to-top */
+.back-to-top-wrapper {
+    @apply w-[3.75rem] h-[3.75rem] absolute right-0 top-0 pointer-events-none;
+}
+#back-to-top-btn {
+    @apply text-[var(--primary)] text-[2.25rem] font-bold border-none fixed bottom-[10rem] cursor-pointer translate-x-[5rem] pointer-events-auto;
+}
+#back-to-top-btn.hide {
+    @apply translate-x-[5rem] scale-90 opacity-0 pointer-events-none;
+}
+#back-to-top-btn:active {
+    @apply translate-x-[5rem] scale-90;
+}
+
 /* photoswipe */
 .pswp__button {
     transition: all !important;
@@ -396,6 +411,6 @@ html.is-animating .transition-swup-fade {
     }
 
     .title {
-        font-family: "JetBrains Mono Variable", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        font-family: var(--code-font-family);
     }
 }
