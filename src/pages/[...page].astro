@@ -2,7 +2,7 @@
 import type { GetStaticPaths } from "astro";
 import Pagination from "../components/control/Pagination.astro";
 import PostPage from "../components/PostPage.astro";
-import { siteConfig } from "../config";
+import { siteConfig, profileConfig } from "../config";
 import { PAGE_SIZE } from "../constants/constants";
 import MainGridLayout from "../layouts/MainGridLayout.astro";
 import { getSortedPosts } from "../utils/content-utils";
@@ -19,6 +19,18 @@ const len = page.data.length;
 ---
 
 <MainGridLayout noindex={page.currentPage > 1}>
+    <script is:inline slot="head" type="application/ld+json" set:html={JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        name: siteConfig.title,
+        description: siteConfig.subtitle,
+        url: Astro.site,
+        inLanguage: siteConfig.lang.replace("_", "-"),
+        author: {
+            "@type": "Person",
+            name: profileConfig.name,
+        },
+    })}></script>
     <h1 class="sr-only">{siteConfig.title}</h1>
     <PostPage page={page}></PostPage>
     <Pagination class="mx-auto onload-animation" page={page} style={`animation-delay: calc(var(--content-delay) + ${(len)*50}ms)`}></Pagination>
