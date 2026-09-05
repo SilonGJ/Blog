@@ -1,108 +1,25 @@
 ---
-import MainGridLayout from "../../layouts/MainGridLayout.astro";
+import { getEntry, render } from "astro:content";
+import Markdown from "@components/misc/Markdown.astro";
 import I18nKey from "../../i18n/i18nKey";
 import { i18n } from "../../i18n/translation";
-import { linksConfig, siteConfig, siteUrl } from "../../config";
+import MainGridLayout from "../../layouts/MainGridLayout.astro";
 
-function normalizeUrl(url: string): string {
-  if (!url) return "#";
-  if (/^https?:\/\//i.test(url)) return url;
-  return `https://${url}`;
+const linksPost = await getEntry("spec", "links");
+
+if (!linksPost) {
+	throw new Error("Links page content not found");
 }
 
-function getInitial(name: string): string {
-  return name ? name.charAt(0) : "?";
-}
-
-const allLinks = linksConfig.groups.flatMap((g) => g.links);
+const { Content } = await render(linksPost);
 ---
-
 <MainGridLayout title={i18n(I18nKey.friendLinks)}>
-  <h1 class="sr-only">{i18n(I18nKey.friendLinks)}</h1>
-  <div class="flex w-full rounded-[var(--radius-large)] overflow-hidden relative min-h-32">
-    <div class="card-base z-10 px-9 py-6 relative w-full">
-      <div class="mb-6">
-        <h1 class="text-2xl font-bold text-90">{i18n(I18nKey.friendLinks)}</h1>
-      </div>
-
-      <div class="mb-6 space-y-4">
-        <div class="p-4 rounded-xl bg-[var(--card-bg)] border border-[var(--btn-card-border)]">
-          <p class="text-sm font-bold text-90 mb-2">本站信息</p>
-          <div class="space-y-1 text-sm text-75">
-            <p>名称：{siteConfig.title}</p>
-            <p>地址：{siteUrl}</p>
-            <p>描述：{siteConfig.subtitle}</p>
-            <p>头像：{siteUrl}images/favicon.png</p>
-          </div>
+    <h1 class="sr-only">{i18n(I18nKey.friendLinks)}</h1>
+    <div class="flex w-full rounded-[var(--radius-large)] overflow-hidden relative min-h-32">
+        <div class="card-base z-10 px-9 py-6 relative w-full">
+            <Markdown class="mt-2">
+                <Content />
+            </Markdown>
         </div>
-
-        <div class="p-4 rounded-xl bg-[var(--card-bg)] border border-[var(--btn-card-border)]">
-          <p class="text-sm font-bold text-90 mb-2">申请步骤</p>
-          <ol class="space-y-2 text-sm text-75 list-decimal pl-5">
-            <li>添加本站信息到您的站点</li>
-            <li>在评论区按照以下格式留言</li>
-            <li>站长审核通过后会上线</li>
-          </ol>
-          <div class="mt-3 text-sm text-50">
-            <pre class="bg-[var(--codeblock-bg)] p-2 rounded-lg overflow-x-auto"><code>站点名称：
-站点地址：
-站点描述：
-站点图标：（可选，不填则显示首字母）</code></pre>
-          </div>
-        </div>
-      </div>
-
-      {allLinks.length === 0 ? (
-        <div class="card-base p-12 text-center">
-          <p class="text-50">暂无友链</p>
-        </div>
-      ) : (
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {allLinks.map((link) => {
-            const safeUrl = normalizeUrl(link.url);
-            const hasIcon = !!link.icon && link.icon.trim().length > 0;
-            return (
-              <a
-                href={safeUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                class="card-base p-4 flex items-start gap-4 transition-all duration-200 hover:bg-[var(--btn-card-bg-hover)] group block"
-              >
-                <div class="w-12 h-12 flex-shrink-0 relative border border-[var(--btn-card-border)] bg-[var(--card-bg)] overflow-hidden">
-                  <div class="absolute inset-0 flex items-center justify-center text-xl font-bold text-50">
-                    {getInitial(link.name)}
-                  </div>
-                  {hasIcon && (
-                    <img
-                      src={link.icon}
-                      alt=""
-                      loading="lazy"
-                      referrerpolicy="no-referrer"
-                      class="absolute inset-0 w-full h-full object-cover"
-                    />
-                  )}
-                </div>
-                <div class="flex-1 min-w-0 overflow-hidden">
-                  <div class="flex items-center gap-2 mb-1">
-                    <span class="font-bold text-90 truncate group-hover:text-[var(--primary)] transition-colors">
-                      {link.name}
-                    </span>
-                  </div>
-                  {link.description ? (
-                    <p class="text-xs text-50 line-clamp-2 leading-relaxed">
-                      {link.description}
-                    </p>
-                  ) : (
-                    <p class="text-xs text-30 italic">
-                      暂无描述
-                    </p>
-                  )}
-                </div>
-              </a>
-            );
-          })}
-        </div>
-      )}
     </div>
-  </div>
 </MainGridLayout>

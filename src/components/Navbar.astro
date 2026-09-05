@@ -24,7 +24,7 @@ let links: (NavBarLink & { presetIndex?: number })[] = navBarConfig.links.map(
 		index: number,
 	): NavBarLink & { presetIndex?: number } => {
 		if (typeof item === "number") {
-			return { ...LinkPresets[item], presetIndex: index };
+			return { ...LinkPresets[item], presetIndex: item };
 		}
 		return { ...item };
 	},
