@@ -27,19 +27,12 @@
     dark:bg-[oklch(0.30_0.02_var(--hue))] dark:hover:bg-[oklch(0.35_0.03_var(--hue))] dark:active:bg-[oklch(0.40_0.03_var(--hue))];
 }
 
-@utility btn-regular-dark-success {
-    @apply bg-[oklch(0.75_0.14_var(--hue))] dark:bg-[oklch(0.75_0.14_var(--hue))];
-}
-
 @layer components {
     .card-base {
         @apply rounded-[var(--radius-large)] overflow-hidden bg-[var(--card-bg)] transition;
     }
     h1, h2, h3, h4, h5, h6, p, a, span, li, ul, ol, blockquote, code, pre, table, th, td, strong {
         @apply transition;
-    }
-    .card-shadow {
-        @apply drop-shadow-[0_2px_4px_rgba(0,0,0,0.005)]
     }
     .float-panel {
         @apply top-[5.25rem] rounded-[var(--radius-large)] overflow-hidden bg-[var(--float-panel-bg)] shadow-xl dark:shadow-none;
@@ -77,11 +70,6 @@
         text-[var(--btn-content)] dark:text-white/75
     }
 
-    .link-underline {
-        @apply transition underline decoration-2 decoration-dashed decoration-[var(--link-underline)]
-        hover:decoration-[var(--link-hover)] active:decoration-[var(--link-active)] underline-offset-[0.25rem]
-    }
-
     .toc-hide,
     .toc-not-ready {
         @apply opacity-0 pointer-events-none
@@ -111,17 +99,10 @@
     .text-30 {
         @apply text-black/30 dark:text-white/30
     }
-    .text-25 {
-        @apply text-black/25 dark:text-white/25
-    }
 
     .meta-icon {
         @apply w-8 h-8 transition rounded-md flex items-center justify-center bg-[var(--btn-regular-bg)]
         text-[var(--btn-content)] mr-2
-    }
-    .with-divider {
-        @apply before:content-['/'] before:ml-1.5 before:mr-1.5 before:text-[var(--meta-divider)] before:text-sm
-        before:font-medium before:first-of-type:hidden before:transition
     }
 }
 
@@ -147,10 +128,6 @@
     pointer-events: none;
     transition: all 0.3s;
     transform: translateY(-50%);
-}
-
-.collapsed {
-    height: var(--collapsedHeight);
 }
 
 .custom-md spoiler {

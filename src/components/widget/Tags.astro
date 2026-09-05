@@ -1,5 +1,6 @@
 ---
 
+import { COLLAPSED_HEIGHT } from "../../constants/constants";
 import I18nKey from "../../i18n/i18nKey";
 import { i18n } from "../../i18n/translation";
 import { getTagList } from "../../utils/content-utils";
@@ -8,8 +9,6 @@ import ButtonTag from "../control/ButtonTag.astro";
 import WidgetLayout from "./WidgetLayout.astro";
 
 const tags = await getTagList();
-
-const COLLAPSED_HEIGHT = "7.5rem";
 
 const isCollapsed = tags.length >= 20;
 

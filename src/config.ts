@@ -42,11 +42,6 @@ export const navBarConfig: NavBarConfig = {
 		LinkPreset.Home,
 		LinkPreset.Archive,
 		LinkPreset.About,
-		{
-			name: "GitHub",
-			url: "https://github.com/SilonGJ",
-			external: true,
-		},
 	],
 };
 

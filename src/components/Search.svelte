@@ -9,7 +9,6 @@ import type { SearchResult } from "@/global";
 let keywordDesktop = "";
 let keywordMobile = "";
 let result: SearchResult[] = [];
-let isSearching = false;
 let pagefindLoaded = false;
 let initialized = false;
 
@@ -58,8 +57,6 @@ const search = async (keyword: string, isDesktop: boolean): Promise<void> => {
 		return;
 	}
 
-	isSearching = true;
-
 	try {
 		let searchResults: SearchResult[] = [];
 
@@ -81,8 +78,6 @@ const search = async (keyword: string, isDesktop: boolean): Promise<void> => {
 		console.error("Search error:", error);
 		result = [];
 		setPanelVisibility(false, isDesktop);
-	} finally {
-		isSearching = false;
 	}
 };
 
@@ -93,32 +88,23 @@ onMount(() => {
 			typeof window !== "undefined" &&
 			!!window.pagefind &&
 			typeof window.pagefind.search === "function";
-		console.log("Pagefind status on init:", pagefindLoaded);
 		if (keywordDesktop) search(keywordDesktop, true);
 		if (keywordMobile) search(keywordMobile, false);
 	};
 
 	if (import.meta.env.DEV) {
-		console.log(
-			"Pagefind is not available in development mode. Using mock data.",
-		);
 		initializeSearch();
 	} else {
 		document.addEventListener("pagefindready", () => {
-			console.log("Pagefind ready event received.");
 			initializeSearch();
 		});
 		document.addEventListener("pagefindloaderror", () => {
-			console.warn(
-				"Pagefind load error event received. Search functionality will be limited.",
-			);
-			initializeSearch(); // Initialize with pagefindLoaded as false
+			initializeSearch();
 		});
 
 		// Fallback in case events are not caught or pagefind is already loaded by the time this script runs
 		setTimeout(() => {
 			if (!initialized) {
-				console.log("Fallback: Initializing search after timeout.");
 				initializeSearch();
 			}
 		}, 2000); // Adjust timeout as needed

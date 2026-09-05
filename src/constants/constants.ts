@@ -15,3 +15,9 @@ export const MAIN_PANEL_OVERLAPS_BANNER_HEIGHT = 3.5;
 
 // Page width: rem
 export const PAGE_WIDTH = 75;
+
+// Widget collapsed height
+export const COLLAPSED_HEIGHT = "7.5rem";
+
+// Navbar height in px
+export const NAVBAR_HEIGHT = 72;
