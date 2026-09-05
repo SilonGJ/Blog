@@ -34,7 +34,7 @@ export function FriendLinksComponent(properties, children) {
 					href: link.url,
 					target: "_blank",
 					rel: "noopener noreferrer",
-					class: "btn-card rounded-2xl p-4 flex items-start gap-4 group",
+					class: "btn-card no-styling !no-underline rounded-2xl p-4 flex items-start gap-4 group",
 				},
 				[
 					h(
@@ -57,7 +57,7 @@ export function FriendLinksComponent(properties, children) {
 											alt: "",
 											loading: "lazy",
 											referrerpolicy: "no-referrer",
-											class: "absolute inset-0 w-full h-full object-cover",
+											class: "absolute inset-0 w-full h-full object-cover !m-0",
 										}),
 									]
 								: []),
@@ -77,8 +77,8 @@ export function FriendLinksComponent(properties, children) {
 							"p",
 							{
 								class: link.description
-									? "text-xs text-50 line-clamp-2 leading-relaxed"
-									: "text-xs text-30 italic",
+									? "text-xs text-50 line-clamp-2 leading-relaxed !m-0"
+									: "text-xs text-30 italic !m-0",
 							},
 							link.description || "暂无描述",
 						),
