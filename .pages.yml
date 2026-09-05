@@ -1,0 +1,98 @@
+content:
+  - name: posts
+    label: 文章
+    type: collection
+    path: src/content/posts
+    filename:
+      template: "{primary}.md"
+      field: create
+    view:
+      fields: [title, category, published, draft]
+      default:
+        sort: published
+        order: desc
+    fields:
+      - { name: title, label: 标题, type: string, required: true }
+      - { name: published, label: 发布日期, type: date, required: true, options: { format: yyyy-MM-dd } }
+      - { name: updated, label: 更新日期, type: date, default: "", options: { format: yyyy-MM-dd } }
+      - { name: description, label: 描述, type: text }
+      - { name: tags, label: 标签, type: string, list: true }
+      - { name: category, label: 分类, type: string }
+      - { name: image, label: 封面图, type: image, options: { media: archive } }
+      - { name: draft, label: 草稿, type: boolean }
+      - { name: lang, label: 语言, type: string }
+      - name: body
+        label: 正文
+        type: rich-text
+        options:
+          format: markdown
+          switcher: true
+          media: archive
+    actions:
+      - name: deploy-site
+        label: 部署
+        scope: collection
+        workflow: deploy.yml
+        ref: current
+        confirm:
+          title: 部署站点？
+          message: 将触发 Cloudflare 部署流程。
+          button: 部署
+
+  - name: links
+    label: 友链
+    type: collection
+    path: src/links
+    filename:
+      template: "{primary}.json"
+      field: true
+    view:
+      fields: [name, url, description]
+      default:
+        sort: name
+        order: asc
+    fields:
+      - { name: name, label: 名称, type: string, required: true }
+      - { name: url, label: 网站地址, type: string, required: true }
+      - { name: icon, label: 图标, type: image, options: { media: friend } }
+      - { name: description, label: 描述, type: text }
+    actions:
+      - name: deploy-site
+        label: 部署
+        scope: collection
+        workflow: deploy.yml
+        ref: current
+        confirm:
+          title: 部署站点？
+          message: 将触发 Cloudflare 部署流程。
+          button: 部署
+
+media:
+  - name: images
+    label: 图像
+    input: public/images
+    output: /images
+    categories: [image]
+
+  - name: archive
+    label: 文章图
+    input: public/images/archive
+    output: /images/archive
+    categories: [image]
+
+  - name: friend
+    label: 友链图
+    input: public/images/friend
+    output: /images/friend
+    categories: [image]
+
+actions:
+  - name: deploy-site
+    label: 部署
+    scope: collection
+    workflow: deploy.yml
+    ref: current
+    confirm:
+      title: 部署站点？
+      message: 将触发 Cloudflare 部署流程。
+      button: 部署

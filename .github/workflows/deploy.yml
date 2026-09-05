@@ -1,0 +1,43 @@
+name: 部署至 Cloudflare Workers
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'src/links/**'
+      - 'public/images/friend/**'
+  workflow_dispatch:
+    inputs:
+      payload:
+        description: Pages CMS payload
+        required: false
+        type: string
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    name: 部署
+
+    steps:
+      - name: 检验
+        uses: actions/checkout@v4
+
+      - name: 配置 Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: 配置 pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: 安装依赖
+        run: pnpm install
+
+      - name: 构建
+        run: pnpm build
+
+      - name: 部署至 Cloudflare Workers
+        run: pnpm exec wrangler deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
